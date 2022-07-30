@@ -1,0 +1,12 @@
+D:\projects\resoar-api\Resoar\Tests\UnitTest.Integration.Repositories\bin\Debug\net6.0\UnitTest.Integration.Repositories.deps.json
+D:\projects\resoar-api\Resoar\Tests\UnitTest.Integration.Repositories\bin\Debug\net6.0\UnitTest.Integration.Repositories.dll
+D:\projects\resoar-api\Resoar\Tests\UnitTest.Integration.Repositories\bin\Debug\net6.0\UnitTest.Integration.Repositories.pdb
+D:\projects\resoar-api\Resoar\Tests\UnitTest.Integration.Repositories\obj\Debug\net6.0\UnitTest.Integration.Repositories.csproj.AssemblyReference.cache
+D:\projects\resoar-api\Resoar\Tests\UnitTest.Integration.Repositories\obj\Debug\net6.0\UnitTest.Integration.Repositories.GeneratedMSBuildEditorConfig.editorconfig
+D:\projects\resoar-api\Resoar\Tests\UnitTest.Integration.Repositories\obj\Debug\net6.0\UnitTest.Integration.Repositories.AssemblyInfoInputs.cache
+D:\projects\resoar-api\Resoar\Tests\UnitTest.Integration.Repositories\obj\Debug\net6.0\UnitTest.Integration.Repositories.AssemblyInfo.cs
+D:\projects\resoar-api\Resoar\Tests\UnitTest.Integration.Repositories\obj\Debug\net6.0\UnitTest.Integration.Repositories.csproj.CoreCompileInputs.cache
+D:\projects\resoar-api\Resoar\Tests\UnitTest.Integration.Repositories\obj\Debug\net6.0\UnitTest.Integration.Repositories.dll
+D:\projects\resoar-api\Resoar\Tests\UnitTest.Integration.Repositories\obj\Debug\net6.0\refint\UnitTest.Integration.Repositories.dll
+D:\projects\resoar-api\Resoar\Tests\UnitTest.Integration.Repositories\obj\Debug\net6.0\UnitTest.Integration.Repositories.pdb
+D:\projects\resoar-api\Resoar\Tests\UnitTest.Integration.Repositories\obj\Debug\net6.0\ref\UnitTest.Integration.Repositories.dll

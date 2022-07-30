@@ -1,0 +1,15 @@
+D:\projects\resoar-api\Resoar\Core\Application.Interfaces\bin\Debug\net6.0\Application.Interfaces.deps.json
+D:\projects\resoar-api\Resoar\Core\Application.Interfaces\bin\Debug\net6.0\Application.Interfaces.dll
+D:\projects\resoar-api\Resoar\Core\Application.Interfaces\bin\Debug\net6.0\Application.Interfaces.pdb
+D:\projects\resoar-api\Resoar\Core\Application.Interfaces\bin\Debug\net6.0\Domain.dll
+D:\projects\resoar-api\Resoar\Core\Application.Interfaces\bin\Debug\net6.0\Domain.pdb
+D:\projects\resoar-api\Resoar\Core\Application.Interfaces\obj\Debug\net6.0\Application.Interfaces.csproj.AssemblyReference.cache
+D:\projects\resoar-api\Resoar\Core\Application.Interfaces\obj\Debug\net6.0\Application.Interfaces.GeneratedMSBuildEditorConfig.editorconfig
+D:\projects\resoar-api\Resoar\Core\Application.Interfaces\obj\Debug\net6.0\Application.Interfaces.AssemblyInfoInputs.cache
+D:\projects\resoar-api\Resoar\Core\Application.Interfaces\obj\Debug\net6.0\Application.Interfaces.AssemblyInfo.cs
+D:\projects\resoar-api\Resoar\Core\Application.Interfaces\obj\Debug\net6.0\Application.Interfaces.csproj.CoreCompileInputs.cache
+D:\projects\resoar-api\Resoar\Core\Application.Interfaces\obj\Debug\net6.0\Application.Interfaces.csproj.CopyComplete
+D:\projects\resoar-api\Resoar\Core\Application.Interfaces\obj\Debug\net6.0\Application.Interfaces.dll
+D:\projects\resoar-api\Resoar\Core\Application.Interfaces\obj\Debug\net6.0\refint\Application.Interfaces.dll
+D:\projects\resoar-api\Resoar\Core\Application.Interfaces\obj\Debug\net6.0\Application.Interfaces.pdb
+D:\projects\resoar-api\Resoar\Core\Application.Interfaces\obj\Debug\net6.0\ref\Application.Interfaces.dll
