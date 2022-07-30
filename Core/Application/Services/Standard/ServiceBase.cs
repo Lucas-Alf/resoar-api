@@ -6,56 +6,56 @@ namespace Application.Services.Standard
 {
     public class ServiceBase<TEntity> : IServiceBase<TEntity> where TEntity : class, IIdentityEntity
     {
-        protected readonly IRepositoryAsync<TEntity> repository;
+        protected readonly IRepositoryBase<TEntity> repository;
 
-        public ServiceBase(IRepositoryAsync<TEntity> repository)
+        public ServiceBase(IRepositoryBase<TEntity> repository)
         {
             this.repository = repository;
         }
 
-        public virtual async Task<TEntity> AddAsync(TEntity obj)
+        public virtual TEntity Add(TEntity obj)
         {
-            return await repository.AddAsync(obj);
+            return repository.Add(obj);
         }
 
-        public virtual async Task AddRangeAsync(IEnumerable<TEntity> entities)
+        public virtual int AddRange(IEnumerable<TEntity> entities)
         {
-            await repository.AddRangeAsync(entities);
+            return repository.AddRange(entities);
         }
 
-        public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
+        public virtual IEnumerable<TEntity> GetAll()
         {
-            return await repository.GetAllAsync();
+            return repository.GetAll();
         }
 
-        public virtual async Task<TEntity> GetByIdAsync(object id)
+        public virtual TEntity GetById(object id)
         {
-            return await repository.GetByIdAsync(id);
+            return repository.GetById(id);
         }
 
-        public virtual async Task<bool> RemoveAsync(object id)
+        public virtual bool Remove(object id)
         {
-            return await repository.RemoveAsync(id);
+            return repository.Remove(id);
         }
 
-        public virtual async Task RemoveAsync(TEntity obj)
+        public virtual int Remove(TEntity obj)
         {
-            await repository.RemoveAsync(obj);
+            return repository.Remove(obj);
         }
 
-        public virtual async Task RemoveRangeAsync(IEnumerable<TEntity> entities)
+        public virtual int RemoveRange(IEnumerable<TEntity> entities)
         {
-            await repository.RemoveRangeAsync(entities);
+            return repository.RemoveRange(entities);
         }
 
-        public virtual async Task UpdateAsync(TEntity obj)
+        public virtual bool Update(TEntity obj)
         {
-            await repository.UpdateAsync(obj);
+            return repository.Update(obj);
         }
 
-        public virtual async Task UpdateRangeAsync(IEnumerable<TEntity> entities)
+        public virtual int UpdateRange(IEnumerable<TEntity> entities)
         {
-            await repository.UpdateRangeAsync(entities);
+            return repository.UpdateRange(entities);
         }
     }
 }

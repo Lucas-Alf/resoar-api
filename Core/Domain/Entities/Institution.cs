@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Entities
 {
-    [Index(nameof(Email), IsUnique = true)]
-    public class User : IIdentityEntity
+    [Index(nameof(Name), IsUnique = true)]
+    public class Institution : IIdentityEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -14,14 +14,6 @@ namespace Domain.Entities
         [Required]
         [MaxLength(255)]
         public string? Name { get; set; }
-
-        [Required]
-        [MaxLength(255)]
-        public string? Email { get; set; }
-
-        [Required]
-        [MaxLength(60)]
-        public string? Password { get; set; }
 
         [MaxLength(255)]
         public string? ImagePath { get; set; }

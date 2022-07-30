@@ -3,7 +3,7 @@ using Infrastructure.Interfaces.Repositories.Standard;
 
 namespace Infrastructure.Interfaces.Repositories.Domain.Standard
 {
-    public interface IDomainRepository<TEntity> : IRepositoryBase<TEntity> where TEntity : class, IIdentityEntity
+    public interface IDomainRepositoryAsync<TEntity> : IRepositoryBaseAsync<TEntity> where TEntity : class, IIdentityEntity
     {
     }
 }

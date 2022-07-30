@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories.Standard.EFCore
 {
-    public class DomainRepository<TEntity> : RepositoryAsync<TEntity>, IDomainRepository<TEntity> where TEntity : class, IIdentityEntity
+    public class DomainRepository<TEntity> : RepositoryBase<TEntity>, IDomainRepository<TEntity> where TEntity : class, IIdentityEntity
     {
         protected DomainRepository(DbContext dbContext) : base(dbContext)
         {

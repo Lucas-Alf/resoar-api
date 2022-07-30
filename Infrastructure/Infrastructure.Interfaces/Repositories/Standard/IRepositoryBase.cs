@@ -1,6 +1,8 @@
-﻿namespace Application.Interfaces.Services.Standard
+﻿using Domain.Entities;
+
+namespace Infrastructure.Interfaces.Repositories.Standard
 {
-    public interface IServiceBase<TEntity> where TEntity : class
+    public interface IRepositoryBase<TEntity> : IDisposable where TEntity : class, IIdentityEntity
     {
         TEntity Add(TEntity obj);
         int AddRange(IEnumerable<TEntity> entities);

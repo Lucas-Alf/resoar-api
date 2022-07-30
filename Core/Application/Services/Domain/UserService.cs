@@ -13,15 +13,5 @@ namespace Application.Services.Domain
         {
             _repository = repository;
         }
-
-        public async Task<IEnumerable<User>> GetAllIncludingTasksAsync()
-        {
-            return await _repository.GetAllIncludingTasksAsync();
-        }
-
-        public async Task<User> GetByIdIncludingTasksAsync(int id)
-        {
-            return await _repository.GetByIdIncludingTasksAsync(id);
-        }
     }
 }

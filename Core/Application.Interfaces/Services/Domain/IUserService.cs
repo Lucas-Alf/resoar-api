@@ -5,7 +5,5 @@ namespace Application.Interfaces.Services.Domain
 {
     public interface IUserService : IServiceBase<User>
     {
-        Task<IEnumerable<User>> GetAllIncludingTasksAsync();
-        Task<User> GetByIdIncludingTasksAsync(int id);
     }
 }

@@ -6,13 +6,13 @@ using System.Linq.Expressions;
 
 namespace Infrastructure.Repositories.Standard.EFCore
 {
-    public class RepositoryAsync<TEntity> : SpecificMethods<TEntity>, IRepositoryAsync<TEntity> where TEntity : class, IIdentityEntity
+    public class RepositoryBase<TEntity> : SpecificMethods<TEntity>, IRepositoryBase<TEntity> where TEntity : class, IIdentityEntity
     {
 
         protected readonly DbContext dbContext;
         protected readonly DbSet<TEntity> dbSet;
 
-        protected RepositoryAsync(DbContext dbContext)
+        protected RepositoryBase(DbContext dbContext)
         {
             this.dbContext = dbContext;
             this.dbSet = this.dbContext.Set<TEntity>();
@@ -24,71 +24,71 @@ namespace Infrastructure.Repositories.Standard.EFCore
             GC.SuppressFinalize(this);
         }
 
-        public virtual async Task<TEntity> AddAsync(TEntity obj)
+        public virtual TEntity Add(TEntity obj)
         {
-            var r = await dbSet.AddAsync(obj);
-            await CommitAsync();
+            var r = dbSet.Add(obj);
+            Commit();
             return r.Entity;
         }
 
-        public virtual async Task<int> AddRangeAsync(IEnumerable<TEntity> entities)
+        public virtual int AddRange(IEnumerable<TEntity> entities)
         {
-            await dbSet.AddRangeAsync(entities);
-            return await CommitAsync();
+            dbSet.AddRange(entities);
+            return Commit();
         }
 
-        public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
+        public virtual IEnumerable<TEntity> GetAll()
         {
-            return await Task.FromResult(dbSet);
+            return dbSet;
         }
 
-        public virtual async Task<TEntity> GetByIdAsync(object id)
+        public virtual TEntity GetById(object id)
         {
-            return await dbSet.FindAsync(id);
+            return dbSet.Find(id);
         }
 
-        public virtual async Task<bool> RemoveAsync(object id)
+        public virtual bool Remove(object id)
         {
-            TEntity entity = await GetByIdAsync(id);
+            TEntity entity = GetById(id);
 
             if (entity == null) return false;
 
-            return await RemoveAsync(entity) > 0 ? true : false;
+            return Remove(entity) > 0 ? true : false;
         }
 
-        public virtual async Task<int> RemoveAsync(TEntity obj)
+        public virtual int Remove(TEntity obj)
         {
             dbSet.Remove(obj);
-            return await CommitAsync();
+            return Commit();
         }
 
-        public virtual async Task<int> RemoveRangeAsync(IEnumerable<TEntity> entities)
+        public virtual int RemoveRange(IEnumerable<TEntity> entities)
         {
             dbSet.RemoveRange(entities);
-            return await CommitAsync();
+            return Commit();
         }
 
-        public virtual async Task<int> UpdateAsync(TEntity obj)
+        public virtual bool Update(TEntity obj)
         {
-            var avoidingAttachedEntity = await GetByIdAsync(obj.Id);
+            var avoidingAttachedEntity = GetById(obj.Id);
             dbContext.Entry(avoidingAttachedEntity).State = EntityState.Detached;
 
             var entry = dbContext.Entry(obj);
             if (entry.State == EntityState.Detached) dbContext.Attach(obj);
 
             dbContext.Entry(obj).State = EntityState.Modified;
-            return await CommitAsync();
+            return Commit() > 0 ? true : false;
         }
 
-        public virtual async Task<int> UpdateRangeAsync(IEnumerable<TEntity> entities)
+        public virtual int UpdateRange(IEnumerable<TEntity> entities)
         {
             dbSet.UpdateRange(entities);
-            return await CommitAsync();
+            return Commit();
         }
 
-        private async Task<int> CommitAsync()
+        private int Commit()
         {
-            return await dbContext.SaveChangesAsync();
+            return dbContext.SaveChanges();
         }
 
         #region ProtectedMethods

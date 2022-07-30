@@ -39,86 +39,86 @@ namespace UnitTest.Integration.Repositories.Repositories.EntityFramework
         }
 
         [Test]
-        public async Task AddAsync()
+        public void Add()
         {
-            var result = await userEntityFramework.AddAsync(builder.CreateUser());
+            var result = userEntityFramework.Add(builder.CreateUser());
             Assert.Greater(result.Id, 0);
         }
 
         [Test]
-        public async Task AddRangeAsync()
+        public void AddRange()
         {
-            var result = await userEntityFramework.AddRangeAsync(builder.CreateUserList(3));
+            var result = userEntityFramework.AddRange(builder.CreateUserList(3));
             Assert.AreEqual(3, result);
         }
 
         [Test]
-        public async Task RemoveAsync()
+        public void Remove()
         {
-            var inserted = await userEntityFramework.AddAsync(builder.CreateUser());
-            var result = await userEntityFramework.RemoveAsync(inserted.Id);
+            var inserted = userEntityFramework.Add(builder.CreateUser());
+            var result = userEntityFramework.Remove(inserted.Id);
             Assert.AreEqual(true, result);
         }
 
         [Test]
-        public async Task RemoveAsyncObj()
+        public void RemoveObj()
         {
-            var inserted = await userEntityFramework.AddAsync(builder.CreateUser());
-            var result = await userEntityFramework.RemoveAsync(inserted);
+            var inserted = userEntityFramework.Add(builder.CreateUser());
+            var result = userEntityFramework.Remove(inserted);
             Assert.AreEqual(1, result);
         }
 
         [Test]
-        public async Task RemoveRangeAsync()
+        public void RemoveRange()
         {
-            var inserted1 = await userEntityFramework.AddAsync(builder.CreateUser());
-            var inserted2 = await userEntityFramework.AddAsync(builder.CreateUser());
+            var inserted1 = userEntityFramework.Add(builder.CreateUser());
+            var inserted2 = userEntityFramework.Add(builder.CreateUser());
             var usersRange = new List<User>()
             {
                 inserted1, inserted2
             };
-            var result = await userEntityFramework.RemoveRangeAsync(usersRange);
+            var result = userEntityFramework.RemoveRange(usersRange);
             Assert.AreEqual(2, result);
         }
 
         [Test]
-        public async Task UpdateAsync()
+        public void Update()
         {
-            var inserted = await userEntityFramework.AddAsync(builder.CreateUser());
+            var inserted = userEntityFramework.Add(builder.CreateUser());
             inserted.Name = "Update";
-            var result = await userEntityFramework.UpdateAsync(inserted);
+            var result = userEntityFramework.Update(inserted);
             Assert.AreEqual(1, result);
         }
 
         [Test]
-        public async Task UpdateRangeAsync()
+        public void UpdateRange()
         {
-            var inserted1 = await userEntityFramework.AddAsync(builder.CreateUser());
-            var inserted2 = await userEntityFramework.AddAsync(builder.CreateUser());
+            var inserted1 = userEntityFramework.Add(builder.CreateUser());
+            var inserted2 = userEntityFramework.Add(builder.CreateUser());
             inserted1.Name = "Update1";
             inserted2.Name = "Update2";
             var usersRange = new List<User>()
             {
                 inserted1, inserted2
             };
-            var result = await userEntityFramework.UpdateRangeAsync(usersRange);
+            var result = userEntityFramework.UpdateRange(usersRange);
             Assert.AreEqual(2, result);
         }
 
         [Test]
-        public async Task GetByIdAsync()
+        public void GetById()
         {
-            var user = await userEntityFramework.AddAsync(builder.CreateUser());
-            var result = await userEntityFramework.GetByIdAsync(user.Id);
+            var user = userEntityFramework.Add(builder.CreateUser());
+            var result = userEntityFramework.GetById(user.Id);
             Assert.AreEqual(result.Id, user.Id);
         }
 
         [Test]
-        public async Task GetAllAsync()
+        public void GetAll()
         {
-            var user1 = await userEntityFramework.AddAsync(builder.CreateUser());
-            var user2 = await userEntityFramework.AddAsync(builder.CreateUser());
-            var result = await userEntityFramework.GetAllAsync();
+            var user1 = userEntityFramework.Add(builder.CreateUser());
+            var user2 = userEntityFramework.Add(builder.CreateUser());
+            var result = userEntityFramework.GetAll();
             Assert.AreEqual(result.OrderBy(u => u.Id).FirstOrDefault().Id, user1.Id);
             Assert.AreEqual(result.OrderBy(u => u.Id).LastOrDefault().Id, user2.Id);
         }

@@ -11,13 +11,13 @@ namespace Infrastructure.IoC
 {
     public class EntityFrameworkIoC : OrmTypes
     {
-        internal override IServiceCollection AddOrm(IServiceCollection services, IConfiguration configuration = null)
+        internal override IServiceCollection AddOrm(IServiceCollection services, IConfiguration? configuration = null)
         {
             IConfiguration dbConnectionSettings = ResolveConfiguration.GetConnectionSettings(configuration);
             string conn = dbConnectionSettings.GetConnectionString("Resoar");
             services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(conn));
 
-            services.AddScoped(typeof(IRepositoryAsync<>), typeof(RepositoryAsync<>));
+            services.AddScoped(typeof(IRepositoryBaseAsync<>), typeof(RepositoryBaseAsync<>));
             services.AddScoped<IUserRepository, UserRepository>();
 
             return services;

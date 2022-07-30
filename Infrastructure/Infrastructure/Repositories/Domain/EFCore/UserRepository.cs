@@ -11,17 +11,5 @@ namespace Infrastructure.Repositories.Domain.EFCore
         {
 
         }
-
-        public async Task<IEnumerable<User>> GetAllIncludingTasksAsync()
-        {
-            IQueryable<User> query = await Task.FromResult(GenerateQuery(filter: null, orderBy: null));
-            return query.AsEnumerable();
-        }
-
-        public async Task<User> GetByIdIncludingTasksAsync(int id)
-        {
-            IQueryable<User> query = await Task.FromResult(GenerateQuery(filter: (user => user.Id == id), orderBy: null));
-            return query.SingleOrDefault();
-        }
     }
 }

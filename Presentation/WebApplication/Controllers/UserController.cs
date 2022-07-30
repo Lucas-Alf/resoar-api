@@ -15,16 +15,34 @@ namespace WebApplication.Controllers
             _userService = userService;
         }
 
-        [HttpPost]
-        public async void Create(User user)
+        [HttpGet]
+        public IEnumerable<User> GetAll()
         {
-            await _userService.AddAsync(user);
+            return _userService.GetAll();
         }
 
-        [HttpGet]
-        public async Task<IEnumerable<User>> Get()
+        [HttpGet("id")]
+        public User GetById(int id)
         {
-            return await _userService.GetAllAsync();
+            return _userService.GetById(id);
+        }
+
+        [HttpPost]
+        public User Create(User user)
+        {
+            return _userService.Add(user);
+        }
+
+        [HttpPut]
+        public bool Update(User user)
+        {
+            return _userService.Update(user);
+        }
+
+        [HttpDelete]
+        public bool Delete(int id)
+        {
+            return _userService.Remove(id);
         }
     }
 }
