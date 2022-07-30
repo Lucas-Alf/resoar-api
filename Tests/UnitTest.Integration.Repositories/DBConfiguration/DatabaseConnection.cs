@@ -9,11 +9,15 @@ namespace UnitTest.Integration.Repositories.DBConfiguration
         {
             get
             {
-                IConfigurationRoot Configuration = new ConfigurationBuilder()
+                IConfigurationRoot configuration = new ConfigurationBuilder()
                     .SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("appsettings.test.json")
+                    .AddEnvironmentVariables()
                     .Build();
-                return Options.Create(Configuration.GetSection("ConnectionStrings").Get<DataOptionFactory>());
+
+                var connectionString = configuration.GetConnectionString("ResoarTests");
+
+                return Options.Create(new DataOptionFactory { DefaultConnection = connectionString });
             }
         }
     }
