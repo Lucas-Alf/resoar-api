@@ -3,7 +3,6 @@ using Application.Services.Standard;
 using Domain.Entities;
 using Domain.Models;
 using Infrastructure.Interfaces.Repositories.Domain;
-
 namespace Application.Services.Domain
 {
     public class UserService : ServiceBase<User>, IUserService
@@ -26,11 +25,71 @@ namespace Application.Services.Domain
                     Id = x.Id,
                     Name = x.Name,
                     Email = x.Email,
-                    ImagePath = x.ImagePath
+                    Image = x.ImagePath
                 }
             );
 
             return data;
+        }
+
+        public ResultMessageModel Add(UserCreateModel model)
+        {
+            try
+            {
+                var emailExists = _repository.Query(x => x.Email == model.Email).Any();
+                if (emailExists)
+                    throw new Exception("Já existe um usuário cadastrado com este e-mail.");
+
+                if (String.IsNullOrEmpty(model.Password))
+                    throw new Exception("O campo senha é obrigatório.");
+
+                if (model.Password.Length < 6)
+                    throw new Exception("A senha deve ter no mínimo 6 caracteres.");
+
+                var domain = new User
+                {
+                    Name = model.Name,
+                    Email = model.Email,
+                    Password = BCrypt.Net.BCrypt.HashPassword(model.Password)
+                };
+
+                return base.Add(domain);
+            }
+            catch (Exception ex)
+            {
+                return new ResultMessageModel(ex);
+            }
+        }
+
+        public ResultMessageModel Update(UserUpdateModel model)
+        {
+            try
+            {
+                var domain = _repository.GetById(model.Id);
+                if (domain == null)
+                    throw new Exception("Usuário não encontrado.");
+
+                if (model.Email != domain.Email)
+                {
+                    var emailExists = _repository.Query(x => x.Email == model.Email && x.Id != model.Id).Any();
+                    if (emailExists)
+                        throw new Exception("Já existe um usuário cadastrado com este e-mail.");
+                }
+
+                // !TODO: implementar armazenamento de imagem de perfil
+                // if (model.ProfileImage != null)
+                // domain.ImagePath = 
+
+                domain.Id = model.Id;
+                domain.Name = model.Name;
+                domain.Email = model.Email;
+
+                return base.Update(domain);
+            }
+            catch (Exception ex)
+            {
+                return new ResultMessageModel(ex);
+            }
         }
     }
 }

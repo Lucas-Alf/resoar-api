@@ -7,5 +7,7 @@ namespace Application.Interfaces.Services.Domain
     public interface IUserService : IServiceBase<User>
     {
         PaginationModel<UserViewModel> GetPaged(int page, int pageSize);
+        ResultMessageModel Add(UserCreateModel model);
+        ResultMessageModel Update(UserUpdateModel model);
     }
 }

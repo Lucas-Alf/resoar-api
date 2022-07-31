@@ -1,8 +1,8 @@
-﻿using System.Linq.Expressions;
-using Application.Interfaces.Services.Standard;
+﻿using Application.Interfaces.Services.Standard;
 using Domain.Entities;
 using Domain.Models;
 using Infrastructure.Interfaces.Repositories.Standard;
+using System.Linq.Expressions;
 
 namespace Application.Services.Standard
 {
@@ -20,14 +20,41 @@ namespace Application.Services.Standard
             return repository.Query(filter);
         }
 
-        public virtual TEntity Add(TEntity obj)
+        public virtual ResultMessageModel Add(TEntity obj)
         {
-            return repository.Add(obj);
+            try
+            {
+                var validation = obj.GetValidationErrorMessages();
+                if (!String.IsNullOrEmpty(validation))
+                    throw new Exception(validation);
+
+                repository.Add(obj);
+                return new ResultMessageModel("Registro adicionado com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return new ResultMessageModel(ex);
+            }
         }
 
-        public virtual int AddRange(IEnumerable<TEntity> entities)
+        public virtual ResultMessageModel AddRange(IEnumerable<TEntity> entities)
         {
-            return repository.AddRange(entities);
+            try
+            {
+                foreach (var obj in entities)
+                {
+                    var validation = obj.GetValidationErrorMessages();
+                    if (!String.IsNullOrEmpty(validation))
+                        throw new Exception(validation);
+                }
+
+                repository.AddRange(entities);
+                return new ResultMessageModel("Registros adicionados com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return new ResultMessageModel(ex);
+            }
         }
 
         public virtual IEnumerable<TEntity> GetAll(Expression<Func<TEntity, bool>>? filter = null)
@@ -45,44 +72,134 @@ namespace Application.Services.Standard
             return repository.GetPagedAnonymous(page, pageSize, selector, orderBy, filter);
         }
 
-        public virtual TEntity GetById(object id)
+        public virtual TEntity GetById(int id)
         {
             return repository.GetById(id);
         }
 
-        public virtual bool Remove(object id)
+        public virtual ResultMessageModel Remove(int id)
         {
-            return repository.Remove(id);
+            try
+            {
+                var exits = repository.Query(x => x.Id == id).Any();
+                if (!exits)
+                    throw new Exception("Registro não encontrado.");
+
+                repository.Remove(id);
+                return new ResultMessageModel("Registro removido com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return new ResultMessageModel(ex);
+            }
         }
 
-        public virtual int Remove(TEntity obj)
+        public virtual ResultMessageModel Remove(TEntity obj)
         {
-            return repository.Remove(obj);
+            try
+            {
+                var exits = repository.Query(x => x.Id == obj.Id).Any();
+                if (!exits)
+                    throw new Exception("Registro não encontrado.");
+
+                repository.Remove(obj);
+                return new ResultMessageModel("Registro removido com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return new ResultMessageModel(ex);
+            }
         }
 
-        public virtual int RemoveRange(IEnumerable<TEntity> entities)
+        public virtual ResultMessageModel RemoveRange(IEnumerable<TEntity> entities)
         {
-            return repository.RemoveRange(entities);
+            try
+            {
+                repository.RemoveRange(entities);
+                return new ResultMessageModel("Registros removidos com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return new ResultMessageModel(ex);
+            }
         }
 
-        public virtual bool Update(TEntity obj)
+        public virtual ResultMessageModel Update(TEntity obj)
         {
-            return repository.Update(obj);
+            try
+            {
+                var exits = repository.Query(x => x.Id == obj.Id).Any();
+                if (!exits)
+                    throw new Exception("Registro não encontrado.");
+
+                var validation = obj.GetValidationErrorMessages();
+                if (!String.IsNullOrEmpty(validation))
+                    throw new Exception(validation);
+
+                repository.Update(obj);
+                return new ResultMessageModel("Registro atualizado com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return new ResultMessageModel(ex);
+            }
         }
 
-        public virtual int UpdateRange(IEnumerable<TEntity> entities)
+        public virtual ResultMessageModel UpdateRange(IEnumerable<TEntity> entities)
         {
-            return repository.UpdateRange(entities);
+            try
+            {
+                foreach (var obj in entities)
+                {
+                    var validation = obj.GetValidationErrorMessages();
+                    if (!String.IsNullOrEmpty(validation))
+                        throw new Exception(validation);
+                }
+
+                repository.UpdateRange(entities);
+                return new ResultMessageModel("Registros atualizados com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return new ResultMessageModel(ex);
+            }
         }
 
-        public virtual async Task<TEntity> AddAsync(TEntity obj)
+        public virtual async Task<ResultMessageModel> AddAsync(TEntity obj)
         {
-            return await repository.AddAsync(obj);
+            try
+            {
+                var validation = obj.GetValidationErrorMessages();
+                if (!String.IsNullOrEmpty(validation))
+                    throw new Exception(validation);
+
+                await repository.AddAsync(obj);
+                return new ResultMessageModel("Registro adicionado com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return new ResultMessageModel(ex);
+            }
         }
 
-        public virtual async Task AddRangeAsync(IEnumerable<TEntity> entities)
+        public virtual async Task<ResultMessageModel> AddRangeAsync(IEnumerable<TEntity> entities)
         {
-            await repository.AddRangeAsync(entities);
+            try
+            {
+                foreach (var obj in entities)
+                {
+                    var validation = obj.GetValidationErrorMessages();
+                    if (!String.IsNullOrEmpty(validation))
+                        throw new Exception(validation);
+                }
+
+                await repository.AddRangeAsync(entities);
+                return new ResultMessageModel("Registros adicionados com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return new ResultMessageModel(ex);
+            }
         }
 
         public virtual async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? filter = null)
@@ -100,34 +217,97 @@ namespace Application.Services.Standard
             return await repository.GetPagedAnonymousAsync(page, pageSize, selector, orderBy, filter);
         }
 
-        public virtual async Task<TEntity> GetByIdAsync(object id)
+        public virtual async Task<TEntity> GetByIdAsync(int id)
         {
             return await repository.GetByIdAsync(id);
         }
 
-        public virtual async Task<bool> RemoveAsync(object id)
+        public virtual async Task<ResultMessageModel> RemoveAsync(int id)
         {
-            return await repository.RemoveAsync(id);
+            try
+            {
+                var exits = repository.Query(x => x.Id == id).Any();
+                if (!exits)
+                    throw new Exception("Registro não encontrado.");
+
+                await repository.RemoveAsync(id);
+                return new ResultMessageModel("Registro removido com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return new ResultMessageModel(ex);
+            }
         }
 
-        public virtual async Task RemoveAsync(TEntity obj)
+        public virtual async Task<ResultMessageModel> RemoveAsync(TEntity obj)
         {
-            await repository.RemoveAsync(obj);
+            try
+            {
+                var exits = repository.Query(x => x.Id == obj.Id).Any();
+                if (!exits)
+                    throw new Exception("Registro não encontrado.");
+
+                await repository.RemoveAsync(obj);
+                return new ResultMessageModel("Registro removido com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return new ResultMessageModel(ex);
+            }
         }
 
-        public virtual async Task RemoveRangeAsync(IEnumerable<TEntity> entities)
+        public virtual async Task<ResultMessageModel> RemoveRangeAsync(IEnumerable<TEntity> entities)
         {
-            await repository.RemoveRangeAsync(entities);
+            try
+            {
+                await repository.RemoveRangeAsync(entities);
+                return new ResultMessageModel("Registros removidos com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return new ResultMessageModel(ex);
+            }
         }
 
-        public virtual async Task<bool> UpdateAsync(TEntity obj)
+        public virtual async Task<ResultMessageModel> UpdateAsync(TEntity obj)
         {
-            return await repository.UpdateAsync(obj);
+            try
+            {
+                var exits = repository.Query(x => x.Id == obj.Id).Any();
+                if (!exits)
+                    throw new Exception("Registro não encontrado.");
+
+                var validation = obj.GetValidationErrorMessages();
+                if (!String.IsNullOrEmpty(validation))
+                    throw new Exception(validation);
+
+                await repository.UpdateAsync(obj);
+                return new ResultMessageModel("Registro atualizado com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return new ResultMessageModel(ex);
+            }
         }
 
-        public virtual async Task UpdateRangeAsync(IEnumerable<TEntity> entities)
+        public virtual async Task<ResultMessageModel> UpdateRangeAsync(IEnumerable<TEntity> entities)
         {
-            await repository.UpdateRangeAsync(entities);
+            try
+            {
+                foreach (var obj in entities)
+                {
+                    var validation = obj.GetValidationErrorMessages();
+                    if (!String.IsNullOrEmpty(validation))
+                        throw new Exception(validation);
+                }
+
+                await repository.UpdateRangeAsync(entities);
+                return new ResultMessageModel("Registros atualizados com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                return new ResultMessageModel(ex);
+            }
         }
     }
 }

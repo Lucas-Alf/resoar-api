@@ -29,19 +29,19 @@ namespace WebApplication.Controllers
         }
 
         [HttpPost]
-        public User Create(User user)
+        public ResultMessageModel Create(UserCreateModel user)
         {
             return _userService.Add(user);
         }
 
         [HttpPut]
-        public bool Update(User user)
+        public ResultMessageModel Update(UserUpdateModel user)
         {
             return _userService.Update(user);
         }
 
         [HttpDelete]
-        public bool Delete(int id)
+        public ResultMessageModel Delete(int id)
         {
             return _userService.Remove(id);
         }
