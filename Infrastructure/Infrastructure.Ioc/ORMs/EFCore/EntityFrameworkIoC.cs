@@ -17,7 +17,7 @@ namespace Infrastructure.IoC
             string conn = dbConnectionSettings.GetConnectionString("Resoar");
             services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(conn));
 
-            services.AddScoped(typeof(IRepositoryBaseAsync<>), typeof(RepositoryBaseAsync<>));
+            services.AddScoped(typeof(IRepositoryBase<>), typeof(RepositoryBase<>));
             services.AddScoped<IUserRepository, UserRepository>();
 
             return services;
