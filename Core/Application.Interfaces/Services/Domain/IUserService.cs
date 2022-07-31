@@ -6,6 +6,6 @@ namespace Application.Interfaces.Services.Domain
 {
     public interface IUserService : IServiceBase<User>
     {
-        PaginationModel<object> GetPaged(int page, int pageSize);
+        PaginationModel<UserViewModel> GetPaged(int page, int pageSize);
     }
 }

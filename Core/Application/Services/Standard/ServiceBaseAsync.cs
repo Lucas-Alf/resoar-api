@@ -40,7 +40,7 @@ namespace Application.Services.Standard
             return await repository.GetPagedAsync(page, pageSize, orderBy, filter);
         }
 
-        public virtual async Task<PaginationModel<object>> GetPagedAnonymousAsync(int page, int pageSize, Expression<Func<TEntity, object>> selector, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null)
+        public virtual async Task<PaginationModel<T>> GetPagedAnonymousAsync<T>(int page, int pageSize, Expression<Func<TEntity, T>> selector, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null)
         {
             return await repository.GetPagedAnonymousAsync(page, pageSize, selector, orderBy, filter);
         }

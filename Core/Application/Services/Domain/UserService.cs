@@ -15,9 +15,9 @@ namespace Application.Services.Domain
             _repository = repository;
         }
 
-        public PaginationModel<object> GetPaged(int page, int pageSize)
+        public PaginationModel<UserViewModel> GetPaged(int page, int pageSize)
         {
-            var data = _repository.GetPagedAnonymous(
+            var data = _repository.GetPagedAnonymous<UserViewModel>(
                 page: page,
                 pageSize: pageSize,
                 orderBy: x => x.Name,

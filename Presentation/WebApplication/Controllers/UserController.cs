@@ -17,7 +17,7 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet]
-        public PaginationModel<object> GetPaged(int page, int pageSize)
+        public PaginationModel<UserViewModel> GetPaged(int page, int pageSize)
         {
             return _userService.GetPaged(page, pageSize);
         }

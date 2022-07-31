@@ -40,7 +40,7 @@ namespace Application.Services.Standard
             return repository.GetPaged(page, pageSize, orderBy, filter);
         }
 
-        public virtual PaginationModel<object> GetPagedAnonymous(int page, int pageSize, Expression<Func<TEntity, object>> selector, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null)
+        public virtual PaginationModel<T> GetPagedAnonymous<T>(int page, int pageSize, Expression<Func<TEntity, T>> selector, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null)
         {
             return repository.GetPagedAnonymous(page, pageSize, selector, orderBy, filter);
         }

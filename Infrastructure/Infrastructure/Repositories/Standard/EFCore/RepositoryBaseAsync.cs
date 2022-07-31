@@ -88,7 +88,7 @@ namespace Infrastructure.Repositories.Standard.EFCore
             });
         }
 
-        public virtual async Task<PaginationModel<object>> GetPagedAnonymousAsync(int page, int pageSize, Expression<Func<TEntity, object>> selector, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null)
+        public virtual async Task<PaginationModel<T>> GetPagedAnonymousAsync<T>(int page, int pageSize, Expression<Func<TEntity, T>> selector, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null)
         {
             if (page == 0)
                 page = 1;
@@ -114,7 +114,7 @@ namespace Infrastructure.Repositories.Standard.EFCore
                 .Select(selector)
                 .ToList();
 
-            return await Task.FromResult(new PaginationModel<object>
+            return await Task.FromResult(new PaginationModel<T>
             {
                 Page = page,
                 PageSize = pageSize,

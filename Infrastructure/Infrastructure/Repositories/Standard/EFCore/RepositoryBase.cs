@@ -88,9 +88,8 @@ namespace Infrastructure.Repositories.Standard.EFCore
             };
         }
 
-        public PaginationModel<object> GetPagedAnonymous(int page, int pageSize, Expression<Func<TEntity, object>> selector, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null)
+        public PaginationModel<T> GetPagedAnonymous<T>(int page, int pageSize, Expression<Func<TEntity, T>> selector, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null)
         {
-
             if (page == 0)
                 page = 1;
 
@@ -114,7 +113,7 @@ namespace Infrastructure.Repositories.Standard.EFCore
                 .Take(pageSize)
                 .Select(selector);
 
-            return new PaginationModel<object>
+            return new PaginationModel<T>
             {
                 Page = page,
                 PageSize = pageSize,
