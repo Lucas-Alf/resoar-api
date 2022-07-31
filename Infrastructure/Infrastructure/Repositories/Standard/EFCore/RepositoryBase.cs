@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Models;
 using Infrastructure.Interfaces.Repositories.EFCore;
 using Infrastructure.Interfaces.Repositories.Standard;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,14 @@ namespace Infrastructure.Repositories.Standard.EFCore
             GC.SuppressFinalize(this);
         }
 
+        public virtual IQueryable<TEntity> Query(Expression<Func<TEntity, bool>>? filter = null)
+        {
+            if (filter == null)
+                return dbSet.AsQueryable();
+
+            return dbSet.Where(filter).AsQueryable();
+        }
+
         public virtual TEntity Add(TEntity obj)
         {
             var r = dbSet.Add(obj);
@@ -37,9 +46,81 @@ namespace Infrastructure.Repositories.Standard.EFCore
             return Commit();
         }
 
-        public virtual IEnumerable<TEntity> GetAll()
+        public virtual IEnumerable<TEntity> GetAll(Expression<Func<TEntity, bool>>? filter = null)
         {
-            return dbSet;
+            if (filter == null)
+                return dbSet;
+
+            return dbSet.Where(filter);
+        }
+
+        public PaginationModel<TEntity> GetPaged(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null)
+        {
+            if (page == 0)
+                page = 1;
+
+            if (pageSize == 0)
+                pageSize = 10;
+
+            var query = dbSet.AsQueryable();
+
+            if (filter != null)
+                query = query.Where(filter);
+
+            var total = query.Count();
+
+            if (orderBy != null)
+                query = query.OrderBy(orderBy);
+            else
+                query = query.OrderBy(x => x.Id);
+
+            var data = query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return new PaginationModel<TEntity>
+            {
+                Page = page,
+                PageSize = pageSize,
+                TotalRecords = total,
+                Records = data
+            };
+        }
+
+        public PaginationModel<object> GetPagedAnonymous(int page, int pageSize, Expression<Func<TEntity, object>> selector, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null)
+        {
+
+            if (page == 0)
+                page = 1;
+
+            if (pageSize == 0)
+                pageSize = 10;
+
+            var query = dbSet.AsQueryable();
+
+            if (filter != null)
+                query = query.Where(filter);
+
+            var total = query.Count();
+
+            if (orderBy != null)
+                query = query.OrderBy(orderBy);
+            else
+                query = query.OrderBy(x => x.Id);
+
+            var data = query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(selector);
+
+            return new PaginationModel<object>
+            {
+                Page = page,
+                PageSize = pageSize,
+                TotalRecords = total,
+                Records = data
+            };
         }
 
         public virtual TEntity GetById(object id)

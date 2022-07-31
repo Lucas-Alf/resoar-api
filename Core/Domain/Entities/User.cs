@@ -11,19 +11,20 @@ namespace Domain.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [Required]
-        [MaxLength(255)]
+        [Required(ErrorMessage = "O Campo Nome é obrigatório")]
+        [MaxLength(255, ErrorMessage = "O Campo Nome deve ter no máximo 255 caracteres")]
         public string? Name { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "O Campo Email é obrigatório")]
+        [EmailAddress(ErrorMessage = "O Campo Email não é válido")]
         [MaxLength(255)]
         public string? Email { get; set; }
 
-        [Required]
-        [MaxLength(60)]
+        [Required(ErrorMessage = "O Campo Senha é obrigatório")]
+        [MaxLength(60, ErrorMessage = "O Campo Senha deve ter no máximo 60 caracteres")]
         public string? Password { get; set; }
 
-        [MaxLength(255)]
+        [MaxLength(255, ErrorMessage = "O Campo Caminho da Imagem deve ter no máximo 255 caracteres")]
         public string? ImagePath { get; set; }
     }
 }

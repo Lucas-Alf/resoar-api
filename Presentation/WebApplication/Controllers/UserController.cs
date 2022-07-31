@@ -1,5 +1,6 @@
 using Application.Interfaces.Services.Domain;
 using Domain.Entities;
+using Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApplication.Controllers
@@ -16,9 +17,9 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<User> GetAll()
+        public PaginationModel<object> GetPaged(int page, int pageSize)
         {
-            return _userService.GetAll();
+            return _userService.GetPaged(page, pageSize);
         }
 
         [HttpGet("id")]

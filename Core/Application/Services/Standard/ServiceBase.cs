@@ -1,5 +1,7 @@
-﻿using Application.Interfaces.Services.Standard;
+﻿using System.Linq.Expressions;
+using Application.Interfaces.Services.Standard;
 using Domain.Entities;
+using Domain.Models;
 using Infrastructure.Interfaces.Repositories.Standard;
 
 namespace Application.Services.Standard
@@ -13,6 +15,11 @@ namespace Application.Services.Standard
             this.repository = repository;
         }
 
+        public virtual IQueryable<TEntity> Query(Expression<Func<TEntity, bool>>? filter = null)
+        {
+            return repository.Query(filter);
+        }
+
         public virtual TEntity Add(TEntity obj)
         {
             return repository.Add(obj);
@@ -23,9 +30,19 @@ namespace Application.Services.Standard
             return repository.AddRange(entities);
         }
 
-        public virtual IEnumerable<TEntity> GetAll()
+        public virtual IEnumerable<TEntity> GetAll(Expression<Func<TEntity, bool>>? filter = null)
         {
-            return repository.GetAll();
+            return repository.GetAll(filter);
+        }
+
+        public virtual PaginationModel<TEntity> GetPaged(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null)
+        {
+            return repository.GetPaged(page, pageSize, orderBy, filter);
+        }
+
+        public virtual PaginationModel<object> GetPagedAnonymous(int page, int pageSize, Expression<Func<TEntity, object>> selector, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null)
+        {
+            return repository.GetPagedAnonymous(page, pageSize, selector, orderBy, filter);
         }
 
         public virtual TEntity GetById(object id)

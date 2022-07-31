@@ -11,11 +11,11 @@ namespace Domain.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [Required]
-        [MaxLength(255)]
+        [Required(ErrorMessage = "O Campo Nome é obrigatório")]
+        [MaxLength(255, ErrorMessage = "O Campo Nome deve ter no máximo 255 caracteres")]
         public string? Name { get; set; }
 
-        [MaxLength(255)]
+        [MaxLength(255, ErrorMessage = "O Campo Caminho da Imagem deve ter no máximo 255 caracteres")]
         public string? ImagePath { get; set; }
     }
 }
