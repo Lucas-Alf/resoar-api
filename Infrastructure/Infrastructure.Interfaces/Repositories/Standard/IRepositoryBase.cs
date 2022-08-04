@@ -26,8 +26,8 @@ namespace Infrastructure.Interfaces.Repositories.Standard
         Task<PaginationModel<T>> GetPagedAnonymousAsync<T>(int page, int pageSize, Expression<Func<TEntity, T>> selector, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null);
         Task<PaginationModel<TEntity>> GetPagedAsync(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null);
         Task<TEntity> AddAsync(TEntity obj);
-        Task<TEntity> GetByIdAsync(object id);
+        Task<TEntity?> GetByIdAsync(object id);
         TEntity Add(TEntity obj);
-        TEntity GetById(object id);
+        TEntity? GetById(object id);
     }
 }

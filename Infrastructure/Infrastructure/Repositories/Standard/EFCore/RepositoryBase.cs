@@ -54,7 +54,7 @@ namespace Infrastructure.Repositories.Standard.EFCore
             return dbSet.Where(filter);
         }
 
-        private PaginationQuery<TEntity> PaginateQuery<T>(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null)
+        private PaginationQuery<TEntity> PaginateQuery(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null)
         {
             if (page == 0)
                 page = 1;
@@ -88,7 +88,7 @@ namespace Infrastructure.Repositories.Standard.EFCore
 
         public PaginationModel<TEntity> GetPaged(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null)
         {
-            var pagination = PaginateQuery<TEntity>(page, pageSize, orderBy, filter);
+            var pagination = PaginateQuery(page, pageSize, orderBy, filter);
             var data = pagination.Query.ToList();
 
             return new PaginationModel<TEntity>
@@ -102,7 +102,7 @@ namespace Infrastructure.Repositories.Standard.EFCore
 
         public PaginationModel<T> GetPagedAnonymous<T>(int page, int pageSize, Expression<Func<TEntity, T>> selector, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null)
         {
-            var pagination = PaginateQuery<TEntity>(page, pageSize, orderBy, filter);
+            var pagination = PaginateQuery(page, pageSize, orderBy, filter);
             var data = pagination.Query
                 .Select(selector)
                 .ToList();
@@ -116,18 +116,18 @@ namespace Infrastructure.Repositories.Standard.EFCore
             };
         }
 
-        public virtual TEntity GetById(object id)
+        public virtual TEntity? GetById(object id)
         {
             return dbSet.Find(id);
         }
 
         public virtual bool Remove(object id)
         {
-            TEntity entity = GetById(id);
+            TEntity? entity = GetById(id);
 
             if (entity == null) return false;
 
-            return Remove(entity) > 0 ? true : false;
+            return Remove(entity) > 0;
         }
 
         public virtual int Remove(TEntity obj)
@@ -145,13 +145,16 @@ namespace Infrastructure.Repositories.Standard.EFCore
         public virtual bool Update(TEntity obj)
         {
             var avoidingAttachedEntity = GetById(obj.Id);
+
+            if (avoidingAttachedEntity == null) return false;
+
             dbContext.Entry(avoidingAttachedEntity).State = EntityState.Detached;
 
             var entry = dbContext.Entry(obj);
             if (entry.State == EntityState.Detached) dbContext.Attach(obj);
 
             dbContext.Entry(obj).State = EntityState.Modified;
-            return Commit() > 0 ? true : false;
+            return Commit() > 0;
         }
 
         public virtual int UpdateRange(IEnumerable<TEntity> entities)
@@ -188,7 +191,7 @@ namespace Infrastructure.Repositories.Standard.EFCore
 
         public virtual async Task<PaginationModel<TEntity>> GetPagedAsync(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null)
         {
-            var pagination = PaginateQuery<TEntity>(page, pageSize, orderBy, filter);
+            var pagination = PaginateQuery(page, pageSize, orderBy, filter);
             var data = pagination.Query.ToList();
 
             return await Task.FromResult(new PaginationModel<TEntity>
@@ -202,7 +205,7 @@ namespace Infrastructure.Repositories.Standard.EFCore
 
         public virtual async Task<PaginationModel<T>> GetPagedAnonymousAsync<T>(int page, int pageSize, Expression<Func<TEntity, T>> selector, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null)
         {
-            var pagination = PaginateQuery<TEntity>(page, pageSize, orderBy, filter);
+            var pagination = PaginateQuery(page, pageSize, orderBy, filter);
             var data = pagination.Query
                 .Select(selector)
                 .ToList();
@@ -216,19 +219,18 @@ namespace Infrastructure.Repositories.Standard.EFCore
             });
         }
 
-
-        public virtual async Task<TEntity> GetByIdAsync(object id)
+        public virtual async Task<TEntity?> GetByIdAsync(object id)
         {
             return await dbSet.FindAsync(id);
         }
 
         public virtual async Task<bool> RemoveAsync(object id)
         {
-            TEntity entity = await GetByIdAsync(id);
+            TEntity? entity = await GetByIdAsync(id);
 
             if (entity == null) return false;
 
-            return await RemoveAsync(entity) > 0 ? true : false;
+            return await RemoveAsync(entity) > 0;
         }
 
         public virtual async Task<int> RemoveAsync(TEntity obj)
@@ -246,13 +248,16 @@ namespace Infrastructure.Repositories.Standard.EFCore
         public virtual async Task<bool> UpdateAsync(TEntity obj)
         {
             var avoidingAttachedEntity = await GetByIdAsync(obj.Id);
+
+            if (avoidingAttachedEntity == null) return false;
+
             dbContext.Entry(avoidingAttachedEntity).State = EntityState.Detached;
 
             var entry = dbContext.Entry(obj);
             if (entry.State == EntityState.Detached) dbContext.Attach(obj);
 
             dbContext.Entry(obj).State = EntityState.Modified;
-            return await CommitAsync() > 0 ? true : false;
+            return await CommitAsync() > 0;
         }
 
         public virtual async Task<int> UpdateRangeAsync(IEnumerable<TEntity> entities)
@@ -268,8 +273,8 @@ namespace Infrastructure.Repositories.Standard.EFCore
 
         #region ProtectedMethods
 
-        protected override IQueryable<TEntity> GenerateQuery(Expression<Func<TEntity, bool>> filter = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+        protected override IQueryable<TEntity> GenerateQuery(Expression<Func<TEntity, bool>>? filter = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
             params string[] includeProperties)
         {
             IQueryable<TEntity> query = dbSet;
@@ -282,7 +287,7 @@ namespace Infrastructure.Repositories.Standard.EFCore
             return query;
         }
         private IQueryable<TEntity> GenerateQueryableWhereExpression(IQueryable<TEntity> query,
-            Expression<Func<TEntity, bool>> filter)
+            Expression<Func<TEntity, bool>>? filter)
         {
             if (filter != null)
                 return query.Where(filter);
