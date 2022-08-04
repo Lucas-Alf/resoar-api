@@ -54,7 +54,7 @@ namespace Infrastructure.Repositories.Standard.EFCore
             return dbSet.Where(filter);
         }
 
-        public PaginationModel<TEntity> GetPaged(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null)
+        private PaginationQuery<TEntity> PaginateQuery<T>(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null)
         {
             if (page == 0)
                 page = 1;
@@ -74,50 +74,44 @@ namespace Infrastructure.Repositories.Standard.EFCore
             else
                 query = query.OrderBy(x => x.Id);
 
-            var data = query
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
+            query = query.Skip((page - 1) * pageSize);
+            query = query.Take(pageSize);
 
-            return new PaginationModel<TEntity>
+            return new PaginationQuery<TEntity>
             {
                 Page = page,
                 PageSize = pageSize,
                 TotalRecords = total,
+                Query = query
+            };
+        }
+
+        public PaginationModel<TEntity> GetPaged(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null)
+        {
+            var pagination = PaginateQuery<TEntity>(page, pageSize, orderBy, filter);
+            var data = pagination.Query.ToList();
+
+            return new PaginationModel<TEntity>
+            {
+                Page = pagination.Page,
+                PageSize = pagination.PageSize,
+                TotalRecords = pagination.TotalRecords,
                 Records = data
             };
         }
 
         public PaginationModel<T> GetPagedAnonymous<T>(int page, int pageSize, Expression<Func<TEntity, T>> selector, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null)
         {
-            if (page == 0)
-                page = 1;
-
-            if (pageSize == 0)
-                pageSize = 10;
-
-            var query = dbSet.AsQueryable();
-
-            if (filter != null)
-                query = query.Where(filter);
-
-            var total = query.Count();
-
-            if (orderBy != null)
-                query = query.OrderBy(orderBy);
-            else
-                query = query.OrderBy(x => x.Id);
-
-            var data = query
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .Select(selector);
+            var pagination = PaginateQuery<TEntity>(page, pageSize, orderBy, filter);
+            var data = pagination.Query
+                .Select(selector)
+                .ToList();
 
             return new PaginationModel<T>
             {
-                Page = page,
-                PageSize = pageSize,
-                TotalRecords = total,
+                Page = pagination.Page,
+                PageSize = pagination.PageSize,
+                TotalRecords = pagination.TotalRecords,
                 Records = data
             };
         }
@@ -194,69 +188,30 @@ namespace Infrastructure.Repositories.Standard.EFCore
 
         public virtual async Task<PaginationModel<TEntity>> GetPagedAsync(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null)
         {
-            if (page == 0)
-                page = 1;
-
-            if (pageSize == 0)
-                pageSize = 10;
-
-            var query = dbSet.AsQueryable();
-
-            if (filter != null)
-                query = query.Where(filter);
-
-            var total = query.Count();
-
-            if (orderBy != null)
-                query = query.OrderBy(orderBy);
-            else
-                query = query.OrderBy(x => x.Id);
-
-            var data = query
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
+            var pagination = PaginateQuery<TEntity>(page, pageSize, orderBy, filter);
+            var data = pagination.Query.ToList();
 
             return await Task.FromResult(new PaginationModel<TEntity>
             {
-                Page = page,
-                PageSize = pageSize,
-                TotalRecords = total,
+                Page = pagination.Page,
+                PageSize = pagination.PageSize,
+                TotalRecords = pagination.TotalRecords,
                 Records = data
             });
         }
 
         public virtual async Task<PaginationModel<T>> GetPagedAnonymousAsync<T>(int page, int pageSize, Expression<Func<TEntity, T>> selector, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null)
         {
-            if (page == 0)
-                page = 1;
-
-            if (pageSize == 0)
-                pageSize = 10;
-
-            var query = dbSet.AsQueryable();
-
-            if (filter != null)
-                query = query.Where(filter);
-
-            var total = query.Count();
-
-            if (orderBy != null)
-                query = query.OrderBy(orderBy);
-            else
-                query = query.OrderBy(x => x.Id);
-
-            var data = query
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
+            var pagination = PaginateQuery<TEntity>(page, pageSize, orderBy, filter);
+            var data = pagination.Query
                 .Select(selector)
                 .ToList();
 
             return await Task.FromResult(new PaginationModel<T>
             {
-                Page = page,
-                PageSize = pageSize,
-                TotalRecords = total,
+                Page = pagination.Page,
+                PageSize = pagination.PageSize,
+                TotalRecords = pagination.TotalRecords,
                 Records = data
             });
         }
@@ -312,6 +267,7 @@ namespace Infrastructure.Repositories.Standard.EFCore
         }
 
         #region ProtectedMethods
+
         protected override IQueryable<TEntity> GenerateQuery(Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             params string[] includeProperties)
@@ -350,6 +306,7 @@ namespace Infrastructure.Repositories.Standard.EFCore
             }
             yield break;
         }
+
         #endregion ProtectedMethods
     }
 }

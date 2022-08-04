@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces.Services.Standard;
 using Domain.Entities;
+using Domain.Extensions;
 using Domain.Models;
 using Infrastructure.Interfaces.Repositories.Standard;
 using System.Linq.Expressions;
