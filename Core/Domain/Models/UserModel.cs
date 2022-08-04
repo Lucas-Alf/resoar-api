@@ -2,6 +2,7 @@
 
 namespace Domain.Models
 {
+    // Test trigger to build github action
     public class UserViewModel
     {
         public int Id { get; set; }
