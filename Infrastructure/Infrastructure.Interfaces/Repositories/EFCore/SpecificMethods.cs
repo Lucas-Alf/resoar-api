@@ -7,8 +7,8 @@ namespace Infrastructure.Interfaces.Repositories.EFCore
     {
         #region ProtectedMethods
         protected abstract IQueryable<TEntity> GenerateQuery(
-            Expression<Func<TEntity, bool>> filter = null,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+            Expression<Func<TEntity, bool>>? filter = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
             params string[] includeProperties
         );
 
