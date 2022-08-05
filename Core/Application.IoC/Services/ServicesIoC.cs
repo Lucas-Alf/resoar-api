@@ -13,6 +13,7 @@ namespace Application.IoC
             services.AddScoped(typeof(IServiceBase<>), typeof(ServiceBase<>));
 
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ILoginService, LoginService>();
         }
     }
 }

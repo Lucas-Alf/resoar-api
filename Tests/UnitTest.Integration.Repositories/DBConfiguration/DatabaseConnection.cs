@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Domain.Utils;
 using Microsoft.Extensions.Options;
 
 namespace UnitTest.Integration.Repositories.DBConfiguration
@@ -9,15 +9,7 @@ namespace UnitTest.Integration.Repositories.DBConfiguration
         {
             get
             {
-                IConfigurationRoot configuration = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.test.json")
-                    .AddEnvironmentVariables()
-                    .Build();
-
-                var connectionString = configuration.GetConnectionString("ResoarTests");
-
-                return Options.Create(new DataOptionFactory { DefaultConnection = connectionString });
+                return Options.Create(new DataOptionFactory { DefaultConnection = EnvironmentManager.GetConnectionStringTests() });
             }
         }
     }

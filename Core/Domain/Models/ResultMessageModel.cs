@@ -2,6 +2,10 @@ namespace Domain.Models
 {
     public class ResultMessageModel
     {
+        public bool Success { get; set; }
+        public string? Message { get; set; }
+        public object? Data { get; set; }
+
         public ResultMessageModel(string message)
         {
             Success = true;
@@ -10,10 +14,16 @@ namespace Domain.Models
         public ResultMessageModel(Exception ex)
         {
             Success = false;
-            Message = $"{ex.Message?.TrimEnd('.')}. {(ex.InnerException != null ? ex.InnerException.Message : "")}".Trim();
+            Message = ex.Message?.TrimEnd('.');
+
+            if (!String.IsNullOrEmpty(ex.InnerException?.Message))
+                Message += ". " + ex.InnerException.Message?.TrimEnd('.');
         }
 
-        public bool Success { get; set; }
-        public string? Message { get; set; }
+        public ResultMessageModel(object data)
+        {
+            Success = true;
+            Data = data;
+        }
     }
 }

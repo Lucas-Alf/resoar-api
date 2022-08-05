@@ -20,8 +20,8 @@ More information about the API structure can be found in this [Medium post](http
 
 The following environment variables are used in the application:
 
-- `ConnectionStrings:Resoar`: connection string to the database.
-- `ConnectionStrings:ResoarTests`: connection string to the database for integration tests.
-- `JWT:ResoarSecret`: secret key for the JWT authentication.
-- `JWT:ResoarIssuer`: issuer for the JWT authentication.
-- `JWT:ResoarAudience`: audience for the JWT authentication.
+- `Resoar:Connection`: connection string to the database.
+- `Resoar:ConnectionTests`: connection string to the database for integration tests.
+- `Resoar:JwtSecret`: secret key for the JWT authentication.
+- `Resoar:JwtIssuer`: issuer for the JWT authentication.
+- `Resoar:JwtAudience`: audience for the JWT authentication.

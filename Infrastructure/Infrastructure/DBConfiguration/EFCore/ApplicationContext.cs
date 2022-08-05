@@ -1,6 +1,6 @@
 ﻿using Domain.Entities;
+using Domain.Utils;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure.DBConfiguration.EFCore
 {
@@ -12,7 +12,7 @@ namespace Infrastructure.DBConfiguration.EFCore
         {
             if (!dbContextOptionsBuilder.IsConfigured)
             {
-                dbContextOptionsBuilder.UseNpgsql(DatabaseConnection.ConnectionConfiguration.GetConnectionString("Resoar"));
+                dbContextOptionsBuilder.UseNpgsql(EnvironmentManager.GetConnectionString());
             }
         }
 

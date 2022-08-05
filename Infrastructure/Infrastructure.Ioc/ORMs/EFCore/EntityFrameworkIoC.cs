@@ -1,4 +1,5 @@
-﻿using Infrastructure.DBConfiguration.EFCore;
+﻿using Domain.Utils;
+using Infrastructure.DBConfiguration.EFCore;
 using Infrastructure.Interfaces.Repositories.Domain;
 using Infrastructure.Interfaces.Repositories.Standard;
 using Infrastructure.Repositories.Domain.EFCore;
@@ -13,9 +14,7 @@ namespace Infrastructure.IoC
     {
         internal override IServiceCollection AddOrm(IServiceCollection services, IConfiguration? configuration = null)
         {
-            IConfiguration dbConnectionSettings = ResolveConfiguration.GetConnectionSettings(configuration);
-            string conn = dbConnectionSettings.GetConnectionString("Resoar");
-            services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(conn));
+            services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(EnvironmentManager.GetConnectionString()));
 
             services.AddScoped(typeof(IRepositoryBase<>), typeof(RepositoryBase<>));
             services.AddScoped<IUserRepository, UserRepository>();
