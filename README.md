@@ -1,3 +1,6 @@
+[![Build](https://github.com/Lucas-Alf/resoar-api/actions/workflows/build.yml/badge.svg)](https://github.com/Lucas-Alf/resoar-api/actions/workflows/build.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Lucas-Alf_resoar-api&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Lucas-Alf_resoar-api)
+
 # RESOAR - API
 
 ## Research Open Access Repository
