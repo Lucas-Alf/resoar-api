@@ -11,9 +11,7 @@ namespace Infrastructure.DBConfiguration.EFCore
         protected override void OnConfiguring(DbContextOptionsBuilder dbContextOptionsBuilder)
         {
             if (!dbContextOptionsBuilder.IsConfigured)
-            {
                 dbContextOptionsBuilder.UseNpgsql(EnvironmentManager.GetConnectionString());
-            }
         }
 
         /* Creating DatabaseContext configured outside with Dependency Injection */

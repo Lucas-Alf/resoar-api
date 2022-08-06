@@ -8,7 +8,7 @@ namespace Application.IoC
 {
     public static class ServicesIoC
     {
-        public static void ApplicationServicesIoC(this IServiceCollection services)
+        public static void AddServices(this IServiceCollection services)
         {
             services.AddScoped(typeof(IServiceBase<>), typeof(ServiceBase<>));
 
