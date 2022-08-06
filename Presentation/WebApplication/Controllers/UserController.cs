@@ -1,5 +1,5 @@
+using System.Security.Claims;
 using Application.Interfaces.Services.Domain;
-using Domain.Entities;
 using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,27 +25,23 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet("id")]
-        public User GetById(int id)
+        public ResultMessageModel GetById(int id)
         {
             return _userService.GetById(id);
         }
 
-        [HttpPost]
-        public ResultMessageModel Create(UserCreateModel user)
-        {
-            return _userService.Add(user);
-        }
-
         [HttpPut]
-        public ResultMessageModel Update(UserUpdateModel user)
+        public ResultMessageModel Update(UserUpdateModel model)
         {
-            return _userService.Update(user);
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            return _userService.Update(userId, model);
         }
 
         [HttpDelete]
-        public ResultMessageModel Delete(int id)
+        public ResultMessageModel Delete()
         {
-            return _userService.Remove(id);
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            return _userService.Remove(userId);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Application.Interfaces.Services.Standard;
+﻿using Application.Exceptions;
+using Application.Interfaces.Services.Standard;
 using Domain.Entities;
 using Domain.Extensions;
 using Domain.Models;
@@ -27,10 +28,10 @@ namespace Application.Services.Standard
             {
                 var validation = obj.GetValidationErrorMessages();
                 if (!String.IsNullOrEmpty(validation))
-                    throw new Exception(validation);
+                    throw new BusinessException(validation);
 
                 repository.Add(obj);
-                return new ResultMessageModel("Registro adicionado com sucesso.");
+                return new ResultMessageModel("Registro adicionado com sucesso");
             }
             catch (Exception ex)
             {
@@ -46,11 +47,11 @@ namespace Application.Services.Standard
                 {
                     var validation = obj.GetValidationErrorMessages();
                     if (!String.IsNullOrEmpty(validation))
-                        throw new Exception(validation);
+                        throw new BusinessException(validation);
                 }
 
                 repository.AddRange(entities);
-                return new ResultMessageModel("Registros adicionados com sucesso.");
+                return new ResultMessageModel("Registros adicionados com sucesso");
             }
             catch (Exception ex)
             {
@@ -84,10 +85,10 @@ namespace Application.Services.Standard
             {
                 var exits = repository.Query(x => x.Id == id).Any();
                 if (!exits)
-                    throw new Exception("Registro não encontrado.");
+                    throw new NotFoundException();
 
                 repository.Remove(id);
-                return new ResultMessageModel("Registro removido com sucesso.");
+                return new ResultMessageModel("Registro removido com sucesso");
             }
             catch (Exception ex)
             {
@@ -101,10 +102,10 @@ namespace Application.Services.Standard
             {
                 var exits = repository.Query(x => x.Id == obj.Id).Any();
                 if (!exits)
-                    throw new Exception("Registro não encontrado.");
+                    throw new NotFoundException();
 
                 repository.Remove(obj);
-                return new ResultMessageModel("Registro removido com sucesso.");
+                return new ResultMessageModel("Registro removido com sucesso");
             }
             catch (Exception ex)
             {
@@ -117,7 +118,7 @@ namespace Application.Services.Standard
             try
             {
                 repository.RemoveRange(entities);
-                return new ResultMessageModel("Registros removidos com sucesso.");
+                return new ResultMessageModel("Registros removidos com sucesso");
             }
             catch (Exception ex)
             {
@@ -131,14 +132,14 @@ namespace Application.Services.Standard
             {
                 var exits = repository.Query(x => x.Id == obj.Id).Any();
                 if (!exits)
-                    throw new Exception("Registro não encontrado.");
+                    throw new NotFoundException();
 
                 var validation = obj.GetValidationErrorMessages();
                 if (!String.IsNullOrEmpty(validation))
-                    throw new Exception(validation);
+                    throw new BusinessException(validation);
 
                 repository.Update(obj);
-                return new ResultMessageModel("Registro atualizado com sucesso.");
+                return new ResultMessageModel("Registro atualizado com sucesso");
             }
             catch (Exception ex)
             {
@@ -154,11 +155,11 @@ namespace Application.Services.Standard
                 {
                     var validation = obj.GetValidationErrorMessages();
                     if (!String.IsNullOrEmpty(validation))
-                        throw new Exception(validation);
+                        throw new BusinessException(validation);
                 }
 
                 repository.UpdateRange(entities);
-                return new ResultMessageModel("Registros atualizados com sucesso.");
+                return new ResultMessageModel("Registros atualizados com sucesso");
             }
             catch (Exception ex)
             {
@@ -172,10 +173,10 @@ namespace Application.Services.Standard
             {
                 var validation = obj.GetValidationErrorMessages();
                 if (!String.IsNullOrEmpty(validation))
-                    throw new Exception(validation);
+                    throw new BusinessException(validation);
 
                 await repository.AddAsync(obj);
-                return new ResultMessageModel("Registro adicionado com sucesso.");
+                return new ResultMessageModel("Registro adicionado com sucesso");
             }
             catch (Exception ex)
             {
@@ -191,11 +192,11 @@ namespace Application.Services.Standard
                 {
                     var validation = obj.GetValidationErrorMessages();
                     if (!String.IsNullOrEmpty(validation))
-                        throw new Exception(validation);
+                        throw new BusinessException(validation);
                 }
 
                 await repository.AddRangeAsync(entities);
-                return new ResultMessageModel("Registros adicionados com sucesso.");
+                return new ResultMessageModel("Registros adicionados com sucesso");
             }
             catch (Exception ex)
             {
@@ -229,10 +230,10 @@ namespace Application.Services.Standard
             {
                 var exits = repository.Query(x => x.Id == id).Any();
                 if (!exits)
-                    throw new Exception("Registro não encontrado.");
+                    throw new NotFoundException();
 
                 await repository.RemoveAsync(id);
-                return new ResultMessageModel("Registro removido com sucesso.");
+                return new ResultMessageModel("Registro removido com sucesso");
             }
             catch (Exception ex)
             {
@@ -246,10 +247,10 @@ namespace Application.Services.Standard
             {
                 var exits = repository.Query(x => x.Id == obj.Id).Any();
                 if (!exits)
-                    throw new Exception("Registro não encontrado.");
+                    throw new NotFoundException();
 
                 await repository.RemoveAsync(obj);
-                return new ResultMessageModel("Registro removido com sucesso.");
+                return new ResultMessageModel("Registro removido com sucesso");
             }
             catch (Exception ex)
             {
@@ -262,7 +263,7 @@ namespace Application.Services.Standard
             try
             {
                 await repository.RemoveRangeAsync(entities);
-                return new ResultMessageModel("Registros removidos com sucesso.");
+                return new ResultMessageModel("Registros removidos com sucesso");
             }
             catch (Exception ex)
             {
@@ -276,14 +277,14 @@ namespace Application.Services.Standard
             {
                 var exits = repository.Query(x => x.Id == obj.Id).Any();
                 if (!exits)
-                    throw new Exception("Registro não encontrado.");
+                    throw new NotFoundException();
 
                 var validation = obj.GetValidationErrorMessages();
                 if (!String.IsNullOrEmpty(validation))
-                    throw new Exception(validation);
+                    throw new BusinessException(validation);
 
                 await repository.UpdateAsync(obj);
-                return new ResultMessageModel("Registro atualizado com sucesso.");
+                return new ResultMessageModel("Registro atualizado com sucesso");
             }
             catch (Exception ex)
             {
@@ -299,11 +300,11 @@ namespace Application.Services.Standard
                 {
                     var validation = obj.GetValidationErrorMessages();
                     if (!String.IsNullOrEmpty(validation))
-                        throw new Exception(validation);
+                        throw new BusinessException(validation);
                 }
 
                 await repository.UpdateRangeAsync(entities);
-                return new ResultMessageModel("Registros atualizados com sucesso.");
+                return new ResultMessageModel("Registros atualizados com sucesso");
             }
             catch (Exception ex)
             {

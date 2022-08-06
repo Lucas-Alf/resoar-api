@@ -10,10 +10,12 @@ namespace WebApplication.Controllers
     public class AuthController : ControllerBase
     {
         private readonly ILoginService _loginService;
+        private readonly IUserService _userService;
 
-        public AuthController(ILoginService loginService)
+        public AuthController(ILoginService loginService, IUserService userService)
         {
             _loginService = loginService;
+            _userService = userService;
         }
 
         [AllowAnonymous]
@@ -21,6 +23,13 @@ namespace WebApplication.Controllers
         public ResultMessageModel GetToken([FromBody] LoginModel model)
         {
             return _loginService.GetToken(model);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("register")]
+        public ResultMessageModel Register([FromBody] UserCreateModel model)
+        {
+            return _userService.Add(model);
         }
     }
 }

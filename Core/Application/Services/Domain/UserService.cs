@@ -1,8 +1,10 @@
-﻿using Application.Interfaces.Services.Domain;
+﻿using Application.Exceptions;
+using Application.Interfaces.Services.Domain;
 using Application.Services.Standard;
 using Domain.Entities;
 using Domain.Models;
 using Infrastructure.Interfaces.Repositories.Domain;
+
 namespace Application.Services.Domain
 {
     public class UserService : ServiceBase<User>, IUserService
@@ -12,6 +14,32 @@ namespace Application.Services.Domain
         public UserService(IUserRepository repository) : base(repository)
         {
             _repository = repository;
+        }
+
+        public ResultMessageModel GetById(int id)
+        {
+            try
+            {
+                var user = _repository
+                    .Query(x => x.Id == id)
+                    .Select(x => new UserViewModel
+                    {
+                        Id = x.Id,
+                        Email = x.Email,
+                        Name = x.Name,
+                        Image = x.ImagePath
+                    })
+                    .FirstOrDefault();
+
+                if (user == null)
+                    throw new NotFoundException();
+
+                return new ResultMessageModel(user);
+            }
+            catch (Exception ex)
+            {
+                return new ResultMessageModel(ex);
+            }
         }
 
         public PaginationModel<UserViewModel> GetPaged(int page, int pageSize)
@@ -38,13 +66,13 @@ namespace Application.Services.Domain
             {
                 var emailExists = _repository.Query(x => x.Email == model.Email).Any();
                 if (emailExists)
-                    throw new Exception("Já existe um usuário cadastrado com este e-mail.");
+                    throw new BusinessException("Já existe um usuário cadastrado com este e-mail.");
 
                 if (String.IsNullOrEmpty(model.Password))
-                    throw new Exception("O campo senha é obrigatório.");
+                    throw new BusinessException("O campo senha é obrigatório.");
 
                 if (model.Password.Length < 6)
-                    throw new Exception("A senha deve ter no mínimo 6 caracteres.");
+                    throw new BusinessException("A senha deve ter no mínimo 6 caracteres.");
 
                 var domain = new User
                 {
@@ -61,26 +89,26 @@ namespace Application.Services.Domain
             }
         }
 
-        public ResultMessageModel Update(UserUpdateModel model)
+        public ResultMessageModel Update(int userId, UserUpdateModel model)
         {
             try
             {
-                var domain = _repository.GetById(model.Id);
+                var domain = _repository.GetById(userId);
                 if (domain == null)
-                    throw new Exception("Usuário não encontrado.");
+                    throw new BusinessException("Usuário não encontrado.");
 
                 if (model.Email != domain.Email)
                 {
-                    var emailExists = _repository.Query(x => x.Email == model.Email && x.Id != model.Id).Any();
+                    var emailExists = _repository.Query(x => x.Email == model.Email && x.Id != userId).Any();
                     if (emailExists)
-                        throw new Exception("Já existe um usuário cadastrado com este e-mail.");
+                        throw new BusinessException("Já existe um usuário cadastrado com este e-mail.");
                 }
 
                 // !TODO: implementar armazenamento de imagem de perfil
                 // if (model.ProfileImage != null)
                 // domain.ImagePath = 
 
-                domain.Id = model.Id;
+                domain.Id = userId;
                 domain.Name = model.Name;
                 domain.Email = model.Email;
 

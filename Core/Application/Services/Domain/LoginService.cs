@@ -1,4 +1,5 @@
-﻿using Application.Interfaces.Services.Domain;
+﻿using Application.Exceptions;
+using Application.Interfaces.Services.Domain;
 using Domain.Auth;
 using Domain.Extensions;
 using Domain.Models;
@@ -26,25 +27,27 @@ namespace Application.Services.Domain
             {
                 var modelValidation = model.GetValidationErrorMessages();
                 if (!String.IsNullOrEmpty(modelValidation))
-                    throw new Exception(modelValidation);
+                    throw new BusinessException(modelValidation);
 
                 var user = _repository
                     .Query(x => x.Email == model.Email)
                     .Select(x => new
                     {
+                        x.Id,
                         x.Name,
                         x.Password
                     })
                     .FirstOrDefault();
 
                 if (user == null)
-                    throw new Exception("Usuário não encontrado");
+                    throw new BusinessException("Usuário não encontrado");
 
                 if (!BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
-                    throw new Exception("Usuário ou Senha inválida");
+                    throw new BusinessException("Usuário ou Senha inválida");
 
                 var authClaims = new List<Claim>
                 {
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     new Claim(ClaimTypes.Name, user.Name ?? ""),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
