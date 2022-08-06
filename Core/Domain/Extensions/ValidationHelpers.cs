@@ -12,7 +12,7 @@ namespace Domain.Extensions
             return validationResults;
         }
 
-        public static string GetValidationErrorMessages(this object obj)
+        public static string? GetValidationErrorMessages(this object obj)
         {
             var errors = obj.GetValidationErrors();
             var validationResults = errors as ValidationResult[] ?? errors.ToArray();

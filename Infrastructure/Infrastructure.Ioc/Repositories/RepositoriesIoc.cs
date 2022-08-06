@@ -11,6 +11,15 @@ namespace Infrastructure.IoC
         public static void AddRepositories(this IServiceCollection services)
         {
             services.AddScoped(typeof(IRepositoryBase<>), typeof(RepositoryBase<>));
+            services.AddScoped<IInstitutionRepository, InstitutionRepository>();
+            services.AddScoped<IKeyWordRepository, KeyWordRepository>();
+            services.AddScoped<IKnowledgeAreaRepository, KnowledgeAreaRepository>();
+            services.AddScoped<IResearchAdvisorApprovalRepository, ResearchAdvisorApprovalRepository>();
+            services.AddScoped<IResearchAdvisorRepository, ResearchAdvisorRepository>();
+            services.AddScoped<IResearchAuthorRepository, ResearchAuthorRepository>();
+            services.AddScoped<IResearchKeyWordRepository, ResearchKeyWordRepository>();
+            services.AddScoped<IResearchKnowledgeAreaRepository, ResearchKnowledgeAreaRepository>();
+            services.AddScoped<IResearchRepository, ResearchRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
         }
     }

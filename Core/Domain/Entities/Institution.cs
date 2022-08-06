@@ -17,5 +17,10 @@ namespace Domain.Entities
 
         [MaxLength(255, ErrorMessage = "O Campo Caminho da Imagem deve ter no máximo 255 caracteres")]
         public string? ImagePath { get; set; }
+
+        #region collections
+        public virtual ICollection<Research>? Researches { get; set; }
+
+        #endregion collections
     }
 }
