@@ -30,4 +30,9 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <SonarQubeSetting Include="sonar.cpd.exclusions">
+      <Value>Migrations/**</Value>
+    </SonarQubeSetting>
+  </ItemGroup>
 </Project>
