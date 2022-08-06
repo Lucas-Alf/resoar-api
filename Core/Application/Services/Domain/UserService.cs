@@ -16,7 +16,7 @@ namespace Application.Services.Domain
             _repository = repository;
         }
 
-        public ResultMessageModel GetById(int id)
+        public new ResultMessageModel GetById(int id)
         {
             try
             {
@@ -47,7 +47,7 @@ namespace Application.Services.Domain
             var data = _repository.GetPagedAnonymous<UserViewModel>(
                 page: page,
                 pageSize: pageSize,
-                orderBy: x => x.Name,
+                orderBy: x => x.Name!,
                 selector: x => new UserViewModel
                 {
                     Id = x.Id,

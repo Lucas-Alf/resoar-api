@@ -69,7 +69,7 @@ namespace Application.Services.Domain
             }
         }
 
-        private JwtSecurityToken GenerateToken(List<Claim> authClaims)
+        private static JwtSecurityToken GenerateToken(List<Claim> authClaims)
         {
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(EnvironmentManager.GetJwtSecret()));
 

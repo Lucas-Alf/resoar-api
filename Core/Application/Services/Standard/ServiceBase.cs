@@ -74,7 +74,7 @@ namespace Application.Services.Standard
             return repository.GetPagedAnonymous(page, pageSize, selector, orderBy, filter);
         }
 
-        public virtual TEntity GetById(int id)
+        public virtual TEntity? GetById(int id)
         {
             return repository.GetById(id);
         }
@@ -219,7 +219,7 @@ namespace Application.Services.Standard
             return await repository.GetPagedAnonymousAsync(page, pageSize, selector, orderBy, filter);
         }
 
-        public virtual async Task<TEntity> GetByIdAsync(int id)
+        public virtual async Task<TEntity?> GetByIdAsync(int id)
         {
             return await repository.GetByIdAsync(id);
         }

@@ -6,7 +6,7 @@ namespace Application.Interfaces.Services.Domain
 {
     public interface IUserService : IServiceBase<User>
     {
-        ResultMessageModel GetById(int id);
+        new ResultMessageModel GetById(int id);
         PaginationModel<UserViewModel> GetPaged(int page, int pageSize);
         ResultMessageModel Add(UserCreateModel model);
         ResultMessageModel Update(int userId, UserUpdateModel model);

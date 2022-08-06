@@ -33,14 +33,14 @@ namespace WebApplication.Controllers
         [HttpPut]
         public ResultMessageModel Update(UserUpdateModel model)
         {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
             return _userService.Update(userId, model);
         }
 
         [HttpDelete]
         public ResultMessageModel Delete()
         {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
             return _userService.Remove(userId);
         }
     }
