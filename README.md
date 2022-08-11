@@ -20,11 +20,10 @@ This API follows the Repository Pattern with the following layers:
 More information about the API structure can be found in this [Medium post](https://medium.com/@adlerpagliarini/c-net-core-criando-uma-aplica%C3%A7%C3%A3o-utilizando-repository-pattern-com-dois-orms-diferentes-dapper-97e8aa6ca35).
 
 ## Environment Variables
-
-The following environment variables are used in the application:
-
-- `Resoar:Connection`: connection string to the database.
-- `Resoar:ConnectionTests`: connection string to the database for integration tests.
-- `Resoar:JwtSecret`: secret key for the JWT authentication.
-- `Resoar:JwtIssuer`: issuer for the JWT authentication.
-- `Resoar:JwtAudience`: audience for the JWT authentication.
+| Name                     | Description                            |
+|--------------------------|----------------------------------------|
+| `Resoar:Connection`      | Database connection string.            |
+| `Resoar:ConnectionTests` | Tests database connection string.      |
+| `Resoar:JwtSecret`       | Secret key for the JWT authentication. |
+| `Resoar:JwtIssuer`       | Issuer for the JWT authentication.     |
+| `Resoar:JwtAudience`     | Audience for the JWT authentication.   |
