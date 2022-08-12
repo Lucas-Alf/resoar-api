@@ -2,11 +2,11 @@ namespace Domain.Utils
 {
     public class EnvironmentManager
     {
-        private const string RESOAR_CONNECTION = "Resoar:Connection";
-        private const string RESOAR_CONNECTION_TESTS = "Resoar:ConnectionTests";
-        private const string RESOAR_JWT_AUDIENCE = "Resoar:JwtAudience";
-        private const string RESOAR_JWT_ISSUER = "Resoar:JwtIssuer";
-        private const string RESOAR_JWT_SECRET = "Resoar:JwtSecret";
+        private const string RESOAR_CONNECTION = "RESOAR_CONNECTION";
+        private const string RESOAR_CONNECTION_TESTS = "RESOAR_CONNECTION_TESTS";
+        private const string RESOAR_JWT_AUDIENCE = "RESOAR_JWT_AUDIENCE";
+        private const string RESOAR_JWT_ISSUER = "RESOAR_JWT_ISSUER";
+        private const string RESOAR_JWT_SECRET = "RESOAR_JWT_SECRET";
 
         public static string GetEnvironmentVariable(string key)
         {
@@ -30,9 +30,12 @@ namespace Domain.Utils
             if (String.IsNullOrEmpty(GetJwtIssuer()))
                 throw new Exception($"Environment variable {RESOAR_JWT_ISSUER} is not set");
 
-            if (String.IsNullOrEmpty(GetJwtSecret()))
+            var jwtSecret = GetJwtSecret();
+            if (String.IsNullOrEmpty(jwtSecret))
                 throw new Exception($"Environment variable {RESOAR_JWT_SECRET} is not set");
+
+            if (jwtSecret.Length < 32)
+                throw new Exception($"Environment variable {RESOAR_JWT_SECRET} must have at least 32 characters");
         }
     }
 }
-
