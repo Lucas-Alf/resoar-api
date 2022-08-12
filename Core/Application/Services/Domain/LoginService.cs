@@ -77,6 +77,7 @@ namespace Application.Services.Domain
                 issuer: EnvironmentManager.GetJwtIssuer(),
                 audience: EnvironmentManager.GetJwtAudience(),
                 expires: DateTime.Now.AddHours(3),
+                notBefore: DateTime.Now,
                 claims: authClaims,
                 signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
             );
