@@ -27,3 +27,4 @@ More information about the API structure can be found in this [Medium post](http
 | `RESOAR_JWT_SECRET`       | Secret key for the JWT authentication. |
 | `RESOAR_JWT_ISSUER`       | Issuer for the JWT authentication.     |
 | `RESOAR_JWT_AUDIENCE`     | Audience for the JWT authentication.   |
+| `RESOAR_RECAPTCHA_SECRET` | reCAPTCHA secret key.                  |

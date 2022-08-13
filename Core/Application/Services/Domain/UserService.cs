@@ -1,9 +1,12 @@
-﻿using Application.Exceptions;
+﻿using System.Net;
+using Application.Exceptions;
 using Application.Interfaces.Services.Domain;
 using Application.Services.Standard;
 using Domain.Entities;
 using Domain.Models;
+using Domain.Utils;
 using Infrastructure.Interfaces.Repositories.Domain;
+using Newtonsoft.Json;
 
 namespace Application.Services.Domain
 {
@@ -64,6 +67,12 @@ namespace Application.Services.Domain
         {
             try
             {
+                if (String.IsNullOrEmpty(model.Token))
+                    throw new BusinessException("reCAPTCHA é obrigatório");
+
+                if (!ValidateReCaptcha(model.Token))
+                    throw new BusinessException("reCAPTCHA inválido");
+
                 var emailExists = _repository.Query(x => x.Email == model.Email).Any();
                 if (emailExists)
                     throw new BusinessException("Já existe um usuário cadastrado com este e-mail.");
@@ -117,6 +126,32 @@ namespace Application.Services.Domain
             catch (Exception ex)
             {
                 return new ResultMessageModel(ex);
+            }
+        }
+
+        private bool ValidateReCaptcha(string token)
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var secret = EnvironmentManager.GetReCaptchaSecret();
+                    var request = client.PostAsync($"https://www.google.com/recaptcha/api/siteverify?secret={secret}&response={token}", null);
+                    request.Wait();
+
+                    var response = request.Result.Content.ReadAsStringAsync();
+                    response.Wait();
+
+                    var result = JsonConvert.DeserializeObject<ReCaptchaResponseModel>(response.Result);
+                    if (result != null && result.Success)
+                        return true;
+
+                    return false;
+                }
+            }
+            catch
+            {
+                throw new BusinessException("Ocorreu um erro ao validar o reCAPTCHA.");
             }
         }
     }
