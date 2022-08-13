@@ -20,14 +20,14 @@ namespace WebApplication.Controllers
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public ResultMessageModel GetToken([FromBody] LoginModel model)
+        public ResultMessageModel GetToken(LoginModel model)
         {
             return _loginService.GetToken(model);
         }
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public ResultMessageModel Register([FromBody] UserCreateModel model)
+        public ResultMessageModel Register(UserCreateModel model)
         {
             return _userService.Add(model);
         }
