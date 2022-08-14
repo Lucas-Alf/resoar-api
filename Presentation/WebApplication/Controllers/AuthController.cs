@@ -10,26 +10,31 @@ namespace WebApplication.Controllers
     public class AuthController : ControllerBase
     {
         private readonly ILoginService _loginService;
-        private readonly IUserService _userService;
 
-        public AuthController(ILoginService loginService, IUserService userService)
+        public AuthController(ILoginService loginService)
         {
             _loginService = loginService;
-            _userService = userService;
         }
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public ResultMessageModel GetToken(LoginModel model)
+        public ResponseMessageModel GetToken(LoginModel model)
         {
             return _loginService.GetToken(model);
         }
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public ResultMessageModel Register(UserCreateModel model)
+        public ResponseMessageModel Register(UserCreateModel model)
         {
-            return _userService.Add(model);
+            return _loginService.Register(model);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("recover")]
+        public ResponseMessageModel RecoverPassword(RecoverPasswordModel model)
+        {
+            return _loginService.RecoverPassword(model);
         }
     }
 }

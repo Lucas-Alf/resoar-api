@@ -4,6 +4,8 @@ namespace Application.Interfaces.Services.Domain
 {
     public interface ILoginService
     {
-        ResultMessageModel GetToken(LoginModel model);
+        ResponseMessageModel GetToken(LoginModel model);
+        ResponseMessageModel RecoverPassword(RecoverPasswordModel model);
+        ResponseMessageModel Register(UserCreateModel model);
     }
 }

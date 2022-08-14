@@ -1,17 +1,17 @@
 namespace Domain.Models
 {
-    public class ResultMessageModel
+    public class ResponseMessageModel
     {
         public bool Success { get; set; }
         public string? Message { get; set; }
         public object? Data { get; set; }
 
-        public ResultMessageModel(string message)
+        public ResponseMessageModel(string message)
         {
             Success = true;
             Message = message;
         }
-        public ResultMessageModel(Exception ex)
+        public ResponseMessageModel(Exception ex)
         {
             Success = false;
             Message = ex.Message?.TrimEnd('.');
@@ -20,7 +20,7 @@ namespace Domain.Models
                 Message += ". " + ex.InnerException.Message?.TrimEnd('.');
         }
 
-        public ResultMessageModel(object data)
+        public ResponseMessageModel(object data)
         {
             Success = true;
             Data = data;

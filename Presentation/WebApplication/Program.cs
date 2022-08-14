@@ -34,10 +34,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwagger(swaggerTitle);
 
 // Add Cors
-builder.Services.AddCors(p => p.AddPolicy("allowAll", builder =>
+builder.Services.AddCors(p => p.AddPolicy("react-app", builder =>
 {
     builder
-        .WithOrigins("*")
+        .WithOrigins(EnvironmentManager.GetJwtAudience())
         .AllowAnyMethod()
         .AllowAnyHeader();
 }));
@@ -54,7 +54,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.UseCors("allowAll");
+app.UseCors("react-app");
 
 app.UseHttpsRedirection();
 

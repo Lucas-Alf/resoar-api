@@ -1,8 +1,8 @@
-using System.Security.Claims;
 using Application.Interfaces.Services.Domain;
 using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace WebApplication.Controllers
 {
@@ -25,20 +25,20 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet("id")]
-        public ResultMessageModel GetById(int id)
+        public ResponseMessageModel GetById(int id)
         {
             return _userService.GetById(id);
         }
 
         [HttpPut]
-        public ResultMessageModel Update(UserUpdateModel model)
+        public ResponseMessageModel Update(UserUpdateModel model)
         {
             var userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
             return _userService.Update(userId, model);
         }
 
         [HttpDelete]
-        public ResultMessageModel Delete()
+        public ResponseMessageModel Delete()
         {
             var userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
             return _userService.Remove(userId);

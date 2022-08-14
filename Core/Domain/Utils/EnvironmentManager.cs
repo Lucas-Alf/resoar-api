@@ -8,6 +8,11 @@ namespace Domain.Utils
         private const string RESOAR_JWT_ISSUER = "RESOAR_JWT_ISSUER";
         private const string RESOAR_JWT_SECRET = "RESOAR_JWT_SECRET";
         private const string RESOAR_RECAPTCHA_SECRET = "RESOAR_RECAPTCHA_SECRET";
+        private const string RESOAR_SMTP_HOST = "RESOAR_SMTP_HOST";
+        private const string RESOAR_SMTP_PORT = "RESOAR_SMTP_PORT";
+        private const string RESOAR_SMTP_USER = "RESOAR_SMTP_USER";
+        private const string RESOAR_SMTP_EMAIL = "RESOAR_SMTP_EMAIL";
+        private const string RESOAR_SMTP_PASSWORD = "RESOAR_SMTP_PASSWORD";
 
         public static string GetEnvironmentVariable(string key)
         {
@@ -20,6 +25,11 @@ namespace Domain.Utils
         public static string GetJwtIssuer() => GetEnvironmentVariable(RESOAR_JWT_ISSUER);
         public static string GetJwtSecret() => GetEnvironmentVariable(RESOAR_JWT_SECRET);
         public static string GetReCaptchaSecret() => GetEnvironmentVariable(RESOAR_RECAPTCHA_SECRET);
+        public static string GetSMTPHost() => GetEnvironmentVariable(RESOAR_SMTP_HOST);
+        public static string GetSMTPPort() => GetEnvironmentVariable(RESOAR_SMTP_PORT);
+        public static string GetSMTPUser() => GetEnvironmentVariable(RESOAR_SMTP_USER);
+        public static string GetSMTPEmail() => GetEnvironmentVariable(RESOAR_SMTP_EMAIL);
+        public static string GetSMTPPassword() => GetEnvironmentVariable(RESOAR_SMTP_PASSWORD);
 
         public static void Validate()
         {
@@ -34,6 +44,21 @@ namespace Domain.Utils
 
             if (String.IsNullOrEmpty(GetReCaptchaSecret()))
                 throw new Exception($"Environment variable {RESOAR_RECAPTCHA_SECRET} is not set");
+
+            if (String.IsNullOrEmpty(GetSMTPHost()))
+                throw new Exception($"Environment variable {RESOAR_SMTP_HOST} is not set");
+
+            if (String.IsNullOrEmpty(GetSMTPPort()))
+                throw new Exception($"Environment variable {RESOAR_SMTP_PORT} is not set");
+
+            if (String.IsNullOrEmpty(GetSMTPUser()))
+                throw new Exception($"Environment variable {RESOAR_SMTP_USER} is not set");
+
+            if (String.IsNullOrEmpty(GetSMTPEmail()))
+                throw new Exception($"Environment variable {RESOAR_SMTP_EMAIL} is not set");
+
+            if (String.IsNullOrEmpty(GetSMTPPassword()))
+                throw new Exception($"Environment variable {RESOAR_SMTP_PASSWORD} is not set");
 
             var jwtSecret = GetJwtSecret();
             if (String.IsNullOrEmpty(jwtSecret))

@@ -22,7 +22,7 @@ namespace Application.Services.Standard
             return repository.Query(filter);
         }
 
-        public virtual ResultMessageModel Add(TEntity obj)
+        public virtual ResponseMessageModel Add(TEntity obj)
         {
             try
             {
@@ -31,15 +31,15 @@ namespace Application.Services.Standard
                     throw new BusinessException(validation);
 
                 repository.Add(obj);
-                return new ResultMessageModel("Registro adicionado com sucesso");
+                return new ResponseMessageModel("Registro adicionado com sucesso");
             }
             catch (Exception ex)
             {
-                return new ResultMessageModel(ex);
+                return new ResponseMessageModel(ex);
             }
         }
 
-        public virtual ResultMessageModel AddRange(IEnumerable<TEntity> entities)
+        public virtual ResponseMessageModel AddRange(IEnumerable<TEntity> entities)
         {
             try
             {
@@ -51,11 +51,11 @@ namespace Application.Services.Standard
                 }
 
                 repository.AddRange(entities);
-                return new ResultMessageModel("Registros adicionados com sucesso");
+                return new ResponseMessageModel("Registros adicionados com sucesso");
             }
             catch (Exception ex)
             {
-                return new ResultMessageModel(ex);
+                return new ResponseMessageModel(ex);
             }
         }
 
@@ -79,7 +79,7 @@ namespace Application.Services.Standard
             return repository.GetById(id);
         }
 
-        public virtual ResultMessageModel Remove(int id)
+        public virtual ResponseMessageModel Remove(int id)
         {
             try
             {
@@ -88,15 +88,15 @@ namespace Application.Services.Standard
                     throw new NotFoundException();
 
                 repository.Remove(id);
-                return new ResultMessageModel("Registro removido com sucesso");
+                return new ResponseMessageModel("Registro removido com sucesso");
             }
             catch (Exception ex)
             {
-                return new ResultMessageModel(ex);
+                return new ResponseMessageModel(ex);
             }
         }
 
-        public virtual ResultMessageModel Remove(TEntity obj)
+        public virtual ResponseMessageModel Remove(TEntity obj)
         {
             try
             {
@@ -105,28 +105,28 @@ namespace Application.Services.Standard
                     throw new NotFoundException();
 
                 repository.Remove(obj);
-                return new ResultMessageModel("Registro removido com sucesso");
+                return new ResponseMessageModel("Registro removido com sucesso");
             }
             catch (Exception ex)
             {
-                return new ResultMessageModel(ex);
+                return new ResponseMessageModel(ex);
             }
         }
 
-        public virtual ResultMessageModel RemoveRange(IEnumerable<TEntity> entities)
+        public virtual ResponseMessageModel RemoveRange(IEnumerable<TEntity> entities)
         {
             try
             {
                 repository.RemoveRange(entities);
-                return new ResultMessageModel("Registros removidos com sucesso");
+                return new ResponseMessageModel("Registros removidos com sucesso");
             }
             catch (Exception ex)
             {
-                return new ResultMessageModel(ex);
+                return new ResponseMessageModel(ex);
             }
         }
 
-        public virtual ResultMessageModel Update(TEntity obj)
+        public virtual ResponseMessageModel Update(TEntity obj)
         {
             try
             {
@@ -139,15 +139,15 @@ namespace Application.Services.Standard
                     throw new BusinessException(validation);
 
                 repository.Update(obj);
-                return new ResultMessageModel("Registro atualizado com sucesso");
+                return new ResponseMessageModel("Registro atualizado com sucesso");
             }
             catch (Exception ex)
             {
-                return new ResultMessageModel(ex);
+                return new ResponseMessageModel(ex);
             }
         }
 
-        public virtual ResultMessageModel UpdateRange(IEnumerable<TEntity> entities)
+        public virtual ResponseMessageModel UpdateRange(IEnumerable<TEntity> entities)
         {
             try
             {
@@ -159,15 +159,15 @@ namespace Application.Services.Standard
                 }
 
                 repository.UpdateRange(entities);
-                return new ResultMessageModel("Registros atualizados com sucesso");
+                return new ResponseMessageModel("Registros atualizados com sucesso");
             }
             catch (Exception ex)
             {
-                return new ResultMessageModel(ex);
+                return new ResponseMessageModel(ex);
             }
         }
 
-        public virtual async Task<ResultMessageModel> AddAsync(TEntity obj)
+        public virtual async Task<ResponseMessageModel> AddAsync(TEntity obj)
         {
             try
             {
@@ -176,15 +176,15 @@ namespace Application.Services.Standard
                     throw new BusinessException(validation);
 
                 await repository.AddAsync(obj);
-                return new ResultMessageModel("Registro adicionado com sucesso");
+                return new ResponseMessageModel("Registro adicionado com sucesso");
             }
             catch (Exception ex)
             {
-                return new ResultMessageModel(ex);
+                return new ResponseMessageModel(ex);
             }
         }
 
-        public virtual async Task<ResultMessageModel> AddRangeAsync(IEnumerable<TEntity> entities)
+        public virtual async Task<ResponseMessageModel> AddRangeAsync(IEnumerable<TEntity> entities)
         {
             try
             {
@@ -196,11 +196,11 @@ namespace Application.Services.Standard
                 }
 
                 await repository.AddRangeAsync(entities);
-                return new ResultMessageModel("Registros adicionados com sucesso");
+                return new ResponseMessageModel("Registros adicionados com sucesso");
             }
             catch (Exception ex)
             {
-                return new ResultMessageModel(ex);
+                return new ResponseMessageModel(ex);
             }
         }
 
@@ -224,7 +224,7 @@ namespace Application.Services.Standard
             return await repository.GetByIdAsync(id);
         }
 
-        public virtual async Task<ResultMessageModel> RemoveAsync(int id)
+        public virtual async Task<ResponseMessageModel> RemoveAsync(int id)
         {
             try
             {
@@ -233,15 +233,15 @@ namespace Application.Services.Standard
                     throw new NotFoundException();
 
                 await repository.RemoveAsync(id);
-                return new ResultMessageModel("Registro removido com sucesso");
+                return new ResponseMessageModel("Registro removido com sucesso");
             }
             catch (Exception ex)
             {
-                return new ResultMessageModel(ex);
+                return new ResponseMessageModel(ex);
             }
         }
 
-        public virtual async Task<ResultMessageModel> RemoveAsync(TEntity obj)
+        public virtual async Task<ResponseMessageModel> RemoveAsync(TEntity obj)
         {
             try
             {
@@ -250,28 +250,28 @@ namespace Application.Services.Standard
                     throw new NotFoundException();
 
                 await repository.RemoveAsync(obj);
-                return new ResultMessageModel("Registro removido com sucesso");
+                return new ResponseMessageModel("Registro removido com sucesso");
             }
             catch (Exception ex)
             {
-                return new ResultMessageModel(ex);
+                return new ResponseMessageModel(ex);
             }
         }
 
-        public virtual async Task<ResultMessageModel> RemoveRangeAsync(IEnumerable<TEntity> entities)
+        public virtual async Task<ResponseMessageModel> RemoveRangeAsync(IEnumerable<TEntity> entities)
         {
             try
             {
                 await repository.RemoveRangeAsync(entities);
-                return new ResultMessageModel("Registros removidos com sucesso");
+                return new ResponseMessageModel("Registros removidos com sucesso");
             }
             catch (Exception ex)
             {
-                return new ResultMessageModel(ex);
+                return new ResponseMessageModel(ex);
             }
         }
 
-        public virtual async Task<ResultMessageModel> UpdateAsync(TEntity obj)
+        public virtual async Task<ResponseMessageModel> UpdateAsync(TEntity obj)
         {
             try
             {
@@ -284,15 +284,15 @@ namespace Application.Services.Standard
                     throw new BusinessException(validation);
 
                 await repository.UpdateAsync(obj);
-                return new ResultMessageModel("Registro atualizado com sucesso");
+                return new ResponseMessageModel("Registro atualizado com sucesso");
             }
             catch (Exception ex)
             {
-                return new ResultMessageModel(ex);
+                return new ResponseMessageModel(ex);
             }
         }
 
-        public virtual async Task<ResultMessageModel> UpdateRangeAsync(IEnumerable<TEntity> entities)
+        public virtual async Task<ResponseMessageModel> UpdateRangeAsync(IEnumerable<TEntity> entities)
         {
             try
             {
@@ -304,11 +304,11 @@ namespace Application.Services.Standard
                 }
 
                 await repository.UpdateRangeAsync(entities);
-                return new ResultMessageModel("Registros atualizados com sucesso");
+                return new ResponseMessageModel("Registros atualizados com sucesso");
             }
             catch (Exception ex)
             {
-                return new ResultMessageModel(ex);
+                return new ResponseMessageModel(ex);
             }
         }
     }

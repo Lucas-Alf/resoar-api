@@ -11,6 +11,7 @@ namespace Application.IoC
         public static void AddServices(this IServiceCollection services)
         {
             services.AddScoped(typeof(IServiceBase<>), typeof(ServiceBase<>));
+            services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IInstitutionService, InstitutionService>();
             services.AddScoped<IKeyWordService, KeyWordService>();
             services.AddScoped<IKnowledgeAreaService, KnowledgeAreaService>();

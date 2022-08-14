@@ -1,14 +1,12 @@
-﻿using Application.Interfaces.Services.Standard;
-using Domain.Entities;
-using Domain.Models;
+﻿using Domain.Models;
 
 namespace Application.Interfaces.Services.Domain
 {
-    public interface IUserService : IServiceBase<User>
+    public interface IUserService
     {
-        new ResultMessageModel GetById(int id);
         PaginationModel<UserViewModel> GetPaged(int page, int pageSize);
-        ResultMessageModel Add(UserCreateModel model);
-        ResultMessageModel Update(int userId, UserUpdateModel model);
+        ResponseMessageModel GetById(int id);
+        ResponseMessageModel Remove(int userId);
+        ResponseMessageModel Update(int userId, UserUpdateModel model);
     }
 }

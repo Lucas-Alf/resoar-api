@@ -1,25 +1,20 @@
-﻿using System.Net;
-using Application.Exceptions;
+﻿using Application.Exceptions;
 using Application.Interfaces.Services.Domain;
-using Application.Services.Standard;
-using Domain.Entities;
 using Domain.Models;
-using Domain.Utils;
 using Infrastructure.Interfaces.Repositories.Domain;
-using Newtonsoft.Json;
 
 namespace Application.Services.Domain
 {
-    public class UserService : ServiceBase<User>, IUserService
+    public class UserService : IUserService
     {
         private readonly IUserRepository _repository;
 
-        public UserService(IUserRepository repository) : base(repository)
+        public UserService(IUserRepository repository)
         {
             _repository = repository;
         }
 
-        public new ResultMessageModel GetById(int id)
+        public ResponseMessageModel GetById(int id)
         {
             try
             {
@@ -37,11 +32,11 @@ namespace Application.Services.Domain
                 if (user == null)
                     throw new NotFoundException();
 
-                return new ResultMessageModel(user);
+                return new ResponseMessageModel(user);
             }
             catch (Exception ex)
             {
-                return new ResultMessageModel(ex);
+                return new ResponseMessageModel(ex);
             }
         }
 
@@ -63,45 +58,16 @@ namespace Application.Services.Domain
             return data;
         }
 
-        public ResultMessageModel Add(UserCreateModel model)
+        public ResponseMessageModel Update(int userId, UserUpdateModel model)
         {
             try
             {
-                if (String.IsNullOrEmpty(model.Token))
-                    throw new BusinessException("reCAPTCHA é obrigatório");
+                if (String.IsNullOrEmpty(model.Name))
+                    throw new BusinessException("Nome é obrigatório");
 
-                if (!ValidateReCaptcha(model.Token))
-                    throw new BusinessException("reCAPTCHA inválido");
+                if (String.IsNullOrEmpty(model.Email))
+                    throw new BusinessException("Email é obrigatório");
 
-                var emailExists = _repository.Query(x => x.Email == model.Email).Any();
-                if (emailExists)
-                    throw new BusinessException("Já existe um usuário cadastrado com este e-mail.");
-
-                if (String.IsNullOrEmpty(model.Password))
-                    throw new BusinessException("O campo senha é obrigatório.");
-
-                if (model.Password.Length < 6)
-                    throw new BusinessException("A senha deve ter no mínimo 6 caracteres.");
-
-                var domain = new User
-                {
-                    Name = model.Name,
-                    Email = model.Email,
-                    Password = BCrypt.Net.BCrypt.HashPassword(model.Password)
-                };
-
-                return base.Add(domain);
-            }
-            catch (Exception ex)
-            {
-                return new ResultMessageModel(ex);
-            }
-        }
-
-        public ResultMessageModel Update(int userId, UserUpdateModel model)
-        {
-            try
-            {
                 var domain = _repository.GetById(userId);
                 if (domain == null)
                     throw new BusinessException("Usuário não encontrado.");
@@ -121,37 +87,30 @@ namespace Application.Services.Domain
                 domain.Name = model.Name;
                 domain.Email = model.Email;
 
-                return base.Update(domain);
+                _repository.Update(domain);
+
+                return new ResponseMessageModel("Registro adicionado com sucesso");
             }
             catch (Exception ex)
             {
-                return new ResultMessageModel(ex);
+                return new ResponseMessageModel(ex);
             }
         }
 
-        private bool ValidateReCaptcha(string token)
+        public ResponseMessageModel Remove(int userId)
         {
             try
             {
-                using (var client = new HttpClient())
-                {
-                    var secret = EnvironmentManager.GetReCaptchaSecret();
-                    var request = client.PostAsync($"https://www.google.com/recaptcha/api/siteverify?secret={secret}&response={token}", null);
-                    request.Wait();
+                var domain = _repository.GetById(userId);
+                if (domain == null)
+                    throw new BusinessException("Usuário não encontrado.");
 
-                    var response = request.Result.Content.ReadAsStringAsync();
-                    response.Wait();
-
-                    var result = JsonConvert.DeserializeObject<ReCaptchaResponseModel>(response.Result);
-                    if (result != null && result.Success)
-                        return true;
-
-                    return false;
-                }
+                _repository.Remove(domain);
+                return new ResponseMessageModel("Registro removido com sucesso");
             }
-            catch
+            catch (Exception ex)
             {
-                throw new BusinessException("Ocorreu um erro ao validar o reCAPTCHA.");
+                return new ResponseMessageModel(ex);
             }
         }
     }
