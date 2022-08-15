@@ -7,5 +7,6 @@ namespace Application.Interfaces.Services.Domain
         ResponseMessageModel GetToken(LoginModel model);
         ResponseMessageModel RecoverPassword(RecoverPasswordModel model);
         ResponseMessageModel Register(UserCreateModel model);
+        ResponseMessageModel ResetPassword(int userId, ResetPasswordModel model);
     }
 }

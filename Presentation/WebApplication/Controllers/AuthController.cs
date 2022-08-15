@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Application.Interfaces.Services.Domain;
 using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -35,6 +36,14 @@ namespace WebApplication.Controllers
         public ResponseMessageModel RecoverPassword(RecoverPasswordModel model)
         {
             return _loginService.RecoverPassword(model);
+        }
+
+        [HttpPost("reset-password")]
+        [Authorize(Roles = "Recovery")]
+        public ResponseMessageModel ResetPassword(ResetPasswordModel model)
+        {
+            var userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            return _loginService.ResetPassword(userId, model);
         }
     }
 }

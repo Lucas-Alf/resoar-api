@@ -157,6 +157,23 @@ namespace Infrastructure.Repositories.Standard.EFCore
             return Commit() > 0;
         }
 
+        public virtual bool UpdateSomeFields(TEntity obj, params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            var avoidingAttachedEntity = GetById(obj.Id);
+
+            if (avoidingAttachedEntity == null) return false;
+
+            dbContext.Entry(avoidingAttachedEntity).State = EntityState.Detached;
+
+            dbContext.Attach(obj);
+            foreach (var includeProperty in includeProperties)
+            {
+                dbContext.Entry(obj).Property(includeProperty).IsModified = true;
+            }
+
+            return Commit() > 0;
+        }
+
         public virtual int UpdateRange(IEnumerable<TEntity> entities)
         {
             dbSet.UpdateRange(entities);
@@ -264,6 +281,21 @@ namespace Infrastructure.Repositories.Standard.EFCore
         {
             dbSet.UpdateRange(entities);
             return await CommitAsync();
+        }
+
+        public virtual async Task<bool> UpdateSomeFieldsAsync(TEntity obj, params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            var avoidingAttachedEntity = GetById(obj.Id);
+
+            if (avoidingAttachedEntity == null) return false;
+
+            dbContext.Attach(obj);
+            foreach (var includeProperty in includeProperties)
+            {
+                dbContext.Entry(obj).Property(includeProperty).IsModified = true;
+            }
+
+            return await CommitAsync() > 0;
         }
 
         private async Task<int> CommitAsync()

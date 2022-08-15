@@ -8,6 +8,7 @@ namespace Infrastructure.Interfaces.Repositories.Standard
     {
         bool Remove(object id);
         bool Update(TEntity obj);
+        bool UpdateSomeFields(TEntity obj, params Expression<Func<TEntity, object>>[] includeProperties);
         IEnumerable<TEntity> GetAll(Expression<Func<TEntity, bool>>? filter = null);
         int AddRange(IEnumerable<TEntity> entities);
         int Remove(TEntity obj);
@@ -18,6 +19,7 @@ namespace Infrastructure.Interfaces.Repositories.Standard
         PaginationModel<TEntity> GetPaged(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null);
         Task<bool> RemoveAsync(object id);
         Task<bool> UpdateAsync(TEntity obj);
+        Task<bool> UpdateSomeFieldsAsync(TEntity obj, params Expression<Func<TEntity, object>>[] includeProperties);
         Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? filter = null);
         Task<int> AddRangeAsync(IEnumerable<TEntity> entities);
         Task<int> RemoveAsync(TEntity obj);
@@ -25,8 +27,8 @@ namespace Infrastructure.Interfaces.Repositories.Standard
         Task<int> UpdateRangeAsync(IEnumerable<TEntity> entities);
         Task<PaginationModel<T>> GetPagedAnonymousAsync<T>(int page, int pageSize, Expression<Func<TEntity, T>> selector, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null);
         Task<PaginationModel<TEntity>> GetPagedAsync(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null);
-        Task<TEntity> AddAsync(TEntity obj);
         Task<TEntity?> GetByIdAsync(object id);
+        Task<TEntity> AddAsync(TEntity obj);
         TEntity Add(TEntity obj);
         TEntity? GetById(object id);
     }

@@ -6,7 +6,7 @@ using System.Security.Claims;
 
 namespace WebApplication.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "User, Admin")]
     [ApiController]
     [Route("[controller]")]
     public class UserController : ControllerBase
