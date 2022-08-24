@@ -1,4 +1,7 @@
-﻿using Application.Exceptions;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Application.Exceptions;
 using Application.Interfaces.Services.Domain;
 using Domain.Auth;
 using Domain.Entities;
@@ -7,9 +10,6 @@ using Domain.Utils;
 using Infrastructure.Interfaces.Repositories.Domain;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace Application.Services.Domain
 {
@@ -28,11 +28,17 @@ namespace Application.Services.Domain
         {
             try
             {
+                if (String.IsNullOrEmpty(model.Token))
+                    throw new BusinessException("Token hCaptcha obrigatório");
+
                 if (String.IsNullOrEmpty(model.Email))
                     throw new BusinessException("Email é obrigatório");
 
                 if (String.IsNullOrEmpty(model.Password))
                     throw new BusinessException("Senha é obrigatório");
+
+                if (!ValidateCaptcha(model.Token))
+                    throw new BusinessException("Token hCaptcha inválido");
 
                 var user = _userRepository
                     .Query(x => x.Email == model.Email)
@@ -87,7 +93,7 @@ namespace Application.Services.Domain
                 if (String.IsNullOrEmpty(model.Password))
                     throw new BusinessException("Senha é obrigatório");
 
-                if (!ValidateReCaptcha(model.Token))
+                if (!ValidateCaptcha(model.Token))
                     throw new BusinessException("reCAPTCHA inválido");
 
                 var emailExists = _userRepository.Query(x => x.Email == model.Email).Any();
@@ -124,7 +130,7 @@ namespace Application.Services.Domain
                 if (String.IsNullOrEmpty(model.Email))
                     throw new BusinessException("Email é obrigatório");
 
-                if (!ValidateReCaptcha(model.Token))
+                if (!ValidateCaptcha(model.Token))
                     throw new BusinessException("reCAPTCHA inválido");
 
                 var user = _userRepository
@@ -256,7 +262,7 @@ namespace Application.Services.Domain
             return token;
         }
 
-        private bool ValidateReCaptcha(string? token)
+        private bool ValidateCaptcha(string? token)
         {
             if (String.IsNullOrEmpty(token))
                 return false;
@@ -265,8 +271,9 @@ namespace Application.Services.Domain
             {
                 using (var client = new HttpClient())
                 {
-                    var secret = EnvironmentManager.GetReCaptchaSecret();
-                    var request = client.PostAsync($"https://www.google.com/recaptcha/api/siteverify?secret={secret}&response={token}", null);
+                    var secret = EnvironmentManager.GetCaptchaSecret();
+                    var siteKey = EnvironmentManager.GetCaptchaSiteKey();
+                    var request = client.PostAsync($"https://hcaptcha.com/siteverify?response={token}&secret={secret}&sitekey={siteKey}", null);
                     request.Wait();
 
                     var response = request.Result.Content.ReadAsStringAsync();
@@ -281,7 +288,7 @@ namespace Application.Services.Domain
             }
             catch
             {
-                throw new BusinessException("Ocorreu um erro ao validar o reCAPTCHA.");
+                throw new BusinessException("Ocorreu um erro ao validar o hCAPTCHA.");
             }
         }
     }

@@ -7,6 +7,9 @@ namespace Domain.Models
         [JsonPropertyName("success")]
         public bool Success { get; set; }
 
+        [JsonPropertyName("credit")]
+        public bool Credit { get; set; }
+
         [JsonPropertyName("score")]
         public decimal Score { get; set; }
 

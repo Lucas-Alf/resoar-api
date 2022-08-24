@@ -7,7 +7,8 @@ namespace Domain.Utils
         private const string RESOAR_JWT_AUDIENCE = "RESOAR_JWT_AUDIENCE";
         private const string RESOAR_JWT_ISSUER = "RESOAR_JWT_ISSUER";
         private const string RESOAR_JWT_SECRET = "RESOAR_JWT_SECRET";
-        private const string RESOAR_RECAPTCHA_SECRET = "RESOAR_RECAPTCHA_SECRET";
+        private const string RESOAR_CAPTCHA_SECRET = "RESOAR_CAPTCHA_SECRET";
+        private const string RESOAR_CAPTCHA_SITE_KEY = "RESOAR_CAPTCHA_SITE_KEY";
         private const string RESOAR_SMTP_HOST = "RESOAR_SMTP_HOST";
         private const string RESOAR_SMTP_PORT = "RESOAR_SMTP_PORT";
         private const string RESOAR_SMTP_USER = "RESOAR_SMTP_USER";
@@ -24,7 +25,8 @@ namespace Domain.Utils
         public static string GetJwtAudience() => GetEnvironmentVariable(RESOAR_JWT_AUDIENCE);
         public static string GetJwtIssuer() => GetEnvironmentVariable(RESOAR_JWT_ISSUER);
         public static string GetJwtSecret() => GetEnvironmentVariable(RESOAR_JWT_SECRET);
-        public static string GetReCaptchaSecret() => GetEnvironmentVariable(RESOAR_RECAPTCHA_SECRET);
+        public static string GetCaptchaSecret() => GetEnvironmentVariable(RESOAR_CAPTCHA_SECRET);
+        public static string GetCaptchaSiteKey() => GetEnvironmentVariable(RESOAR_CAPTCHA_SITE_KEY);
         public static string GetSMTPHost() => GetEnvironmentVariable(RESOAR_SMTP_HOST);
         public static string GetSMTPPort() => GetEnvironmentVariable(RESOAR_SMTP_PORT);
         public static string GetSMTPUser() => GetEnvironmentVariable(RESOAR_SMTP_USER);
@@ -42,8 +44,11 @@ namespace Domain.Utils
             if (String.IsNullOrEmpty(GetJwtIssuer()))
                 throw new Exception($"Environment variable {RESOAR_JWT_ISSUER} is not set");
 
-            if (String.IsNullOrEmpty(GetReCaptchaSecret()))
-                throw new Exception($"Environment variable {RESOAR_RECAPTCHA_SECRET} is not set");
+            if (String.IsNullOrEmpty(GetCaptchaSecret()))
+                throw new Exception($"Environment variable {RESOAR_CAPTCHA_SECRET} is not set");
+
+            if (String.IsNullOrEmpty(GetCaptchaSiteKey()))
+                throw new Exception($"Environment variable {RESOAR_CAPTCHA_SITE_KEY} is not set");
 
             if (String.IsNullOrEmpty(GetSMTPHost()))
                 throw new Exception($"Environment variable {RESOAR_SMTP_HOST} is not set");

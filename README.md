@@ -27,7 +27,8 @@ More information about the API structure can be found in this [Medium post](http
 | `RESOAR_JWT_SECRET`       | Secret key for the JWT authentication.                 | Yes    |
 | `RESOAR_JWT_ISSUER`       | Issuer for the JWT authentication. (backend url)       | Yes    |
 | `RESOAR_JWT_AUDIENCE`     | Audience for the JWT authentication. (frontend url)    | Yes    |
-| `RESOAR_RECAPTCHA_SECRET` | reCAPTCHA secret key.                                  | Yes    |
+| `RESOAR_CAPTCHA_SITE_KEY` | hCAPTCHA site key. (the same used on frontend)         | Yes    |
+| `RESOAR_CAPTCHA_SECRET`   | hCAPTCHA secret key.                                   | Yes    |
 | `RESOAR_SMTP_HOST`        | E-mail SMTP host.                                      | Yes    |
 | `RESOAR_SMTP_PORT`        | E-mail SMTP port.                                      | Yes    |
 | `RESOAR_SMTP_USER`        | E-mail SMTP user.                                      | Yes    |
