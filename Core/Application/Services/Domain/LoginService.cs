@@ -28,20 +28,22 @@ namespace Application.Services.Domain
         {
             try
             {
-                if (String.IsNullOrEmpty(model.Token))
-                    throw new BusinessException("Token hCaptcha obrigatório");
-
                 if (String.IsNullOrEmpty(model.Email))
                     throw new BusinessException("Email é obrigatório");
 
                 if (String.IsNullOrEmpty(model.Password))
                     throw new BusinessException("Senha é obrigatório");
 
+#if RELEASE
+                if (String.IsNullOrEmpty(model.Token))
+                    throw new BusinessException("Token hCaptcha obrigatório");
+
                 if (!ValidateCaptcha(model.Token))
                     throw new BusinessException("Token hCaptcha inválido");
+#endif
 
                 var user = _userRepository
-                    .Query(x => x.Email == model.Email)
+                    .Query(new FilterBy<User>(x => x.Email == model.Email))
                     .Select(x => new
                     {
                         x.Id,
@@ -96,7 +98,7 @@ namespace Application.Services.Domain
                 if (!ValidateCaptcha(model.Token))
                     throw new BusinessException("reCAPTCHA inválido");
 
-                var emailExists = _userRepository.Query(x => x.Email == model.Email).Any();
+                var emailExists = _userRepository.Query(new FilterBy<User>(x => x.Email == model.Email)).Any();
                 if (emailExists)
                     throw new BusinessException("Já existe um usuário cadastrado com este e-mail.");
 
@@ -134,7 +136,7 @@ namespace Application.Services.Domain
                     throw new BusinessException("reCAPTCHA inválido");
 
                 var user = _userRepository
-                    .Query(x => x.Email == model.Email)
+                    .Query(new FilterBy<User>(x => x.Email == model.Email))
                     .Select(x => new
                     {
                         x.Id,
@@ -225,7 +227,7 @@ namespace Application.Services.Domain
                 if (model.Password != model.ConfirmPassword)
                     throw new BusinessException("As senhas não conferem");
 
-                var userExists = _userRepository.Query(x => x.Id == userId).Any();
+                var userExists = _userRepository.Query(new FilterBy<User>(x => x.Id == userId)).Any();
                 if (!userExists)
                     throw new BusinessException("Usuário não encontrado");
 

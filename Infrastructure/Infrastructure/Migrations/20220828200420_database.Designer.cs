@@ -13,8 +13,8 @@ using NpgsqlTypes;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20220806020844_new-tables")]
-    partial class newtables
+    [Migration("20220828200420_database")]
+    partial class database
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -99,10 +99,6 @@ namespace Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Abstract")
-                        .HasMaxLength(1000)
-                        .HasColumnType("character varying(1000)");
-
                     b.Property<DateTime?>("CreatedAt")
                         .IsRequired()
                         .HasColumnType("timestamp with time zone");
@@ -125,6 +121,9 @@ namespace Infrastructure.Migrations
 
                     b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("TextContent")
+                        .HasColumnType("text");
 
                     b.Property<string>("ThumbnailPath")
                         .IsRequired()

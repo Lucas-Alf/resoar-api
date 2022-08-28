@@ -97,10 +97,6 @@ namespace Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Abstract")
-                        .HasMaxLength(1000)
-                        .HasColumnType("character varying(1000)");
-
                     b.Property<DateTime?>("CreatedAt")
                         .IsRequired()
                         .HasColumnType("timestamp with time zone");
@@ -123,6 +119,9 @@ namespace Infrastructure.Migrations
 
                     b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("TextContent")
+                        .HasColumnType("text");
 
                     b.Property<string>("ThumbnailPath")
                         .IsRequired()

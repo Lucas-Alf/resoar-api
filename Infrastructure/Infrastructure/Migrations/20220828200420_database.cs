@@ -7,30 +7,10 @@ using NpgsqlTypes;
 
 namespace Infrastructure.Migrations
 {
-    public partial class newtables : Migration
+    public partial class database : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Institution",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    ImagePath = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    UserId = table.Column<int>(type: "integer", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Institution", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Institution_User_UserId",
-                        column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "Id");
-                });
-
             migrationBuilder.CreateTable(
                 name: "KeyWord",
                 columns: table => new
@@ -58,6 +38,42 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "User",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    Email = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    Password = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: false),
+                    ImagePath = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_User", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Institution",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    ImagePath = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    UserId = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Institution", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Institution_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Research",
                 columns: table => new
                 {
@@ -71,7 +87,7 @@ namespace Infrastructure.Migrations
                     FilePath = table.Column<string>(type: "text", nullable: false),
                     ThumbnailPath = table.Column<string>(type: "text", nullable: false),
                     FileVector = table.Column<NpgsqlTsVector>(type: "tsvector", nullable: false),
-                    Abstract = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
+                    TextContent = table.Column<string>(type: "text", nullable: true),
                     InstitutionId = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -294,6 +310,12 @@ namespace Infrastructure.Migrations
                 name: "IX_ResearchKnowledgeArea_ResearchId",
                 table: "ResearchKnowledgeArea",
                 column: "ResearchId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_User_Email",
+                table: "User",
+                column: "Email",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -324,6 +346,9 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Institution");
+
+            migrationBuilder.DropTable(
+                name: "User");
         }
     }
 }

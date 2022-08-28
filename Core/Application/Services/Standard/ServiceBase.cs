@@ -1,10 +1,11 @@
-﻿using Application.Exceptions;
+﻿using System.Linq.Expressions;
+using Application.Exceptions;
 using Application.Interfaces.Services.Standard;
 using Domain.Entities;
 using Domain.Extensions;
 using Domain.Models;
+using Domain.Utils;
 using Infrastructure.Interfaces.Repositories.Standard;
-using System.Linq.Expressions;
 
 namespace Application.Services.Standard
 {
@@ -17,7 +18,7 @@ namespace Application.Services.Standard
             this.repository = repository;
         }
 
-        public virtual IQueryable<TEntity> Query(Expression<Func<TEntity, bool>>? filter = null)
+        public virtual IQueryable<TEntity> Query(FilterBy<TEntity>? filter = null)
         {
             return repository.Query(filter);
         }
@@ -59,17 +60,17 @@ namespace Application.Services.Standard
             }
         }
 
-        public virtual IEnumerable<TEntity> GetAll(Expression<Func<TEntity, bool>>? filter = null)
+        public virtual IEnumerable<TEntity> GetAll(FilterBy<TEntity>? filter = null)
         {
             return repository.GetAll(filter);
         }
 
-        public virtual PaginationModel<TEntity> GetPaged(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null)
+        public virtual PaginationModel<TEntity> GetPaged(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, FilterBy<TEntity>? filter = null)
         {
             return repository.GetPaged(page, pageSize, orderBy, filter);
         }
 
-        public virtual PaginationModel<T> GetPagedAnonymous<T>(int page, int pageSize, Expression<Func<TEntity, T>> selector, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null)
+        public virtual PaginationModel<T> GetPagedAnonymous<T>(int page, int pageSize, Expression<Func<TEntity, T>> selector, Expression<Func<TEntity, object>>? orderBy = null, FilterBy<TEntity>? filter = null)
         {
             return repository.GetPagedAnonymous(page, pageSize, selector, orderBy, filter);
         }
@@ -79,15 +80,15 @@ namespace Application.Services.Standard
             return repository.GetById(id);
         }
 
-        public virtual ResponseMessageModel Remove(int id)
+        public virtual ResponseMessageModel Delete(int id)
         {
             try
             {
-                var exits = repository.Query(x => x.Id == id).Any();
+                var exits = repository.Query(new FilterBy<TEntity>(x => x.Id == id)).Any();
                 if (!exits)
                     throw new NotFoundException();
 
-                repository.Remove(id);
+                repository.Delete(id);
                 return new ResponseMessageModel("Registro removido com sucesso");
             }
             catch (Exception ex)
@@ -96,15 +97,15 @@ namespace Application.Services.Standard
             }
         }
 
-        public virtual ResponseMessageModel Remove(TEntity obj)
+        public virtual ResponseMessageModel Delete(TEntity obj)
         {
             try
             {
-                var exits = repository.Query(x => x.Id == obj.Id).Any();
+                var exits = repository.Query(new FilterBy<TEntity>(x => x.Id == obj.Id)).Any();
                 if (!exits)
                     throw new NotFoundException();
 
-                repository.Remove(obj);
+                repository.Delete(obj);
                 return new ResponseMessageModel("Registro removido com sucesso");
             }
             catch (Exception ex)
@@ -113,11 +114,11 @@ namespace Application.Services.Standard
             }
         }
 
-        public virtual ResponseMessageModel RemoveRange(IEnumerable<TEntity> entities)
+        public virtual ResponseMessageModel DeleteRange(IEnumerable<TEntity> entities)
         {
             try
             {
-                repository.RemoveRange(entities);
+                repository.DeleteRange(entities);
                 return new ResponseMessageModel("Registros removidos com sucesso");
             }
             catch (Exception ex)
@@ -130,7 +131,7 @@ namespace Application.Services.Standard
         {
             try
             {
-                var exits = repository.Query(x => x.Id == obj.Id).Any();
+                var exits = repository.Query(new FilterBy<TEntity>(x => x.Id == obj.Id)).Any();
                 if (!exits)
                     throw new NotFoundException();
 
@@ -204,17 +205,17 @@ namespace Application.Services.Standard
             }
         }
 
-        public virtual async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? filter = null)
+        public virtual async Task<IEnumerable<TEntity>> GetAllAsync(FilterBy<TEntity>? filter = null)
         {
             return await repository.GetAllAsync(filter);
         }
 
-        public virtual async Task<PaginationModel<TEntity>> GetPagedAsync(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null)
+        public virtual async Task<PaginationModel<TEntity>> GetPagedAsync(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, FilterBy<TEntity>? filter = null)
         {
             return await repository.GetPagedAsync(page, pageSize, orderBy, filter);
         }
 
-        public virtual async Task<PaginationModel<T>> GetPagedAnonymousAsync<T>(int page, int pageSize, Expression<Func<TEntity, T>> selector, Expression<Func<TEntity, object>>? orderBy = null, Expression<Func<TEntity, bool>>? filter = null)
+        public virtual async Task<PaginationModel<T>> GetPagedAnonymousAsync<T>(int page, int pageSize, Expression<Func<TEntity, T>> selector, Expression<Func<TEntity, object>>? orderBy = null, FilterBy<TEntity>? filter = null)
         {
             return await repository.GetPagedAnonymousAsync(page, pageSize, selector, orderBy, filter);
         }
@@ -224,15 +225,15 @@ namespace Application.Services.Standard
             return await repository.GetByIdAsync(id);
         }
 
-        public virtual async Task<ResponseMessageModel> RemoveAsync(int id)
+        public virtual async Task<ResponseMessageModel> DeleteAsync(int id)
         {
             try
             {
-                var exits = repository.Query(x => x.Id == id).Any();
+                var exits = repository.Query(new FilterBy<TEntity>(x => x.Id == id)).Any();
                 if (!exits)
                     throw new NotFoundException();
 
-                await repository.RemoveAsync(id);
+                await repository.DeleteAsync(id);
                 return new ResponseMessageModel("Registro removido com sucesso");
             }
             catch (Exception ex)
@@ -241,15 +242,15 @@ namespace Application.Services.Standard
             }
         }
 
-        public virtual async Task<ResponseMessageModel> RemoveAsync(TEntity obj)
+        public virtual async Task<ResponseMessageModel> DeleteAsync(TEntity obj)
         {
             try
             {
-                var exits = repository.Query(x => x.Id == obj.Id).Any();
+                var exits = repository.Query(new FilterBy<TEntity>(x => x.Id == obj.Id)).Any();
                 if (!exits)
                     throw new NotFoundException();
 
-                await repository.RemoveAsync(obj);
+                await repository.DeleteAsync(obj);
                 return new ResponseMessageModel("Registro removido com sucesso");
             }
             catch (Exception ex)
@@ -258,11 +259,11 @@ namespace Application.Services.Standard
             }
         }
 
-        public virtual async Task<ResponseMessageModel> RemoveRangeAsync(IEnumerable<TEntity> entities)
+        public virtual async Task<ResponseMessageModel> DeleteRangeAsync(IEnumerable<TEntity> entities)
         {
             try
             {
-                await repository.RemoveRangeAsync(entities);
+                await repository.DeleteRangeAsync(entities);
                 return new ResponseMessageModel("Registros removidos com sucesso");
             }
             catch (Exception ex)
@@ -275,7 +276,7 @@ namespace Application.Services.Standard
         {
             try
             {
-                var exits = repository.Query(x => x.Id == obj.Id).Any();
+                var exits = repository.Query(new FilterBy<TEntity>(x => x.Id == obj.Id)).Any();
                 if (!exits)
                     throw new NotFoundException();
 

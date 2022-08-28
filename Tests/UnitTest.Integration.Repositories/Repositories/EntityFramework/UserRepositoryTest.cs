@@ -56,7 +56,7 @@ namespace UnitTest.Integration.Repositories.Repositories.EntityFramework
         public void Remove()
         {
             var inserted = userEntityFramework.Add(builder.CreateUser());
-            var result = userEntityFramework.Remove(inserted.Id);
+            var result = userEntityFramework.Delete(inserted.Id);
             Assert.AreEqual(true, result);
         }
 
@@ -64,7 +64,7 @@ namespace UnitTest.Integration.Repositories.Repositories.EntityFramework
         public void RemoveObj()
         {
             var inserted = userEntityFramework.Add(builder.CreateUser());
-            var result = userEntityFramework.Remove(inserted);
+            var result = userEntityFramework.Delete(inserted);
             Assert.AreEqual(1, result);
         }
 
@@ -77,7 +77,7 @@ namespace UnitTest.Integration.Repositories.Repositories.EntityFramework
             {
                 inserted1, inserted2
             };
-            var result = userEntityFramework.RemoveRange(usersRange);
+            var result = userEntityFramework.DeleteRange(usersRange);
             Assert.AreEqual(2, result);
         }
 

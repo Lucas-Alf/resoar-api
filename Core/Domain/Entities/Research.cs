@@ -35,8 +35,7 @@ namespace Domain.Entities
         [Required(ErrorMessage = "O Campo Vetor de Pesquisa é obrigatório")]
         public NpgsqlTsVector? FileVector { get; set; }
 
-        [MaxLength(1000, ErrorMessage = "O Campo Resumo deve ter no máximo 1000 caracteres")]
-        public string? Abstract { get; set; }
+        public string? TextContent { get; set; }
 
         [Required(ErrorMessage = "O Campo Instituição é obrigatório")]
         public int? InstitutionId { get; set; }
