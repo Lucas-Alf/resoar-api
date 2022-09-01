@@ -1,0 +1,38 @@
+name: Issue Template
+description: Issue template for product backlog
+title: "Issue Title"
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        # User Story
+  - type: input
+    id: as-a-user
+    attributes:
+      label: As a
+      placeholder: < type of user >
+    validations:
+      required: true
+  - type: textarea
+    id: i-whant
+    attributes:
+      label: I Want
+      placeholder: < some goal >
+    validations:
+      required: true
+  - type: textarea
+    id: so-that
+    attributes:
+      label: So that
+      placeholder: < some reason >
+    validations:
+      required: false
+   - type: input
+    id: prototype
+    attributes:
+      label: Prototype
+      placeholder: < Prototype image >
+    validations:
+      required: false
+ 
