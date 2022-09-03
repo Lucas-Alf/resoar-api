@@ -9,7 +9,7 @@ namespace Application.Services.Domain
 {
     public class EmailService : IEmailService
     {
-        public void Send(string to, string subject, string html, string from = null)
+        public void Send(string to, string subject, string html, string? from = null)
         {
             // create message
             var email = new MimeMessage();

@@ -211,7 +211,7 @@ namespace Infrastructure.Repositories.Standard.EFCore
                 Page = pagination.Page,
                 PageSize = pagination.PageSize,
                 TotalRecords = pagination.TotalRecords,
-                Records = pagination.Query.ToList()
+                Records = pagination.Query!.ToList()
             };
         }
 
@@ -223,7 +223,7 @@ namespace Infrastructure.Repositories.Standard.EFCore
                 Page = pagination.Page,
                 PageSize = pagination.PageSize,
                 TotalRecords = pagination.TotalRecords,
-                Records = pagination.Query.Select(selector).ToList()
+                Records = pagination.Query!.Select(selector).ToList()
             };
         }
 
@@ -235,7 +235,7 @@ namespace Infrastructure.Repositories.Standard.EFCore
                 Page = pagination.Page,
                 PageSize = pagination.PageSize,
                 TotalRecords = pagination.TotalRecords,
-                Records = pagination.Query.ToList()
+                Records = pagination.Query!.ToList()
             });
         }
 
@@ -247,7 +247,7 @@ namespace Infrastructure.Repositories.Standard.EFCore
                 Page = pagination.Page,
                 PageSize = pagination.PageSize,
                 TotalRecords = pagination.TotalRecords,
-                Records = pagination.Query.Select(selector).ToList()
+                Records = pagination.Query!.Select(selector).ToList()
             });
         }
 

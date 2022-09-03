@@ -61,9 +61,9 @@ namespace Domain.Utils
             var right = rightVisitor.Visit(expr2.Body);
 
             if (type == CombineTypeEnum.And)
-                return Expression.Lambda<Func<T, bool>>(Expression.AndAlso(left, right), parameter);
+                return Expression.Lambda<Func<T, bool>>(Expression.AndAlso(left!, right!), parameter);
             else
-                return Expression.Lambda<Func<T, bool>>(Expression.OrElse(left, right), parameter);
+                return Expression.Lambda<Func<T, bool>>(Expression.OrElse(left!, right!), parameter);
         }
 
         private class ReplaceExpressionVisitor : ExpressionVisitor
@@ -77,10 +77,11 @@ namespace Domain.Utils
                 _newValue = newValue;
             }
 
-            public override Expression Visit(Expression node)
+            public override Expression? Visit(Expression? node)
             {
                 if (node == _oldValue)
                     return _newValue;
+
                 return base.Visit(node);
             }
         }

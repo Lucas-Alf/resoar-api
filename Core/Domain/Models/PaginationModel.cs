@@ -8,7 +8,7 @@ namespace Domain.Models
 
         public int TotalRecords { get; set; }
 
-        public IEnumerable<TEntity> Records { get; set; }
+        public IEnumerable<TEntity> Records { get; set; } = new List<TEntity>();
     }
 
     public class PaginationQuery<TEntity>
@@ -19,6 +19,6 @@ namespace Domain.Models
 
         public int TotalRecords { get; set; }
 
-        public IQueryable<TEntity> Query { get; set; }
+        public IQueryable<TEntity>? Query { get; set; }
     }
 }

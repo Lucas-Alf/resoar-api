@@ -6,7 +6,6 @@ namespace Infrastructure.DBConfiguration.EFCore
 {
     public class ApplicationContext : DbContext
     {
-        /* Creating DatabaseContext without Dependency Injection */
         public ApplicationContext() { }
         protected override void OnConfiguring(DbContextOptionsBuilder dbContextOptionsBuilder)
         {
@@ -14,11 +13,10 @@ namespace Infrastructure.DBConfiguration.EFCore
                 dbContextOptionsBuilder.UseNpgsql(EnvironmentManager.GetConnectionString());
         }
 
-        /* Creating DatabaseContext configured outside with Dependency Injection */
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
         {
         }
 
-        public DbSet<User> User { get; set; }
+        public DbSet<User>? User { get; set; }
     }
 }
