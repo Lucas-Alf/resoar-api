@@ -1,7 +1,7 @@
 ﻿using Domain.Utils;
 using Infrastructure.DBConfiguration.EFCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure.IoC
 {

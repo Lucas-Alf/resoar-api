@@ -39,13 +39,13 @@ namespace Application.Services.Domain
                     Institution = new InstitutionModel
                     {
                         Id = x.InstitutionId,
-                        Name = x.Institution.Name
+                        Name = x.Institution!.Name
                     },
-                    Authors = x.Authors
+                    Authors = x.Authors!
                         .Select(y => new AuthorModel
                         {
                             Id = y.UserId,
-                            Name = y.User.Name
+                            Name = y.User!.Name
                         })
                         .ToList()
                 }

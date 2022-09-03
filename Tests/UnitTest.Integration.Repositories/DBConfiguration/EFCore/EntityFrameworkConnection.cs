@@ -7,9 +7,9 @@ namespace UnitTest.Integration.Repositories.DBConfiguration.EFCore
 {
     public class EntityFrameworkConnection
     {
-        private IServiceProvider _provider;
+        private IServiceProvider? _provider;
 
-        public ApplicationContext DataBaseConfiguration()
+        public ApplicationContext? DataBaseConfiguration()
         {
             var services = new ServiceCollection();
             services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(EnvironmentManager.GetConnectionStringTests()));
