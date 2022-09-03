@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Domain.Enums;
 using NpgsqlTypes;
 
 namespace Domain.Entities
@@ -18,10 +19,10 @@ namespace Domain.Entities
         public int? Year { get; set; }
 
         [Required(ErrorMessage = "O Campo Tipo é obrigatório")]
-        public int? Type { get; set; }
+        public ResearchTypeEnum? Type { get; set; }
 
         [Required(ErrorMessage = "O Campo Visibilidade é obrigatório")]
-        public int? Visibility { get; set; }
+        public ResearchVisibilityEnum? Visibility { get; set; }
 
         [Required(ErrorMessage = "O Campo Idioma é obrigatório")]
         public string? Language { get; set; }
@@ -35,7 +36,7 @@ namespace Domain.Entities
         [Required(ErrorMessage = "O Campo Vetor de Pesquisa é obrigatório")]
         public NpgsqlTsVector? FileVector { get; set; }
 
-        public string? TextContent { get; set; }
+        public string? RawContent { get; set; }
 
         [Required(ErrorMessage = "O Campo Instituição é obrigatório")]
         public int? InstitutionId { get; set; }

@@ -8,6 +8,3 @@ dotnet tool install --global dotnet-ef
 
 # Apply the migrations to the database
 dotnet ef database update
-
-# Keeps the terminal open
-$SHELL

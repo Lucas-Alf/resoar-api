@@ -30,8 +30,7 @@ namespace Domain.Entities
         public DateTime? LastLogin { get; set; }
 
         #region collections
-        public virtual ICollection<Institution>? Institutions { get; set; }
-        public virtual ICollection<Research>? Researches { get; set; }
+        public virtual ICollection<ResearchAuthor>? ResearchAuthors { get; set; }
 
         #endregion collections
     }

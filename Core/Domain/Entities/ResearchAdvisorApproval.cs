@@ -16,7 +16,7 @@ namespace Domain.Entities
         public int? UserId { get; set; }
 
         [Required(ErrorMessage = "O Campo Aprovação é obrigatório")]
-        public bool? Approved { get; set; }
+        public bool Approved { get; set; }
 
         #region references
         public virtual Research? Research { get; set; }

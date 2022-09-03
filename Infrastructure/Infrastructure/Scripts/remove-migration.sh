@@ -11,6 +11,3 @@ echo "Removing the last migration"
 
 # Create migration
 dotnet ef migrations remove
-
-# Keeps the terminal open
-$SHELL

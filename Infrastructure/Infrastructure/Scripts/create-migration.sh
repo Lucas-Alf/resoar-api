@@ -14,6 +14,3 @@ echo "Creating migration '$name'"
 
 # Create migration
 dotnet ef migrations add $name
-
-# Keeps the terminal open
-$SHELL

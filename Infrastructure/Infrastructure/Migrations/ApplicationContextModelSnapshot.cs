@@ -40,15 +40,10 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
                     b.HasIndex("Name")
                         .IsUnique();
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Institution");
                 });
@@ -99,7 +94,7 @@ namespace Infrastructure.Migrations
 
                     b.Property<DateTime?>("CreatedAt")
                         .IsRequired()
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("FilePath")
                         .IsRequired()
@@ -118,9 +113,9 @@ namespace Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("ModifiedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("TextContent")
+                    b.Property<string>("RawContent")
                         .HasColumnType("text");
 
                     b.Property<string>("ThumbnailPath")
@@ -132,15 +127,10 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(350)
                         .HasColumnType("character varying(350)");
 
-                    b.Property<int?>("Type")
-                        .IsRequired()
+                    b.Property<int>("Type")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("Visibility")
-                        .IsRequired()
+                    b.Property<int>("Visibility")
                         .HasColumnType("integer");
 
                     b.Property<int?>("Year")
@@ -150,8 +140,6 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("InstitutionId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Research");
                 });
@@ -189,8 +177,7 @@ namespace Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<bool?>("Approved")
-                        .IsRequired()
+                    b.Property<bool>("Approved")
                         .HasColumnType("boolean");
 
                     b.Property<int?>("ResearchId")
@@ -306,7 +293,7 @@ namespace Infrastructure.Migrations
                         .HasColumnType("character varying(255)");
 
                     b.Property<DateTime?>("LastLogin")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -326,13 +313,6 @@ namespace Infrastructure.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Institution", b =>
-                {
-                    b.HasOne("Domain.Entities.User", null)
-                        .WithMany("Institutions")
-                        .HasForeignKey("UserId");
-                });
-
             modelBuilder.Entity("Domain.Entities.Research", b =>
                 {
                     b.HasOne("Domain.Entities.Institution", "Institution")
@@ -340,10 +320,6 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("InstitutionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Domain.Entities.User", null)
-                        .WithMany("Researches")
-                        .HasForeignKey("UserId");
 
                     b.Navigation("Institution");
                 });
@@ -395,7 +371,7 @@ namespace Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("ResearchAuthors")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -463,9 +439,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
-                    b.Navigation("Institutions");
-
-                    b.Navigation("Researches");
+                    b.Navigation("ResearchAuthors");
                 });
 #pragma warning restore 612, 618
         }
