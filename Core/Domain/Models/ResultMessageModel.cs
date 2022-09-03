@@ -6,6 +6,7 @@ namespace Domain.Models
         public string? Message { get; set; }
         public object? Data { get; set; }
 
+        public ResponseMessageModel() { }
         public ResponseMessageModel(string message)
         {
             Success = true;

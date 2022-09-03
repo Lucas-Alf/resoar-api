@@ -9,6 +9,8 @@ namespace Infrastructure.DBConfiguration.EFCore
         public ApplicationContext() { }
         protected override void OnConfiguring(DbContextOptionsBuilder dbContextOptionsBuilder)
         {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
             if (!dbContextOptionsBuilder.IsConfigured)
                 dbContextOptionsBuilder.UseNpgsql(EnvironmentManager.GetConnectionString());
         }

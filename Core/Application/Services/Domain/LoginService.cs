@@ -17,6 +17,7 @@ namespace Application.Services.Domain
     {
         private readonly IUserRepository _userRepository;
         private readonly IEmailService _emailService;
+        private readonly int _maxTriesBeforeRequireCaptcha = 3;
 
         public LoginService(IUserRepository userRepository, IEmailService emailService)
         {
@@ -34,29 +35,54 @@ namespace Application.Services.Domain
                 if (String.IsNullOrEmpty(model.Password))
                     throw new BusinessException("Senha é obrigatório");
 
-#if RELEASE
-                if (String.IsNullOrEmpty(model.Token))
-                    throw new BusinessException("Token hCaptcha obrigatório");
-
-                if (!ValidateCaptcha(model.Token))
-                    throw new BusinessException("Token hCaptcha inválido");
-#endif
-
                 var user = _userRepository
                     .Query(new FilterBy<User>(x => x.Email == model.Email))
                     .Select(x => new
                     {
                         x.Id,
                         x.Name,
-                        x.Password
+                        x.Password,
+                        x.FailLoginCount
                     })
                     .FirstOrDefault();
 
                 if (user == null)
                     throw new BusinessException("Usuário não encontrado");
 
+
+                if (user.FailLoginCount >= _maxTriesBeforeRequireCaptcha)
+                {
+                    if (String.IsNullOrEmpty(model.Token))
+                        return new ErrorMessageModel(
+                            message: "Desafio captcha obrigatório",
+                            data: new { RequireCaptcha = true }
+                        );
+
+                    if (!ValidateCaptcha(model.Token))
+                        throw new BusinessException("Desafio captcha inválido");
+                }
+
                 if (!BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
+                {
+                    var failLoginCount = user.FailLoginCount + 1;
+
+                    _userRepository.UpdateSomeFields(
+                        new User
+                        {
+                            Id = user.Id,
+                            FailLoginCount = failLoginCount
+                        },
+                        x => x.FailLoginCount
+                    );
+
+                    if (failLoginCount >= _maxTriesBeforeRequireCaptcha)
+                        return new ErrorMessageModel(
+                            message: "Usuário ou Senha inválida",
+                            data: new { RequireCaptcha = true }
+                        );
+
                     throw new BusinessException("Usuário ou Senha inválida");
+                }
 
                 var authClaims = new List<Claim>
                 {
@@ -69,12 +95,22 @@ namespace Application.Services.Domain
 
                 var token = GenerateToken(authClaims);
 
+                _userRepository.UpdateSomeFields(
+                    new User
+                    {
+                        Id = user.Id,
+                        FailLoginCount = 0,
+                        LastLogin = DateTime.Now
+                    },
+                    x => x.FailLoginCount,
+                    x => x.LastLogin!
+                );
+
                 return new ResponseMessageModel(new
                 {
                     token = new JwtSecurityTokenHandler().WriteToken(token),
                     expiration = token.ValidTo
                 });
-
             }
             catch (Exception ex)
             {
