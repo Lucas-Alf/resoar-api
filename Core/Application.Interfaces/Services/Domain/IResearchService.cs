@@ -1,11 +1,10 @@
-﻿using Application.Interfaces.Services.Standard;
-using Domain.Entities;
-using Domain.Models;
+﻿using Domain.Models;
 
 namespace Application.Interfaces.Services.Domain
 {
-    public interface IResearchService : IServiceBase<Research>
+    public interface IResearchService
     {
-        PaginationModel<ResearchModel> GetPaged(int page, int pageSize, int? userId = null);
+        ResponseMessageModel Add(ResearchCreateModel model);
+        PaginationModel<ResearchViewModel> GetPaged(int page, int pageSize, int? userId = null);
     }
 }

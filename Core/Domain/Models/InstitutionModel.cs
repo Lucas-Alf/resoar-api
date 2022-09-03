@@ -1,6 +1,6 @@
 namespace Domain.Models
 {
-    public class InstitutionModel
+    public class InstitutionViewModel
     {
         public int? Id { get; set; }
         public string? Name { get; set; }
