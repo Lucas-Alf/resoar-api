@@ -5,17 +5,20 @@ using Domain.Extensions;
 using Domain.Models;
 using Domain.Utils;
 using Infrastructure.Interfaces.Repositories.Domain;
-using Microsoft.AspNetCore.Http;
 
 namespace Application.Services.Domain
 {
     public class ResearchService : IResearchService
     {
         private readonly IResearchRepository _repository;
-
-        public ResearchService(IResearchRepository repository)
+        private readonly IPdfDocumentService _pdfDocumentService;
+        public ResearchService(
+            IResearchRepository repository,
+            IPdfDocumentService pdfDocumentService
+        )
         {
             _repository = repository;
+            _pdfDocumentService = pdfDocumentService;
         }
 
         public PaginationModel<ResearchViewModel> GetPaged(int page, int pageSize, int? userId = null)
@@ -87,8 +90,7 @@ namespace Application.Services.Domain
                 Visibility = model.Visibility,
                 InstitutionId = model.InstitutionId,
                 Language = model.Language,
-                CreatedAt = DateTime.Now,
-                RawContent = ExtractText(model.File!)
+                CreatedAt = DateTime.Now
             };
 
             domain.Authors = model.AuthorIds
@@ -100,12 +102,18 @@ namespace Application.Services.Domain
                     .Select(advisorId => new ResearchAdvisor { UserId = advisorId })
                     .ToList();
 
-            return domain;
-        }
+            using (var ms = new MemoryStream())
+            {
+                model.File!.CopyTo(ms);
+                var fileBytes = ms.ToArray();
 
-        private string ExtractText(IFormFile file)
-        {
-            return "to-do";
+                domain.RawContent = _pdfDocumentService.ExtractText(fileBytes);
+                var thumbnail = _pdfDocumentService.GenerateThumbnail(fileBytes);
+
+                File.WriteAllBytes("output_image.png", thumbnail);
+            }
+
+            return domain;
         }
     }
 }

@@ -33,7 +33,6 @@ namespace Domain.Entities
         [Required(ErrorMessage = "O Campo Caminho do Thumbnail é obrigatório")]
         public string? ThumbnailPath { get; set; }
 
-        [Required(ErrorMessage = "O Campo Vetor de Pesquisa é obrigatório")]
         public NpgsqlTsVector? FileVector { get; set; }
 
         public string? RawContent { get; set; }

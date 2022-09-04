@@ -16,6 +16,7 @@ namespace Application.IoC
             services.AddScoped<IKeyWordService, KeyWordService>();
             services.AddScoped<IKnowledgeAreaService, KnowledgeAreaService>();
             services.AddScoped<ILoginService, LoginService>();
+            services.AddScoped<IPdfDocumentService, PdfDocumentService>();
             services.AddScoped<IResearchAdvisorApprovalService, ResearchAdvisorApprovalService>();
             services.AddScoped<IResearchAdvisorService, ResearchAdvisorService>();
             services.AddScoped<IResearchAuthorService, ResearchAuthorService>();
