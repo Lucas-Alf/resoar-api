@@ -13,7 +13,7 @@ using NpgsqlTypes;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20220903195440_Database")]
+    [Migration("20220904234015_Database")]
     partial class Database
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -100,11 +100,8 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("FilePath")
                         .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<NpgsqlTsVector>("FileVector")
-                        .IsRequired()
-                        .HasColumnType("tsvector");
+                        .HasMaxLength(350)
+                        .HasColumnType("character varying(350)");
 
                     b.Property<int?>("InstitutionId")
                         .IsRequired()
@@ -112,7 +109,8 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("Language")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
 
                     b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("timestamp without time zone");
@@ -120,9 +118,13 @@ namespace Infrastructure.Migrations
                     b.Property<string>("RawContent")
                         .HasColumnType("text");
 
+                    b.Property<NpgsqlTsVector>("SearchVector")
+                        .HasColumnType("tsvector");
+
                     b.Property<string>("ThumbnailPath")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(350)
+                        .HasColumnType("character varying(350)");
 
                     b.Property<string>("Title")
                         .IsRequired()

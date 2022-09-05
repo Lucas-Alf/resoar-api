@@ -69,6 +69,8 @@ namespace Application.Services.Domain
                 if (!String.IsNullOrEmpty(validation))
                     throw new BusinessException(validation);
 
+                _repository.Add(domain);
+
                 return new ResponseMessageModel("Registro salvo com sucesso");
             }
             catch (Exception ex)
@@ -89,7 +91,7 @@ namespace Application.Services.Domain
                 Type = model.Type,
                 Visibility = model.Visibility,
                 InstitutionId = model.InstitutionId,
-                Language = model.Language,
+                Language = model.Language?.ToString().ToLower(),
                 CreatedAt = DateTime.Now
             };
 
@@ -110,7 +112,8 @@ namespace Application.Services.Domain
                 domain.RawContent = _pdfDocumentService.ExtractText(fileBytes);
                 var thumbnail = _pdfDocumentService.GenerateThumbnail(fileBytes);
 
-                File.WriteAllBytes("output_image.png", thumbnail);
+                domain.ThumbnailPath = "123";
+                domain.FilePath = "123";
             }
 
             return domain;

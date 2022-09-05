@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Domain.Enums;
+using Microsoft.EntityFrameworkCore;
 using NpgsqlTypes;
 
 namespace Domain.Entities
@@ -25,15 +26,18 @@ namespace Domain.Entities
         public ResearchVisibilityEnum? Visibility { get; set; }
 
         [Required(ErrorMessage = "O Campo Idioma é obrigatório")]
+        [MaxLength(80, ErrorMessage = "O Campo Idioma deve ter no máximo 80 caracteres")]
         public string? Language { get; set; }
 
         [Required(ErrorMessage = "O Campo Caminho do Arquivo é obrigatório")]
+        [MaxLength(350, ErrorMessage = "O Campo Caminho do Arquivo deve ter no máximo 350 caracteres")]
         public string? FilePath { get; set; }
 
         [Required(ErrorMessage = "O Campo Caminho do Thumbnail é obrigatório")]
+        [MaxLength(350, ErrorMessage = "O Campo Caminho do Thumbnail deve ter no máximo 350 caracteres")]
         public string? ThumbnailPath { get; set; }
 
-        public NpgsqlTsVector? FileVector { get; set; }
+        public NpgsqlTsVector? SearchVector { get; set; }
 
         public string? RawContent { get; set; }
 

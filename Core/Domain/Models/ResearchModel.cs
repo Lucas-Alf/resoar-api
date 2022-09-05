@@ -33,7 +33,7 @@ namespace Domain.Models
         public ResearchVisibilityEnum? Visibility { get; set; }
 
         [Required(ErrorMessage = "O Campo Idioma é obrigatório")]
-        public string? Language { get; set; }
+        public ResearchLanguageEnum? Language { get; set; }
 
         [Required(ErrorMessage = "O Campo Instituição é obrigatório")]
         public int? InstitutionId { get; set; }
