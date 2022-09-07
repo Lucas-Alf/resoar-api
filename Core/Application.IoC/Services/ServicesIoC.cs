@@ -23,6 +23,7 @@ namespace Application.IoC
             services.AddScoped<IResearchKeyWordService, ResearchKeyWordService>();
             services.AddScoped<IResearchKnowledgeAreaService, ResearchKnowledgeAreaService>();
             services.AddScoped<IResearchService, ResearchService>();
+            services.AddScoped<IStorageService, StorageService>();
             services.AddScoped<IUserService, UserService>();
         }
     }

@@ -20,18 +20,22 @@ This API follows the Repository Pattern with the following layers:
 More information about the API structure can be found in this [Medium post](https://medium.com/@adlerpagliarini/c-net-core-criando-uma-aplica%C3%A7%C3%A3o-utilizando-repository-pattern-com-dois-orms-diferentes-dapper-97e8aa6ca35).
 
 ## Environment Variables
-| Name                      | Description                                            |Required|
-|---------------------------|--------------------------------------------------------|--------|
-| `RESOAR_CONNECTION`       | Database connection string.                            | Yes    |
-| `RESOAR_CONNECTION_TESTS` | Tests database connection string.                      | No     |
-| `RESOAR_JWT_SECRET`       | Secret key for the JWT authentication.                 | Yes    |
-| `RESOAR_JWT_ISSUER`       | Issuer for the JWT authentication. (backend url)       | Yes    |
-| `RESOAR_JWT_AUDIENCE`     | Audience for the JWT authentication. (frontend url)    | Yes    |
-| `RESOAR_CAPTCHA_SITE_KEY` | hCAPTCHA site key. (the same used on frontend)         | Yes    |
-| `RESOAR_CAPTCHA_SECRET`   | hCAPTCHA secret key.                                   | Yes    |
-| `RESOAR_SMTP_HOST`        | E-mail SMTP host.                                      | Yes    |
-| `RESOAR_SMTP_PORT`        | E-mail SMTP port.                                      | Yes    |
-| `RESOAR_SMTP_USER`        | E-mail SMTP user.                                      | Yes    |
-| `RESOAR_SMTP_EMAIL`       | E-mail SMTP (sender e-mail).                           | Yes    |
-| `RESOAR_SMTP_PASSWORD`    | E-mail SMTP password.                                  | Yes    |
+| Name                       | Description                                            |Required|
+|----------------------------|--------------------------------------------------------|--------|
+| `RESOAR_CONNECTION`        | Database connection string.                            | Yes    |
+| `RESOAR_CONNECTION_TESTS`  | Tests database connection string.                      | No     |
+| `RESOAR_JWT_SECRET`        | Secret key for the JWT authentication.                 | Yes    |
+| `RESOAR_JWT_ISSUER`        | Issuer for the JWT authentication. (backend url)       | Yes    |
+| `RESOAR_JWT_AUDIENCE`      | Audience for the JWT authentication. (frontend url)    | Yes    |
+| `RESOAR_CAPTCHA_SITE_KEY`  | hCAPTCHA site key. (the same used on frontend)         | Yes    |
+| `RESOAR_CAPTCHA_SECRET`    | hCAPTCHA secret key.                                   | Yes    |
+| `RESOAR_STORAGE_ACCESS_KEY`| Storage Access Key.                                    | Yes    |
+| `RESOAR_STORAGE_SECRET_KEY`| Storage Secret Key.                                    | Yes    |
+| `RESOAR_STORAGE_REGION`    | Storage Region. Ex: `us-west-1`                        | Only S3|
+| `RESOAR_STORAGE_ENDPOINT`  | Storage Endpoint URL for Digital Ocean Spaces.         | Only DO|
+| `RESOAR_SMTP_HOST`         | E-mail SMTP host.                                      | Yes    |
+| `RESOAR_SMTP_PORT`         | E-mail SMTP port.                                      | Yes    |
+| `RESOAR_SMTP_USER`         | E-mail SMTP user.                                      | Yes    |
+| `RESOAR_SMTP_EMAIL`        | E-mail SMTP (sender e-mail).                           | Yes    |
+| `RESOAR_SMTP_PASSWORD`     | E-mail SMTP password.                                  | Yes    |
 

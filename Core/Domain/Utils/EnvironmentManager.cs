@@ -14,6 +14,10 @@ namespace Domain.Utils
         private const string RESOAR_SMTP_USER = "RESOAR_SMTP_USER";
         private const string RESOAR_SMTP_EMAIL = "RESOAR_SMTP_EMAIL";
         private const string RESOAR_SMTP_PASSWORD = "RESOAR_SMTP_PASSWORD";
+        private const string RESOAR_STORAGE_ACCESS_KEY = "RESOAR_STORAGE_ACCESS_KEY";
+        private const string RESOAR_STORAGE_SECRET_KEY = "RESOAR_STORAGE_SECRET_KEY";
+        private const string RESOAR_STORAGE_ENDPOINT = "RESOAR_STORAGE_ENDPOINT";
+        private const string RESOAR_STORAGE_REGION = "RESOAR_STORAGE_REGION";
 
         public static string GetEnvironmentVariable(string key)
         {
@@ -32,6 +36,10 @@ namespace Domain.Utils
         public static string GetSMTPUser() => GetEnvironmentVariable(RESOAR_SMTP_USER);
         public static string GetSMTPEmail() => GetEnvironmentVariable(RESOAR_SMTP_EMAIL);
         public static string GetSMTPPassword() => GetEnvironmentVariable(RESOAR_SMTP_PASSWORD);
+        public static string GetStorageAccessKey() => GetEnvironmentVariable(RESOAR_STORAGE_ACCESS_KEY);
+        public static string GetStorageSecretKey() => GetEnvironmentVariable(RESOAR_STORAGE_SECRET_KEY);
+        public static string GetStorageEndpoint() => GetEnvironmentVariable(RESOAR_STORAGE_ENDPOINT);
+        public static string GetStorageRegion() => GetEnvironmentVariable(RESOAR_STORAGE_REGION);
 
         public static void Validate()
         {
@@ -64,6 +72,12 @@ namespace Domain.Utils
 
             if (String.IsNullOrEmpty(GetSMTPPassword()))
                 throw new Exception($"Environment variable {RESOAR_SMTP_PASSWORD} is not set");
+
+            if (String.IsNullOrEmpty(GetStorageAccessKey()))
+                throw new Exception($"Environment variable {RESOAR_STORAGE_ACCESS_KEY} is not set");
+
+            if (String.IsNullOrEmpty(GetStorageSecretKey()))
+                throw new Exception($"Environment variable {RESOAR_STORAGE_SECRET_KEY} is not set");
 
             var jwtSecret = GetJwtSecret();
             if (String.IsNullOrEmpty(jwtSecret))

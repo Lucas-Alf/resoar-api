@@ -24,9 +24,9 @@ namespace WebApplication.Controllers
         }
 
         [HttpPost]
-        public ResponseMessageModel Add([FromForm] ResearchCreateModel model)
+        public async Task<ResponseMessageModel> Add([FromForm] ResearchCreateModel model)
         {
-            return _researchService.Add(model);
+            return await _researchService.Add(model);
         }
     }
 }
