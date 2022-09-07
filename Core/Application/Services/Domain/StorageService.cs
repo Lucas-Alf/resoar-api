@@ -1,4 +1,5 @@
-﻿using Amazon;
+﻿using System.Web;
+using Amazon;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.S3.Transfer;
@@ -48,16 +49,34 @@ namespace Application.Services.Domain
         /// <param name="key"></param>
         /// <param name="folder"></param>
         /// <param name="contentType"></param>
+        /// <param name="permission"></param>
         /// <returns></returns>
-        public async Task Upload(MemoryStream stream, string key, string folder, string contentType)
+        public async Task Upload(
+            MemoryStream stream,
+            string key,
+            string folder,
+            string contentType,
+            S3CannedACL permission,
+            Dictionary<string, string>? metadata = null
+        )
         {
             var uploadRequest = new TransferUtilityUploadRequest
             {
                 InputStream = stream,
                 Key = key,
                 BucketName = $"{BUCKET_NAME}/{folder}",
-                ContentType = contentType
+                ContentType = contentType,
+                CannedACL = permission
             };
+
+            if (metadata != null)
+            {
+                foreach (var item in metadata)
+                {
+                    uploadRequest.Metadata.Add(item.Key, HttpUtility.UrlEncode(item.Value));
+                }
+            }
+
 
             var client = GetClient();
             var fileTransferUtility = new TransferUtility(client);

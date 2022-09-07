@@ -1,4 +1,5 @@
-﻿using Amazon.S3.Model;
+﻿using Amazon.S3;
+using Amazon.S3.Model;
 
 namespace Application.Interfaces.Services.Domain
 {
@@ -28,6 +29,6 @@ namespace Application.Interfaces.Services.Domain
         /// <param name="folder"></param>
         /// <param name="contentType"></param>
         /// <returns></returns>
-        Task Upload(MemoryStream file, string fileKey, string folder, string contentType);
+        Task Upload(MemoryStream file, string fileKey, string folder, string contentType, S3CannedACL permission, Dictionary<string, string>? metadata = null);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Application.Exceptions;
+﻿using Amazon.S3;
+using Application.Exceptions;
 using Application.Interfaces.Services.Domain;
 using Domain.Entities;
 using Domain.Extensions;
@@ -14,6 +15,8 @@ namespace Application.Services.Domain
         private readonly IResearchRepository _repository;
         private readonly IPdfDocumentService _pdfDocumentService;
         private readonly IStorageService _storageService;
+        private readonly IUserService _userService;
+        private readonly IInstitutionService _institutionService;
         private readonly ILogger _logger;
 
         public string FILE_FOLDER { get; } = "research";
@@ -23,12 +26,16 @@ namespace Application.Services.Domain
             IResearchRepository repository,
             IPdfDocumentService pdfDocumentService,
             IStorageService storageService,
+            IUserService userService,
+            IInstitutionService institutionService,
             ILogger<Research> logger
         )
         {
             _repository = repository;
             _pdfDocumentService = pdfDocumentService;
             _storageService = storageService;
+            _userService = userService;
+            _institutionService = institutionService;
             _logger = logger;
         }
 
@@ -122,6 +129,18 @@ namespace Application.Services.Domain
                 // Populates the domain
                 var domain = PopulateDomain(model, userId);
 
+                // Gets the authors names for document metadata
+                var authorsNames = _userService
+                    .Query(new FilterBy<User>(x => model.AuthorIds!.Contains(x.Id)))
+                    .Select(x => x.Name)
+                    .ToList();
+
+                // Gets institution name for document metadata
+                var institutionName = _institutionService
+                    .Query(new FilterBy<Institution>(x => x.Id == domain.InstitutionId))
+                    .Select(x => x.Name)
+                    .FirstOrDefault();
+
                 // Copy the file bytes to a MemoryStream
                 using (var fileStream = new MemoryStream())
                 {
@@ -135,19 +154,31 @@ namespace Application.Services.Domain
                     fileKey = await SaveFile(
                         stream: fileStream,
                         folder: FILE_FOLDER,
-                        contentType: model.File!.ContentType
+                        contentType: model.File!.ContentType,
+                        permission: S3CannedACL.AuthenticatedRead,
+                        metadata: new Dictionary<string, string>
+                        {
+                            ["title"] = domain.Title!,
+                            ["year"] = domain.Year.ToString()!,
+                            ["type"] = domain.Type.ToString()!,
+                            ["visibility"] = domain.Visibility.ToString()!,
+                            ["institution"] = institutionName!,
+                            ["language"] = domain.Language!,
+                            ["authors"] = String.Join(";", authorsNames)
+                        }
                     );
 
                     domain.FileKey = fileKey;
 
-                    // Generate the PDF Thumbnail
+                    // Generates the PDF Thumbnail
                     using (var thumbnailStream = new MemoryStream(_pdfDocumentService.GenerateThumbnail(fileBytes)))
                     {
                         // Save the PDF Thumbnail
                         thumbnailKey = await SaveFile(
                             stream: thumbnailStream,
                             folder: THUMBNAIL_FOLDER,
-                            contentType: "image/webp"
+                            contentType: "image/webp",
+                            permission: S3CannedACL.PublicRead
                         );
 
                         domain.ThumbnailKey = thumbnailKey;
@@ -205,7 +236,7 @@ namespace Application.Services.Domain
             return domain;
         }
 
-        private async Task<Guid> SaveFile(MemoryStream stream, string folder, string contentType)
+        private async Task<Guid> SaveFile(MemoryStream stream, string folder, string contentType, S3CannedACL permission, Dictionary<string, string>? metadata = null)
         {
             try
             {
@@ -215,7 +246,9 @@ namespace Application.Services.Domain
                     file: stream,
                     folder: folder,
                     fileKey: fileKey.ToString(),
-                    contentType: contentType
+                    contentType: contentType,
+                    permission: permission,
+                    metadata: metadata
                 );
 
                 return fileKey;

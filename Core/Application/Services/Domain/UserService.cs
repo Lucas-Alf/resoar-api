@@ -4,7 +4,6 @@ using Domain.Entities;
 using Domain.Models;
 using Domain.Utils;
 using Infrastructure.Interfaces.Repositories.Domain;
-using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services.Domain
 {
@@ -16,6 +15,8 @@ namespace Application.Services.Domain
         {
             _repository = repository;
         }
+
+        public IQueryable<User> Query(FilterBy<User> filter) => _repository.Query(filter);
 
         public ResponseMessageModel GetById(int id)
         {
