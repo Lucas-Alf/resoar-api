@@ -8,5 +8,14 @@ namespace Domain.Models
             Message = message;
             Data = data;
         }
+
+        public ErrorMessageModel(Exception ex)
+        {
+            Success = false;
+            Message = ex.Message?.TrimEnd('.');
+
+            if (!String.IsNullOrEmpty(ex.InnerException?.Message))
+                Message += ". " + ex.InnerException.Message?.TrimEnd('.');
+        }
     }
 }

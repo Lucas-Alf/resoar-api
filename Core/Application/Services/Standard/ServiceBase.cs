@@ -32,11 +32,11 @@ namespace Application.Services.Standard
                     throw new BusinessException(validation);
 
                 repository.Add(obj);
-                return new ResponseMessageModel("Registro adicionado com sucesso");
+                return new ResponseMessageModel("Registro adicionado com sucesso", new { Id = obj.Id });
             }
             catch (Exception ex)
             {
-                return new ResponseMessageModel(ex);
+                return new ErrorMessageModel(ex);
             }
         }
 
@@ -52,11 +52,11 @@ namespace Application.Services.Standard
                 }
 
                 repository.AddRange(entities);
-                return new ResponseMessageModel("Registros adicionados com sucesso");
+                return new ResponseMessageModel("Registros adicionados com sucesso", new { Ids = entities.Select(x => x.Id).ToList() });
             }
             catch (Exception ex)
             {
-                return new ResponseMessageModel(ex);
+                return new ErrorMessageModel(ex);
             }
         }
 
@@ -93,7 +93,7 @@ namespace Application.Services.Standard
             }
             catch (Exception ex)
             {
-                return new ResponseMessageModel(ex);
+                return new ErrorMessageModel(ex);
             }
         }
 
@@ -110,7 +110,7 @@ namespace Application.Services.Standard
             }
             catch (Exception ex)
             {
-                return new ResponseMessageModel(ex);
+                return new ErrorMessageModel(ex);
             }
         }
 
@@ -123,7 +123,7 @@ namespace Application.Services.Standard
             }
             catch (Exception ex)
             {
-                return new ResponseMessageModel(ex);
+                return new ErrorMessageModel(ex);
             }
         }
 
@@ -144,7 +144,7 @@ namespace Application.Services.Standard
             }
             catch (Exception ex)
             {
-                return new ResponseMessageModel(ex);
+                return new ErrorMessageModel(ex);
             }
         }
 
@@ -164,7 +164,7 @@ namespace Application.Services.Standard
             }
             catch (Exception ex)
             {
-                return new ResponseMessageModel(ex);
+                return new ErrorMessageModel(ex);
             }
         }
 
@@ -177,11 +177,11 @@ namespace Application.Services.Standard
                     throw new BusinessException(validation);
 
                 await repository.AddAsync(obj);
-                return new ResponseMessageModel("Registro adicionado com sucesso");
+                return new ResponseMessageModel("Registro adicionado com sucesso", new { Id = obj.Id });
             }
             catch (Exception ex)
             {
-                return new ResponseMessageModel(ex);
+                return new ErrorMessageModel(ex);
             }
         }
 
@@ -197,11 +197,11 @@ namespace Application.Services.Standard
                 }
 
                 await repository.AddRangeAsync(entities);
-                return new ResponseMessageModel("Registros adicionados com sucesso");
+                return new ResponseMessageModel("Registros adicionados com sucesso", new { Ids = entities.Select(x => x.Id).ToList() });
             }
             catch (Exception ex)
             {
-                return new ResponseMessageModel(ex);
+                return new ErrorMessageModel(ex);
             }
         }
 
@@ -238,7 +238,7 @@ namespace Application.Services.Standard
             }
             catch (Exception ex)
             {
-                return new ResponseMessageModel(ex);
+                return new ErrorMessageModel(ex);
             }
         }
 
@@ -255,7 +255,7 @@ namespace Application.Services.Standard
             }
             catch (Exception ex)
             {
-                return new ResponseMessageModel(ex);
+                return new ErrorMessageModel(ex);
             }
         }
 
@@ -268,7 +268,7 @@ namespace Application.Services.Standard
             }
             catch (Exception ex)
             {
-                return new ResponseMessageModel(ex);
+                return new ErrorMessageModel(ex);
             }
         }
 
@@ -289,7 +289,7 @@ namespace Application.Services.Standard
             }
             catch (Exception ex)
             {
-                return new ResponseMessageModel(ex);
+                return new ErrorMessageModel(ex);
             }
         }
 
@@ -309,7 +309,7 @@ namespace Application.Services.Standard
             }
             catch (Exception ex)
             {
-                return new ResponseMessageModel(ex);
+                return new ErrorMessageModel(ex);
             }
         }
     }

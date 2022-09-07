@@ -40,7 +40,7 @@ namespace Application.Services.Domain
             }
             catch (Exception ex)
             {
-                return new ResponseMessageModel(ex);
+                return new ErrorMessageModel(ex);
             }
         }
 
@@ -97,7 +97,7 @@ namespace Application.Services.Domain
             }
             catch (Exception ex)
             {
-                return new ResponseMessageModel(ex);
+                return new ErrorMessageModel(ex);
             }
         }
 
@@ -114,7 +114,7 @@ namespace Application.Services.Domain
             }
             catch (Exception ex)
             {
-                return new ResponseMessageModel(ex);
+                return new ErrorMessageModel(ex);
             }
         }
     }

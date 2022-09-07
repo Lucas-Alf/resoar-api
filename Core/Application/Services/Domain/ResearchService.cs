@@ -115,7 +115,7 @@ namespace Application.Services.Domain
             }
             catch (Exception ex)
             {
-                return new ResponseMessageModel(ex);
+                return new ErrorMessageModel(ex);
             }
         }
 
@@ -193,7 +193,7 @@ namespace Application.Services.Domain
                 // Persists on database
                 _repository.Add(domain);
 
-                return new ResponseMessageModel("Registro salvo com sucesso");
+                return new ResponseMessageModel("Registro salvo com sucesso", new { Id = domain.Id });
             }
             catch (Exception ex)
             {
@@ -203,7 +203,7 @@ namespace Application.Services.Domain
                 if (thumbnailKey.HasValue)
                     await TryRemoveFile(thumbnailKey.Value.ToString(), THUMBNAIL_FOLDER);
 
-                return new ResponseMessageModel(ex);
+                return new ErrorMessageModel(ex);
             }
         }
 

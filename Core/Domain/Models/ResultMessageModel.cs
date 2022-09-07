@@ -7,18 +7,11 @@ namespace Domain.Models
         public object? Data { get; set; }
 
         public ResponseMessageModel() { }
-        public ResponseMessageModel(string message)
+        public ResponseMessageModel(string message, object? data = null)
         {
             Success = true;
             Message = message;
-        }
-        public ResponseMessageModel(Exception ex)
-        {
-            Success = false;
-            Message = ex.Message?.TrimEnd('.');
-
-            if (!String.IsNullOrEmpty(ex.InnerException?.Message))
-                Message += ". " + ex.InnerException.Message?.TrimEnd('.');
+            Data = data;
         }
 
         public ResponseMessageModel(object data)
