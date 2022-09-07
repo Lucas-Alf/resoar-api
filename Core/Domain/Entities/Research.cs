@@ -29,12 +29,10 @@ namespace Domain.Entities
         public string? Language { get; set; }
 
         [Required(ErrorMessage = "O Campo Caminho do Arquivo é obrigatório")]
-        [MaxLength(350, ErrorMessage = "O Campo Caminho do Arquivo deve ter no máximo 350 caracteres")]
-        public string? FilePath { get; set; }
+        public Guid? FileKey { get; set; }
 
         [Required(ErrorMessage = "O Campo Caminho do Thumbnail é obrigatório")]
-        [MaxLength(350, ErrorMessage = "O Campo Caminho do Thumbnail deve ter no máximo 350 caracteres")]
-        public string? ThumbnailPath { get; set; }
+        public Guid? ThumbnailKey { get; set; }
 
         public NpgsqlTsVector? SearchVector { get; set; }
 
@@ -43,6 +41,9 @@ namespace Domain.Entities
         [Required(ErrorMessage = "O Campo Instituição é obrigatório")]
         public int? InstitutionId { get; set; }
 
+        [Required(ErrorMessage = "O Campo Usuário Criador é obrigatório")]
+        public int? CreatedById { get; set; }
+
         [Required(ErrorMessage = "O Campo Data de Criação é obrigatório")]
         public DateTime? CreatedAt { get; set; }
 
@@ -50,6 +51,7 @@ namespace Domain.Entities
 
         #region references
         public virtual Institution? Institution { get; set; }
+        public virtual User? CreatedBy { get; set; }
 
         #endregion references
 

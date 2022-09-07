@@ -5,19 +5,6 @@ using Microsoft.AspNetCore.Http;
 
 namespace Domain.Models
 {
-    public class ResearchViewModel
-    {
-        public int? Id { get; set; }
-        public string? Title { get; set; }
-        public ResearchTypeEnum? Type { get; set; }
-        public ResearchVisibilityEnum? Visibility { get; set; }
-        public string? Language { get; set; }
-        public string? FilePath { get; set; }
-        public string? ThumbnailPath { get; set; }
-        public IList<AuthorViewModel>? Authors { get; set; }
-        public InstitutionViewModel? Institution { get; set; }
-    }
-
     public class ResearchCreateModel
     {
         [Required(ErrorMessage = "O Campo Titulo é obrigatório")]

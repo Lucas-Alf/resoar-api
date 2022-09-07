@@ -4,7 +4,8 @@ namespace Application.Interfaces.Services.Domain
 {
     public interface IResearchService
     {
-        Task<ResponseMessageModel> Add(ResearchCreateModel model);
-        PaginationModel<ResearchViewModel> GetPaged(int page, int pageSize, int? userId = null);
+        Task<ResponseMessageModel> Add(ResearchCreateModel model, int userId);
+        Task<ResponseMessageModel> Delete(int id, int userId);
+        PaginationModel<object> GetPaged(int page, int pageSize, int? userId = null);
     }
 }

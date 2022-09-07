@@ -80,11 +80,12 @@ namespace Infrastructure.Migrations
                     Type = table.Column<int>(type: "integer", nullable: false),
                     Visibility = table.Column<int>(type: "integer", nullable: false),
                     Language = table.Column<string>(type: "character varying(80)", maxLength: 80, nullable: false),
-                    FilePath = table.Column<string>(type: "character varying(350)", maxLength: 350, nullable: false),
-                    ThumbnailPath = table.Column<string>(type: "character varying(350)", maxLength: 350, nullable: false),
+                    FileKey = table.Column<Guid>(type: "uuid", nullable: false),
+                    ThumbnailKey = table.Column<Guid>(type: "uuid", nullable: false),
                     SearchVector = table.Column<NpgsqlTsVector>(type: "tsvector", nullable: true),
                     RawContent = table.Column<string>(type: "text", nullable: true),
                     InstitutionId = table.Column<int>(type: "integer", nullable: false),
+                    CreatedById = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
@@ -95,6 +96,12 @@ namespace Infrastructure.Migrations
                         name: "FK_Research_Institution_InstitutionId",
                         column: x => x.InstitutionId,
                         principalTable: "Institution",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Research_User_CreatedById",
+                        column: x => x.CreatedById,
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -237,6 +244,11 @@ namespace Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Research_CreatedById",
+                table: "Research",
+                column: "CreatedById");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Research_InstitutionId",
                 table: "Research",
                 column: "InstitutionId");
@@ -316,9 +328,6 @@ namespace Infrastructure.Migrations
                 name: "ResearchKnowledgeArea");
 
             migrationBuilder.DropTable(
-                name: "User");
-
-            migrationBuilder.DropTable(
                 name: "KeyWord");
 
             migrationBuilder.DropTable(
@@ -329,6 +338,9 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Institution");
+
+            migrationBuilder.DropTable(
+                name: "User");
         }
     }
 }

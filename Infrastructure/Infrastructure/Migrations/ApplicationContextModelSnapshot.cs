@@ -96,10 +96,13 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("FilePath")
+                    b.Property<int?>("CreatedById")
                         .IsRequired()
-                        .HasMaxLength(350)
-                        .HasColumnType("character varying(350)");
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("FileKey")
+                        .IsRequired()
+                        .HasColumnType("uuid");
 
                     b.Property<int?>("InstitutionId")
                         .IsRequired()
@@ -119,10 +122,9 @@ namespace Infrastructure.Migrations
                     b.Property<NpgsqlTsVector>("SearchVector")
                         .HasColumnType("tsvector");
 
-                    b.Property<string>("ThumbnailPath")
+                    b.Property<Guid?>("ThumbnailKey")
                         .IsRequired()
-                        .HasMaxLength(350)
-                        .HasColumnType("character varying(350)");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -140,6 +142,8 @@ namespace Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
 
                     b.HasIndex("InstitutionId");
 
@@ -317,11 +321,19 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Research", b =>
                 {
+                    b.HasOne("Domain.Entities.User", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Domain.Entities.Institution", "Institution")
                         .WithMany("Researches")
                         .HasForeignKey("InstitutionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("CreatedBy");
 
                     b.Navigation("Institution");
                 });

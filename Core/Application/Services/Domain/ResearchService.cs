@@ -32,26 +32,32 @@ namespace Application.Services.Domain
             _logger = logger;
         }
 
-        public PaginationModel<ResearchViewModel> GetPaged(int page, int pageSize, int? userId = null)
+        public PaginationModel<object> GetPaged(int page, int pageSize, int? userId = null)
         {
             var filter = new FilterBy<Research>();
 
             if (userId.HasValue)
                 filter.Add(x => x.Authors!.Any(y => y.UserId == userId));
 
-            var data = _repository.GetPagedAnonymous<ResearchViewModel>(
+            var data = _repository.GetPagedAnonymous<object>(
                 page: page,
                 pageSize: pageSize,
                 filter: filter,
-                selector: x => new ResearchViewModel
+                selector: x => new
                 {
                     Id = x.Id,
                     Title = x.Title,
                     Type = x.Type,
                     Visibility = x.Visibility,
                     Language = x.Language,
-                    FilePath = x.FilePath,
-                    ThumbnailPath = x.ThumbnailPath,
+                    FileKey = x.FileKey,
+                    ThumbnailKey = x.ThumbnailKey,
+                    CreatedAt = x.CreatedAt,
+                    CreatedBy = new
+                    {
+                        Id = x.CreatedById,
+                        Name = x.CreatedBy!.Name
+                    },
                     Institution = new InstitutionViewModel
                     {
                         Id = x.InstitutionId,
@@ -70,15 +76,51 @@ namespace Application.Services.Domain
             return data;
         }
 
-        public async Task<ResponseMessageModel> Add(ResearchCreateModel model)
+        public async Task<ResponseMessageModel> Delete(int id, int userId)
         {
-            var fileKey = "";
-            var thumbnailKey = "";
+            try
+            {
+                var domain = _repository
+                    .Query(new FilterBy<Research>(x => x.Id == id))
+                    .Select(x => new
+                    {
+                        x.FileKey,
+                        x.ThumbnailKey,
+                        x.CreatedById
+                    })
+                    .FirstOrDefault();
+
+                if (domain == null)
+                    throw new NotFoundException();
+
+                if (domain.CreatedById != userId)
+                    throw new BusinessException("Somente o usuário criador da publicação pode realizar a exclusão");
+
+                if (domain.FileKey.HasValue)
+                    await _storageService.Delete(domain.FileKey.Value.ToString(), FILE_FOLDER);
+
+                if (domain.ThumbnailKey.HasValue)
+                    await _storageService.Delete(domain.ThumbnailKey.Value.ToString(), THUMBNAIL_FOLDER);
+
+                await _repository.DeleteAsync(id);
+
+                return new ResponseMessageModel("Excluído com sucesso");
+            }
+            catch (Exception ex)
+            {
+                return new ResponseMessageModel(ex);
+            }
+        }
+
+        public async Task<ResponseMessageModel> Add(ResearchCreateModel model, int userId)
+        {
+            Guid? fileKey = null;
+            Guid? thumbnailKey = null;
 
             try
             {
                 // Populates the domain
-                var domain = PopulateDomain(model);
+                var domain = PopulateDomain(model, userId);
 
                 // Copy the file bytes to a MemoryStream
                 using (var fileStream = new MemoryStream())
@@ -96,7 +138,7 @@ namespace Application.Services.Domain
                         contentType: model.File!.ContentType
                     );
 
-                    domain.FilePath = $"{FILE_FOLDER}/{fileKey}";
+                    domain.FileKey = fileKey;
 
                     // Generate the PDF Thumbnail
                     using (var thumbnailStream = new MemoryStream(_pdfDocumentService.GenerateThumbnail(fileBytes)))
@@ -108,7 +150,7 @@ namespace Application.Services.Domain
                             contentType: "image/webp"
                         );
 
-                        domain.ThumbnailPath = $"{THUMBNAIL_FOLDER}/{thumbnailKey}";
+                        domain.ThumbnailKey = thumbnailKey;
                     }
                 }
 
@@ -124,17 +166,17 @@ namespace Application.Services.Domain
             }
             catch (Exception ex)
             {
-                if (!String.IsNullOrEmpty(fileKey))
-                    TryRemoveFile(fileKey, FILE_FOLDER);
+                if (fileKey.HasValue)
+                    await TryRemoveFile(fileKey.Value.ToString(), FILE_FOLDER);
 
-                if (!String.IsNullOrEmpty(thumbnailKey))
-                    TryRemoveFile(thumbnailKey, THUMBNAIL_FOLDER);
+                if (thumbnailKey.HasValue)
+                    await TryRemoveFile(thumbnailKey.Value.ToString(), THUMBNAIL_FOLDER);
 
                 return new ResponseMessageModel(ex);
             }
         }
 
-        private Research PopulateDomain(ResearchCreateModel model)
+        private Research PopulateDomain(ResearchCreateModel model, int userId)
         {
             if (model.AuthorIds == null || !model.AuthorIds.Any())
                 throw new BusinessException("Ao menos 1 autor precisa ser informado");
@@ -147,7 +189,8 @@ namespace Application.Services.Domain
                 Visibility = model.Visibility,
                 InstitutionId = model.InstitutionId,
                 Language = model.Language?.ToString().ToLower(),
-                CreatedAt = DateTime.Now
+                CreatedAt = DateTime.Now,
+                CreatedById = userId
             };
 
             domain.Authors = model.AuthorIds
@@ -162,16 +205,16 @@ namespace Application.Services.Domain
             return domain;
         }
 
-        private async Task<string> SaveFile(MemoryStream stream, string folder, string contentType)
+        private async Task<Guid> SaveFile(MemoryStream stream, string folder, string contentType)
         {
             try
             {
-                var fileKey = Guid.NewGuid().ToString();
+                var fileKey = Guid.NewGuid();
 
                 await _storageService.Upload(
                     file: stream,
                     folder: folder,
-                    fileKey: fileKey,
+                    fileKey: fileKey.ToString(),
                     contentType: contentType
                 );
 
@@ -185,7 +228,7 @@ namespace Application.Services.Domain
             }
         }
 
-        private async void TryRemoveFile(string key, string folder)
+        private async Task TryRemoveFile(string key, string folder)
         {
             try
             {

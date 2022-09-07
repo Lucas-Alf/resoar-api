@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Application.Interfaces.Services.Domain;
 using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -18,7 +19,7 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet]
-        public PaginationModel<ResearchViewModel> GetPaged(int page, int pageSize, int? userId)
+        public PaginationModel<object> GetPaged(int page, int pageSize, int? userId)
         {
             return _researchService.GetPaged(page, pageSize, userId);
         }
@@ -26,7 +27,15 @@ namespace WebApplication.Controllers
         [HttpPost]
         public async Task<ResponseMessageModel> Add([FromForm] ResearchCreateModel model)
         {
-            return await _researchService.Add(model);
+            var userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            return await _researchService.Add(model, userId);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ResponseMessageModel> Delete(int id)
+        {
+            var userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            return await _researchService.Delete(id, userId);
         }
     }
 }

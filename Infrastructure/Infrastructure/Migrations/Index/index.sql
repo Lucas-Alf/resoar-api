@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS "IX_SearchVector" ON "Research" USING gin("SearchVector");

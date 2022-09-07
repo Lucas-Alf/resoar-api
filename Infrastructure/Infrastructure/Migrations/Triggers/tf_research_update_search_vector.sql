@@ -1,4 +1,3 @@
--- Update SearchVector column before insert/update
 CREATE OR REPLACE FUNCTION tf_research_update_search_vector()
   RETURNS trigger AS
 $BODY$

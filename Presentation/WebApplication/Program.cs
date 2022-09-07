@@ -70,6 +70,9 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<ApplicationContext>();
     context.Database.Migrate();
+
+    // Create Triggers, Functions and custom Indexes
+    context.RunDatabaseScripts();
 }
 
 app.Run();
