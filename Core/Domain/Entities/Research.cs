@@ -38,6 +38,9 @@ namespace Domain.Entities
 
         public string? RawContent { get; set; }
 
+        [MaxLength(1000, ErrorMessage = "O Campo Abstract deve ter no máximo 1000 caracteres")]
+        public string? Abstract { get; set; }
+
         [Required(ErrorMessage = "O Campo Instituição é obrigatório")]
         public int? InstitutionId { get; set; }
 

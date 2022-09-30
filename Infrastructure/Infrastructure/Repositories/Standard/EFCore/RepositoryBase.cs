@@ -253,9 +253,6 @@ namespace Infrastructure.Repositories.Standard.EFCore
 
         private PaginationQuery<TEntity> PaginateQuery(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, FilterBy<TEntity>? filter = null)
         {
-            if (page == 0)
-                page = 1;
-
             if (pageSize == 0)
                 pageSize = 10;
 
@@ -278,7 +275,7 @@ namespace Infrastructure.Repositories.Standard.EFCore
             else
                 query = query.OrderBy(x => x.Id);
 
-            query = query.Skip((page - 1) * pageSize);
+            query = query.Skip(page * pageSize);
             query = query.Take(pageSize);
 
             return new PaginationQuery<TEntity>

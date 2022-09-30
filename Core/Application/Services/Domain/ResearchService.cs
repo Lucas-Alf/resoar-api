@@ -2,10 +2,12 @@
 using Application.Exceptions;
 using Application.Interfaces.Services.Domain;
 using Domain.Entities;
+using Domain.Enums;
 using Domain.Extensions;
 using Domain.Models;
 using Domain.Utils;
 using Infrastructure.Interfaces.Repositories.Domain;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Application.Services.Domain
@@ -39,12 +41,26 @@ namespace Application.Services.Domain
             _logger = logger;
         }
 
-        public PaginationModel<object> GetPaged(int page, int pageSize, int? userId = null)
+        public PaginationModel<object> GetPaged(int page, int pageSize, int currentUserId, string? title, int? userId = null)
         {
             var filter = new FilterBy<Research>();
 
+            if (!String.IsNullOrEmpty(title))
+                filter.Add(x => EF.Functions.ILike(x.Title!, $"%{title.Trim()}%"));
+
             if (userId.HasValue)
+            {
                 filter.Add(x => x.Authors!.Any(y => y.UserId == userId));
+                if (currentUserId == userId)
+                    filter.Add(x =>
+                        x.Visibility == ResearchVisibilityEnum.Public ||
+                        x.Visibility == ResearchVisibilityEnum.Private
+                    );
+            }
+            else
+            {
+                filter.Add(x => x.Visibility == ResearchVisibilityEnum.Public);
+            }
 
             var data = _repository.GetPagedAnonymous<object>(
                 page: page,
@@ -54,27 +70,38 @@ namespace Application.Services.Domain
                 {
                     Id = x.Id,
                     Title = x.Title,
+                    Year = x.Year,
                     Type = x.Type,
                     Visibility = x.Visibility,
                     Language = x.Language,
                     FileKey = x.FileKey,
                     ThumbnailKey = x.ThumbnailKey,
                     CreatedAt = x.CreatedAt,
+                    Abstract = x.Abstract,
                     CreatedBy = new
                     {
                         Id = x.CreatedById,
                         Name = x.CreatedBy!.Name
                     },
-                    Institution = new InstitutionViewModel
+                    Institution = new
                     {
                         Id = x.InstitutionId,
                         Name = x.Institution!.Name
                     },
                     Authors = x.Authors!
-                        .Select(y => new AuthorViewModel
+                        .Select(y => new
                         {
                             Id = y.UserId,
-                            Name = y.User!.Name
+                            Name = y.User!.Name,
+                            ImagePath = y.User!.ImagePath
+                        })
+                        .ToList(),
+                    Advisors = x.Advisors!
+                        .Select(y => new
+                        {
+                            Id = y.UserId,
+                            Name = y.User!.Name,
+                            ImagePath = y.User!.ImagePath
                         })
                         .ToList()
                 }

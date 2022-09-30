@@ -19,9 +19,10 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet]
-        public PaginationModel<object> GetPaged(int page, int pageSize, int? userId)
+        public PaginationModel<object> GetPaged(int page, int pageSize, string? title, int? userId)
         {
-            return _researchService.GetPaged(page, pageSize, userId);
+            var currentUserId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            return _researchService.GetPaged(page, pageSize, currentUserId, title, userId);
         }
 
         [HttpPost]

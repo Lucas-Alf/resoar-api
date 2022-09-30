@@ -6,6 +6,6 @@ namespace Application.Interfaces.Services.Domain
     {
         Task<ResponseMessageModel> Add(ResearchCreateModel model, int userId);
         Task<ResponseMessageModel> Delete(int id, int userId);
-        PaginationModel<object> GetPaged(int page, int pageSize, int? userId = null);
+        PaginationModel<object> GetPaged(int page, int pageSize, int currentUserId, string? title, int? userId = null);
     }
 }
