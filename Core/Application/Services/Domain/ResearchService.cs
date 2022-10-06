@@ -247,6 +247,7 @@ namespace Application.Services.Domain
                 Visibility = model.Visibility,
                 InstitutionId = model.InstitutionId,
                 Language = model.Language?.ToString().ToLower(),
+                Abstract = model.Abstract,
                 CreatedAt = DateTime.Now,
                 CreatedById = userId
             };
