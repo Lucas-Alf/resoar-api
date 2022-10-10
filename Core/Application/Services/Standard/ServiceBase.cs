@@ -75,9 +75,20 @@ namespace Application.Services.Standard
             return repository.GetPagedAnonymous(page, pageSize, selector, orderBy, filter);
         }
 
-        public virtual TEntity? GetById(int id)
+        public virtual ResponseMessageModel GetById(int id)
         {
-            return repository.GetById(id);
+            try
+            {
+                var data = repository.GetById(id);
+                if (data == null)
+                    throw new NotFoundException();
+
+                return new ResponseMessageModel(data);
+            }
+            catch (Exception ex)
+            {
+                return new ErrorMessageModel(ex);
+            }
         }
 
         public virtual ResponseMessageModel Delete(int id)
@@ -220,9 +231,20 @@ namespace Application.Services.Standard
             return await repository.GetPagedAnonymousAsync(page, pageSize, selector, orderBy, filter);
         }
 
-        public virtual async Task<TEntity?> GetByIdAsync(int id)
+        public virtual async Task<ResponseMessageModel> GetByIdAsync(int id)
         {
-            return await repository.GetByIdAsync(id);
+            try
+            {
+                var data = await repository.GetByIdAsync(id);
+                if (data == null)
+                    throw new NotFoundException();
+
+                return new ResponseMessageModel(data);
+            }
+            catch (Exception ex)
+            {
+                return new ErrorMessageModel(ex);
+            }
         }
 
         public virtual async Task<ResponseMessageModel> DeleteAsync(int id)

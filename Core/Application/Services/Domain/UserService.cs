@@ -4,6 +4,7 @@ using Domain.Entities;
 using Domain.Models;
 using Domain.Utils;
 using Infrastructure.Interfaces.Repositories.Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services.Domain
 {
@@ -18,6 +19,29 @@ namespace Application.Services.Domain
 
         public IQueryable<User> Query(FilterBy<User> filter) => _repository.Query(filter);
 
+        public PaginationModel<UserViewModel> GetPaged(int page, int pageSize, string? name)
+        {
+            var filter = new FilterBy<User>();
+            if (!String.IsNullOrEmpty(name))
+                filter.Add(x => EF.Functions.ILike(x.Name!, $"%{name.Trim()}%"));
+
+            var data = _repository.GetPagedAnonymous<UserViewModel>(
+                page: page,
+                pageSize: pageSize,
+                filter: filter,
+                orderBy: x => x.Name!,
+                selector: x => new UserViewModel
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Email = x.Email,
+                    ImagePath = x.ImagePath
+                }
+            );
+
+            return data;
+        }
+
         public ResponseMessageModel GetById(int id)
         {
             try
@@ -29,7 +53,7 @@ namespace Application.Services.Domain
                         Id = x.Id,
                         Email = x.Email,
                         Name = x.Name,
-                        Image = x.ImagePath
+                        ImagePath = x.ImagePath
                     })
                     .FirstOrDefault();
 
@@ -42,24 +66,6 @@ namespace Application.Services.Domain
             {
                 return new ErrorMessageModel(ex);
             }
-        }
-
-        public PaginationModel<UserViewModel> GetPaged(int page, int pageSize)
-        {
-            var data = _repository.GetPagedAnonymous<UserViewModel>(
-                page: page,
-                pageSize: pageSize,
-                orderBy: x => x.Name!,
-                selector: x => new UserViewModel
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    Email = x.Email,
-                    Image = x.ImagePath
-                }
-            );
-
-            return data;
         }
 
         public ResponseMessageModel Update(int userId, UserUpdateModel model)

@@ -6,6 +6,6 @@ namespace Application.Interfaces.Services.Domain
 {
     public interface IInstitutionService : IServiceBase<Institution>
     {
-
+        PaginationModel<object> GetPaged(int page, int pageSize, string? name);
     }
 }

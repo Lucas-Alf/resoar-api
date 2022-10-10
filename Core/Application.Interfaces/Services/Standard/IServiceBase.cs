@@ -27,7 +27,7 @@ namespace Application.Interfaces.Services.Standard
         Task<ResponseMessageModel> DeleteRangeAsync(IEnumerable<TEntity> entities);
         Task<ResponseMessageModel> UpdateAsync(TEntity obj);
         Task<ResponseMessageModel> UpdateRangeAsync(IEnumerable<TEntity> entities);
-        Task<TEntity?> GetByIdAsync(int id);
-        TEntity? GetById(int id);
+        Task<ResponseMessageModel> GetByIdAsync(int id);
+        ResponseMessageModel GetById(int id);
     }
 }

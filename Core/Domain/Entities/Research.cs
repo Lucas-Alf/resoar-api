@@ -19,10 +19,10 @@ namespace Domain.Entities
         public int? Year { get; set; }
 
         [Required(ErrorMessage = "O Campo Tipo é obrigatório")]
-        public ResearchTypeEnum? Type { get; set; }
+        public ResearchType? Type { get; set; }
 
         [Required(ErrorMessage = "O Campo Visibilidade é obrigatório")]
-        public ResearchVisibilityEnum? Visibility { get; set; }
+        public ResearchVisibility? Visibility { get; set; }
 
         [Required(ErrorMessage = "O Campo Idioma é obrigatório")]
         [MaxLength(80, ErrorMessage = "O Campo Idioma deve ter no máximo 80 caracteres")]

@@ -17,13 +17,13 @@ namespace Domain.Models
         public int? Year { get; set; }
 
         [Required(ErrorMessage = "O Campo Tipo é obrigatório")]
-        public ResearchTypeEnum? Type { get; set; }
+        public ResearchType? Type { get; set; }
 
         [Required(ErrorMessage = "O Campo Visibilidade é obrigatório")]
-        public ResearchVisibilityEnum? Visibility { get; set; }
+        public ResearchVisibility? Visibility { get; set; }
 
         [Required(ErrorMessage = "O Campo Idioma é obrigatório")]
-        public ResearchLanguageEnum? Language { get; set; }
+        public ResearchLanguage? Language { get; set; }
 
         [Required(ErrorMessage = "O Campo Instituição é obrigatório")]
         public int? InstitutionId { get; set; }

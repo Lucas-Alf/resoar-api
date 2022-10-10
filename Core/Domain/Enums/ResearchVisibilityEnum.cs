@@ -1,8 +1,15 @@
 namespace Domain.Enums
 {
-    public enum ResearchVisibilityEnum
+    public enum ResearchVisibility
     {
+        /// <summary>
+        /// Público
+        /// </summary>
         Public = 1,
+
+        /// <summary>
+        /// Privado
+        /// </summary>
         Private = 2
     }
 }

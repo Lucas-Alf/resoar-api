@@ -53,13 +53,13 @@ namespace Application.Services.Domain
                 filter.Add(x => x.Authors!.Any(y => y.UserId == userId));
                 if (currentUserId == userId)
                     filter.Add(x =>
-                        x.Visibility == ResearchVisibilityEnum.Public ||
-                        x.Visibility == ResearchVisibilityEnum.Private
+                        x.Visibility == ResearchVisibility.Public ||
+                        x.Visibility == ResearchVisibility.Private
                     );
             }
             else
             {
-                filter.Add(x => x.Visibility == ResearchVisibilityEnum.Public);
+                filter.Add(x => x.Visibility == ResearchVisibility.Public);
             }
 
             var data = _repository.GetPagedAnonymous<object>(

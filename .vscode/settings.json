@@ -2,5 +2,9 @@
   "cSpell.words": [
     "Resoar"
   ],
-  "editor.formatOnSave": true
+"editor.formatOnSave": true,
+"sonarlint.connectedMode.project": {
+    "connectionId": "lucas-alf",
+    "projectKey": "Lucas-Alf_resoar-api"
+}
 }
