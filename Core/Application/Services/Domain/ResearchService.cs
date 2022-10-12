@@ -239,6 +239,9 @@ namespace Application.Services.Domain
             if (model.AuthorIds == null || !model.AuthorIds.Any())
                 throw new BusinessException("Ao menos 1 autor precisa ser informado");
 
+            if (!model.AuthorIds.Any(x => x == userId))
+                throw new BusinessException("Usuário precisa ser informado como autor da publicação");
+
             var domain = new Research
             {
                 Title = model.Title,

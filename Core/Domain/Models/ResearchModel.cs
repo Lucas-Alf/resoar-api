@@ -10,7 +10,7 @@ namespace Domain.Models
         [Required(ErrorMessage = "O Campo Titulo é obrigatório")]
         public string? Title { get; set; }
 
-        [MaxLength(1000, ErrorMessage = "O Campo Abstract deve ter no máximo 1000 caracteres")]
+        [MaxLength(2500, ErrorMessage = "O Campo Resumo deve ter no máximo 1000 caracteres")]
         public string? Abstract { get; set; }
 
         [Required(ErrorMessage = "O Campo Ano é obrigatório")]
@@ -31,6 +31,8 @@ namespace Domain.Models
         [Required(ErrorMessage = "O Campo Autores é obrigatório")]
         public IList<int>? AuthorIds { get; set; }
         public IList<int>? AdvisorIds { get; set; }
+        public IList<int>? KeyWordIds { get; set; }
+        public IList<int>? KnowledgeAreaIds { get; set; }
 
         [Required(ErrorMessage = "O Campo Arquivo é obrigatório")]
         [MaxFileSize(20 * 1024 * 1024)]
