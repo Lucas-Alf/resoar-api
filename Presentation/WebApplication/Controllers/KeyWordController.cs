@@ -1,5 +1,5 @@
+using System.Security.Claims;
 using Application.Interfaces.Services.Domain;
-using Domain.Entities;
 using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -31,16 +31,18 @@ namespace WebApplication.Controllers
         }
 
         [HttpPost]
-        public ResponseMessageModel Add(KeyWord model)
+        public ResponseMessageModel Add(KeyWordNewModel model)
         {
-            return _keyWordService.Add(model);
+            var userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            return _keyWordService.Add(model, userId);
         }
 
         [HttpPut]
         [Authorize(Roles = "Admin")]
-        public ResponseMessageModel Update(KeyWord model)
+        public ResponseMessageModel Update(KeyWordUpdateModel model)
         {
-            return _keyWordService.Update(model);
+            var userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            return _keyWordService.Update(model, userId);
         }
 
         [HttpDelete("{id}")]

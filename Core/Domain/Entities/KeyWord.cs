@@ -12,5 +12,9 @@ namespace Domain.Entities
         [Required(ErrorMessage = "O Campo Descrição é obrigatório")]
         [MaxLength(255, ErrorMessage = "O Campo Descrição deve ter no máximo 255 caracteres")]
         public string? Description { get; set; }
+
+        [Required(ErrorMessage = "O Campo usuário criador é obrigatório")]
+        public long? CreatedById { get; set; }
+        public long? ModifiedById { get; set; }
     }
 }

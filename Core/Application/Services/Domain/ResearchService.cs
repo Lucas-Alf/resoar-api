@@ -239,8 +239,14 @@ namespace Application.Services.Domain
             if (model.AuthorIds == null || !model.AuthorIds.Any())
                 throw new BusinessException("Ao menos 1 autor precisa ser informado");
 
+            if (model.KeyWordIds == null || !model.KeyWordIds.Any())
+                throw new BusinessException("Ao menos 1 palavra chave precisa ser informada");
+
+            if (model.KnowledgeAreaIds == null || !model.KnowledgeAreaIds.Any())
+                throw new BusinessException("Ao menos 1 área do conhecimento precisa ser informada");
+
             if (!model.AuthorIds.Any(x => x == userId))
-                throw new BusinessException("Usuário precisa ser informado como autor da publicação");
+                throw new BusinessException("Usuário precisa ser informado como autor da própria publicação");
 
             var domain = new Research
             {
@@ -257,6 +263,14 @@ namespace Application.Services.Domain
 
             domain.Authors = model.AuthorIds
                 .Select(authorId => new ResearchAuthor { UserId = authorId })
+                .ToList();
+
+            domain.ResearchKeyWords = model.KeyWordIds
+                .Select(keywordId => new ResearchKeyWord { KeyWordId = keywordId })
+                .ToList();
+
+            domain.ResearchKnowledgeAreas = model.KnowledgeAreaIds
+                .Select(knowledgeAreaId => new ResearchKnowledgeArea { KnowledgeAreaId = knowledgeAreaId })
                 .ToList();
 
             if (model.AdvisorIds != null && model.AdvisorIds.Any())

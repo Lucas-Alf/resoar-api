@@ -36,5 +36,46 @@ namespace Application.Services.Domain
                 }
             );
         }
+
+        public ResponseMessageModel Add(KnowledgeAreaNewModel model, long userId)
+        {
+            try
+            {
+                var domain = new KnowledgeArea
+                {
+                    Description = model.Description,
+                    CreatedById = userId
+                };
+
+                return base.Add(domain);
+            }
+            catch (Exception ex)
+            {
+                return new ResponseMessageModel(ex);
+            }
+        }
+
+        public ResponseMessageModel Update(KnowledgeAreaUpdateModel model, long userId)
+        {
+            try
+            {
+                _repository.UpdateSomeFields(
+                    new KnowledgeArea
+                    {
+                        Id = model.Id!.Value,
+                        Description = model.Description,
+                        ModifiedById = userId
+                    },
+                    x => x.Description!,
+                    x => x.ModifiedById!
+                );
+
+                return new ResponseMessageModel("Registro atualizado com sucesso");
+            }
+            catch (Exception ex)
+            {
+                return new ResponseMessageModel(ex);
+            }
+        }
     }
 }
