@@ -239,6 +239,9 @@ namespace Application.Services.Domain
             if (model.AuthorIds == null || !model.AuthorIds.Any())
                 throw new BusinessException("Ao menos 1 autor precisa ser informado");
 
+            if (model.AdvisorIds == null || !model.AdvisorIds.Any())
+                throw new BusinessException("Ao menos 1 orientador precisa ser informado");
+
             if (model.KeyWordIds == null || !model.KeyWordIds.Any())
                 throw new BusinessException("Ao menos 1 palavra chave precisa ser informada");
 
@@ -273,10 +276,9 @@ namespace Application.Services.Domain
                 .Select(knowledgeAreaId => new ResearchKnowledgeArea { KnowledgeAreaId = knowledgeAreaId })
                 .ToList();
 
-            if (model.AdvisorIds != null && model.AdvisorIds.Any())
-                domain.Advisors = model.AdvisorIds
-                    .Select(advisorId => new ResearchAdvisor { UserId = advisorId })
-                    .ToList();
+            domain.Advisors = model.AdvisorIds
+                .Select(advisorId => new ResearchAdvisor { UserId = advisorId })
+                .ToList();
 
             return domain;
         }
