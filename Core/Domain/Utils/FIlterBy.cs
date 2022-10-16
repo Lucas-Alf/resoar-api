@@ -31,15 +31,15 @@ namespace Domain.Utils
         public Expression<Func<TEntity, bool>>? Compile()
         {
             var andExpressions = AndExpressions.Count() > 0
-                ? AndExpressions.Aggregate((current, next) => Combine<TEntity>(current, next, CombineTypeEnum.And))
+                ? AndExpressions.Aggregate((current, next) => Combine<TEntity>(current, next, CombineType.And))
                 : null;
 
             var orExpressions = OrExpressions.Count() > 0
-                ? OrExpressions.Aggregate((current, next) => Combine<TEntity>(current, next, CombineTypeEnum.Or))
+                ? OrExpressions.Aggregate((current, next) => Combine<TEntity>(current, next, CombineType.Or))
                 : null;
 
             if (andExpressions != null && orExpressions != null)
-                return Combine<TEntity>(andExpressions, orExpressions, CombineTypeEnum.Or);
+                return Combine<TEntity>(andExpressions, orExpressions, CombineType.Or);
 
             if (andExpressions != null)
                 return andExpressions;
@@ -50,7 +50,7 @@ namespace Domain.Utils
             return null;
         }
 
-        private Expression<Func<T, bool>> Combine<T>(Expression<Func<T, bool>> expr1, Expression<Func<T, bool>> expr2, CombineTypeEnum type)
+        private Expression<Func<T, bool>> Combine<T>(Expression<Func<T, bool>> expr1, Expression<Func<T, bool>> expr2, CombineType type)
         {
             var parameter = Expression.Parameter(typeof(T));
 
@@ -60,7 +60,7 @@ namespace Domain.Utils
             var rightVisitor = new ReplaceExpressionVisitor(expr2.Parameters[0], parameter);
             var right = rightVisitor.Visit(expr2.Body);
 
-            if (type == CombineTypeEnum.And)
+            if (type == CombineType.And)
                 return Expression.Lambda<Func<T, bool>>(Expression.AndAlso(left!, right!), parameter);
             else
                 return Expression.Lambda<Func<T, bool>>(Expression.OrElse(left!, right!), parameter);

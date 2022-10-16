@@ -21,8 +21,8 @@ namespace Application.Services.Domain
         private readonly IInstitutionService _institutionService;
         private readonly ILogger _logger;
 
-        public string FILE_FOLDER { get; } = "research";
-        public string THUMBNAIL_FOLDER { get; } = "thumbnail";
+        private string FILE_FOLDER { get; } = "research";
+        private string THUMBNAIL_FOLDER { get; } = "thumbnail";
 
         public ResearchService(
             IResearchRepository repository,
@@ -66,6 +66,8 @@ namespace Application.Services.Domain
                 page: page,
                 pageSize: pageSize,
                 filter: filter,
+                orderBy: x => x.Id,
+                orderDirection: OrderDirection.Descending,
                 selector: x => new
                 {
                     Id = x.Id,

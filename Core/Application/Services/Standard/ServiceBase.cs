@@ -2,6 +2,7 @@
 using Application.Exceptions;
 using Application.Interfaces.Services.Standard;
 using Domain.Entities;
+using Domain.Enums;
 using Domain.Extensions;
 using Domain.Models;
 using Domain.Utils;
@@ -65,14 +66,14 @@ namespace Application.Services.Standard
             return repository.GetAll(filter);
         }
 
-        public virtual PaginationModel<TEntity> GetPaged(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, FilterBy<TEntity>? filter = null)
+        public virtual PaginationModel<TEntity> GetPaged(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, OrderDirection? orderDirection = null, FilterBy<TEntity>? filter = null)
         {
-            return repository.GetPaged(page, pageSize, orderBy, filter);
+            return repository.GetPaged(page, pageSize, orderBy, orderDirection, filter);
         }
 
-        public virtual PaginationModel<T> GetPagedAnonymous<T>(int page, int pageSize, Expression<Func<TEntity, T>> selector, Expression<Func<TEntity, object>>? orderBy = null, FilterBy<TEntity>? filter = null)
+        public virtual PaginationModel<T> GetPagedAnonymous<T>(int page, int pageSize, Expression<Func<TEntity, T>> selector, Expression<Func<TEntity, object>>? orderBy = null, OrderDirection? orderDirection = null, FilterBy<TEntity>? filter = null)
         {
-            return repository.GetPagedAnonymous(page, pageSize, selector, orderBy, filter);
+            return repository.GetPagedAnonymous(page, pageSize, selector, orderBy, orderDirection, filter);
         }
 
         public virtual ResponseMessageModel GetById(int id)
@@ -221,14 +222,14 @@ namespace Application.Services.Standard
             return await repository.GetAllAsync(filter);
         }
 
-        public virtual async Task<PaginationModel<TEntity>> GetPagedAsync(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, FilterBy<TEntity>? filter = null)
+        public virtual async Task<PaginationModel<TEntity>> GetPagedAsync(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, OrderDirection? orderDirection = null, FilterBy<TEntity>? filter = null)
         {
-            return await repository.GetPagedAsync(page, pageSize, orderBy, filter);
+            return await repository.GetPagedAsync(page, pageSize, orderBy, orderDirection, filter);
         }
 
-        public virtual async Task<PaginationModel<T>> GetPagedAnonymousAsync<T>(int page, int pageSize, Expression<Func<TEntity, T>> selector, Expression<Func<TEntity, object>>? orderBy = null, FilterBy<TEntity>? filter = null)
+        public virtual async Task<PaginationModel<T>> GetPagedAnonymousAsync<T>(int page, int pageSize, Expression<Func<TEntity, T>> selector, Expression<Func<TEntity, object>>? orderBy = null, OrderDirection? orderDirection = null, FilterBy<TEntity>? filter = null)
         {
-            return await repository.GetPagedAnonymousAsync(page, pageSize, selector, orderBy, filter);
+            return await repository.GetPagedAnonymousAsync(page, pageSize, selector, orderBy, orderDirection, filter);
         }
 
         public virtual async Task<ResponseMessageModel> GetByIdAsync(int id)

@@ -1,6 +1,6 @@
 namespace Domain.Enums
 {
-    public enum CombineTypeEnum
+    public enum CombineType
     {
         And = 1,
         Or = 2

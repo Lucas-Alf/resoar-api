@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using Domain.Entities;
+using Domain.Enums;
 using Domain.Models;
 using Domain.Utils;
 
@@ -16,8 +17,8 @@ namespace Infrastructure.Interfaces.Repositories.Standard
         int DeleteRange(IEnumerable<TEntity> entities);
         int UpdateRange(IEnumerable<TEntity> entities);
         IQueryable<TEntity> Query(FilterBy<TEntity>? filter = null);
-        PaginationModel<T> GetPagedAnonymous<T>(int page, int pageSize, Expression<Func<TEntity, T>> selector, Expression<Func<TEntity, object>>? orderBy = null, FilterBy<TEntity>? filter = null);
-        PaginationModel<TEntity> GetPaged(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, FilterBy<TEntity>? filter = null);
+        PaginationModel<T> GetPagedAnonymous<T>(int page, int pageSize, Expression<Func<TEntity, T>> selector, Expression<Func<TEntity, object>>? orderBy = null, OrderDirection? orderDirection = null, FilterBy<TEntity>? filter = null);
+        PaginationModel<TEntity> GetPaged(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, OrderDirection? orderDirection = null, FilterBy<TEntity>? filter = null);
         Task<bool> DeleteAsync(object id);
         Task<bool> UpdateAsync(TEntity obj);
         Task<bool> UpdateSomeFieldsAsync(TEntity obj, params Expression<Func<TEntity, object>>[] includeProperties);
@@ -26,8 +27,8 @@ namespace Infrastructure.Interfaces.Repositories.Standard
         Task<int> DeleteAsync(TEntity obj);
         Task<int> DeleteRangeAsync(IEnumerable<TEntity> entities);
         Task<int> UpdateRangeAsync(IEnumerable<TEntity> entities);
-        Task<PaginationModel<T>> GetPagedAnonymousAsync<T>(int page, int pageSize, Expression<Func<TEntity, T>> selector, Expression<Func<TEntity, object>>? orderBy = null, FilterBy<TEntity>? filter = null);
-        Task<PaginationModel<TEntity>> GetPagedAsync(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, FilterBy<TEntity>? filter = null);
+        Task<PaginationModel<T>> GetPagedAnonymousAsync<T>(int page, int pageSize, Expression<Func<TEntity, T>> selector, Expression<Func<TEntity, object>>? orderBy = null, OrderDirection? orderDirection = null, FilterBy<TEntity>? filter = null);
+        Task<PaginationModel<TEntity>> GetPagedAsync(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, OrderDirection? orderDirection = null, FilterBy<TEntity>? filter = null);
         Task<TEntity?> GetByIdAsync(object id);
         Task<TEntity> AddAsync(TEntity obj);
         TEntity Add(TEntity obj);

@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using Domain.Entities;
+using Domain.Enums;
 using Domain.Models;
 using Domain.Utils;
 using Infrastructure.Interfaces.Repositories.Standard;
@@ -203,9 +204,9 @@ namespace Infrastructure.Repositories.Standard.EFCore
 
         #region GetPaged
 
-        public PaginationModel<TEntity> GetPaged(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, FilterBy<TEntity>? filter = null)
+        public PaginationModel<TEntity> GetPaged(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, OrderDirection? orderDirection = null, FilterBy<TEntity>? filter = null)
         {
-            var pagination = PaginateQuery(page, pageSize, orderBy, filter);
+            var pagination = PaginateQuery(page, pageSize, orderBy, orderDirection, filter);
             return new PaginationModel<TEntity>
             {
                 Page = pagination.Page,
@@ -215,9 +216,9 @@ namespace Infrastructure.Repositories.Standard.EFCore
             };
         }
 
-        public PaginationModel<T> GetPagedAnonymous<T>(int page, int pageSize, Expression<Func<TEntity, T>> selector, Expression<Func<TEntity, object>>? orderBy = null, FilterBy<TEntity>? filter = null)
+        public PaginationModel<T> GetPagedAnonymous<T>(int page, int pageSize, Expression<Func<TEntity, T>> selector, Expression<Func<TEntity, object>>? orderBy = null, OrderDirection? orderDirection = null, FilterBy<TEntity>? filter = null)
         {
-            var pagination = PaginateQuery(page, pageSize, orderBy, filter);
+            var pagination = PaginateQuery(page, pageSize, orderBy, orderDirection, filter);
             return new PaginationModel<T>
             {
                 Page = pagination.Page,
@@ -227,9 +228,9 @@ namespace Infrastructure.Repositories.Standard.EFCore
             };
         }
 
-        public virtual async Task<PaginationModel<TEntity>> GetPagedAsync(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, FilterBy<TEntity>? filter = null)
+        public virtual async Task<PaginationModel<TEntity>> GetPagedAsync(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, OrderDirection? orderDirection = null, FilterBy<TEntity>? filter = null)
         {
-            var pagination = PaginateQuery(page, pageSize, orderBy, filter);
+            var pagination = PaginateQuery(page, pageSize, orderBy, orderDirection, filter);
             return await Task.FromResult(new PaginationModel<TEntity>
             {
                 Page = pagination.Page,
@@ -239,9 +240,9 @@ namespace Infrastructure.Repositories.Standard.EFCore
             });
         }
 
-        public virtual async Task<PaginationModel<T>> GetPagedAnonymousAsync<T>(int page, int pageSize, Expression<Func<TEntity, T>> selector, Expression<Func<TEntity, object>>? orderBy = null, FilterBy<TEntity>? filter = null)
+        public virtual async Task<PaginationModel<T>> GetPagedAnonymousAsync<T>(int page, int pageSize, Expression<Func<TEntity, T>> selector, Expression<Func<TEntity, object>>? orderBy = null, OrderDirection? orderDirection = null, FilterBy<TEntity>? filter = null)
         {
-            var pagination = PaginateQuery(page, pageSize, orderBy, filter);
+            var pagination = PaginateQuery(page, pageSize, orderBy, orderDirection, filter);
             return await Task.FromResult(new PaginationModel<T>
             {
                 Page = pagination.Page,
@@ -251,7 +252,7 @@ namespace Infrastructure.Repositories.Standard.EFCore
             });
         }
 
-        private PaginationQuery<TEntity> PaginateQuery(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, FilterBy<TEntity>? filter = null)
+        private PaginationQuery<TEntity> PaginateQuery(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, OrderDirection? orderDirection = null, FilterBy<TEntity>? filter = null)
         {
             if (pageSize == 0)
                 pageSize = 10;
@@ -271,9 +272,16 @@ namespace Infrastructure.Repositories.Standard.EFCore
             var total = query.Count();
 
             if (orderBy != null)
-                query = query.OrderBy(orderBy);
+            {
+                if (orderDirection.HasValue && orderDirection.Value == OrderDirection.Descending)
+                    query = query.OrderByDescending(orderBy);
+                else
+                    query = query.OrderBy(orderBy);
+            }
             else
+            {
                 query = query.OrderBy(x => x.Id);
+            }
 
             query = query.Skip(page * pageSize);
             query = query.Take(pageSize);
