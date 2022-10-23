@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Models;
 using Domain.Utils;
 using Microsoft.EntityFrameworkCore;
 
@@ -47,5 +48,16 @@ namespace Infrastructure.DBConfiguration.EFCore
         }
 
         public DbSet<User>? User { get; set; }
+        public DbSet<Institution>? Institution { get; set; }
+        public DbSet<KeyWord>? KeyWord { get; set; }
+        public DbSet<KnowledgeArea>? KnowledgeArea { get; set; }
+        public DbSet<Research>? Research { get; set; }
+        public DbSet<ResearchAdvisor>? ResearchAdvisor { get; set; }
+        public DbSet<ResearchAdvisorApproval>? ResearchAdvisorApproval { get; set; }
+        public DbSet<ResearchAuthor>? ResearchAuthor { get; set; }
+        public DbSet<ResearchKeyWord>? ResearchKeyWord { get; set; }
+        public DbSet<ResearchKnowledgeArea>? ResearchKnowledgeArea { get; set; }
+        public DbSet<ResearchFullTextModel>? ResearchFullTextModel { get; set; }
+        public DbSet<GenericValueModel<int>>? GenericIntModel { get; set; }
     }
 }

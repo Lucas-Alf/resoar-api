@@ -2,6 +2,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Models
 {
+    public class KnowledgeAreaViewModel
+    {
+        public int? Id { get; set; }
+        public string? Description { get; set; }
+    }
+
     public class KnowledgeAreaNewModel
     {
         [Required(ErrorMessage = "O Campo Descrição é obrigatório")]

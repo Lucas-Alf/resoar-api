@@ -254,11 +254,11 @@ namespace Infrastructure.Repositories.Standard.EFCore
 
         private PaginationQuery<TEntity> PaginateQuery(int page, int pageSize, Expression<Func<TEntity, object>>? orderBy = null, OrderDirection? orderDirection = null, FilterBy<TEntity>? filter = null)
         {
-            if (pageSize == 0)
-                pageSize = 10;
-
             if (pageSize > 100)
                 throw new Exception("O tamanho máximo de uma página é 100 registros");
+
+            if (pageSize <= 0)
+                pageSize = 10;
 
             var query = dbSet.AsQueryable();
 

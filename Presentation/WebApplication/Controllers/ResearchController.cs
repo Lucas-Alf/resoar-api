@@ -19,10 +19,16 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet]
-        public PaginationModel<object> GetPaged(int page, int pageSize, string? title, int? userId)
+        public PaginationModel<object> GetPaged(string? title, int page, int pageSize, int? userId)
         {
             var currentUserId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            return _researchService.GetPaged(page, pageSize, currentUserId, title, userId);
+            return _researchService.GetPagedSimple(page, pageSize, currentUserId, title, userId);
+        }
+
+        [HttpGet("fullText")]
+        public PaginationModel<ResearchFullTextModel> GetPagedFullText(string? title, int page, int pageSize)
+        {
+            return _researchService.GetPagedFullText(title, page, pageSize);
         }
 
         [HttpPost]
