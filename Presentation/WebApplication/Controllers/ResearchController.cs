@@ -26,9 +26,18 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet("fullText")]
-        public PaginationModel<ResearchFullTextModel> GetPagedFullText(string? title, int page, int pageSize)
+        public PaginationModel<ResearchFullTextModel> GetPagedFullText([FromQuery] ResearchFullTextQueryModel model)
         {
-            return _researchService.GetPagedFullText(title, page, pageSize);
+            return _researchService.GetPagedFullText(
+                query: model.Query,
+                institutions: model.Institutions,
+                authors: model.Authors,
+                advisors: model.Advisors,
+                keywords: model.Keywords,
+                knowledgeAreas: model.KnowledgeAreas,
+                page: model.Page,
+                pageSize: model.PageSize
+            );
         }
 
         [HttpPost]
