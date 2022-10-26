@@ -41,7 +41,7 @@ namespace Application.Services.Domain
             _logger = logger;
         }
 
-        public PaginationModel<ResearchFullTextModel> GetPagedFullText(
+        public PaginationModel<ResearchFullTextModel> GetPagedAdvanced(
             string? query,
             IList<int>? institutions,
             IList<int>? authors,
@@ -52,7 +52,7 @@ namespace Application.Services.Domain
             int pageSize
         )
         {
-            return _repository.GetPagedFullText(query, institutions, authors, advisors, keywords, knowledgeAreas, page, pageSize);
+            return _repository.GetPagedAdvanced(query, institutions, authors, advisors, keywords, knowledgeAreas, page, pageSize);
         }
 
         public PaginationModel<object> GetPagedSimple(int page, int pageSize, int currentUserId, string? title, int? userId = null)

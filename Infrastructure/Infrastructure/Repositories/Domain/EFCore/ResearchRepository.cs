@@ -16,7 +16,7 @@ namespace Infrastructure.Repositories.Domain.EFCore
             _dbContext = dbContext;
         }
 
-        public PaginationModel<ResearchFullTextModel> GetPagedFullText(
+        public PaginationModel<ResearchFullTextModel> GetPagedAdvanced(
             string? query,
             IList<int>? institutions,
             IList<int>? authors,

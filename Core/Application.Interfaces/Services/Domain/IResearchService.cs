@@ -7,7 +7,7 @@ namespace Application.Interfaces.Services.Domain
         Task<ResponseMessageModel> Add(ResearchCreateModel model, int userId);
         Task<ResponseMessageModel> Delete(int id, int userId);
         PaginationModel<object> GetPagedSimple(int page, int pageSize, int currentUserId, string? title, int? userId = null);
-        PaginationModel<ResearchFullTextModel> GetPagedFullText(
+        PaginationModel<ResearchFullTextModel> GetPagedAdvanced(
             string? query,
             IList<int>? institutions,
             IList<int>? authors,

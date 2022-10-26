@@ -25,10 +25,10 @@ namespace WebApplication.Controllers
             return _researchService.GetPagedSimple(page, pageSize, currentUserId, title, userId);
         }
 
-        [HttpGet("fullText")]
-        public PaginationModel<ResearchFullTextModel> GetPagedFullText([FromQuery] ResearchFullTextQueryModel model)
+        [HttpGet("advanced")]
+        public PaginationModel<ResearchFullTextModel> GetPagedAdvanced([FromQuery] ResearchFullTextQueryModel model)
         {
-            return _researchService.GetPagedFullText(
+            return _researchService.GetPagedAdvanced(
                 query: model.Query,
                 institutions: model.Institutions,
                 authors: model.Authors,
