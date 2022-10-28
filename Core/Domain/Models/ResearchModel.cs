@@ -76,11 +76,15 @@ namespace Domain.Models
     public class ResearchFullTextQueryModel
     {
         public string? Query { get; set; }
-        public IList<int>? Institutions { get; set; }
-        public IList<int>? Authors { get; set; }
-        public IList<int>? Advisors { get; set; }
-        public IList<int>? Keywords { get; set; }
-        public IList<int>? KnowledgeAreas { get; set; }
+        public int? StartYear { get; set; }
+        public int? FinalYear { get; set; }
+        public IList<ResearchType>? Types { get; set; }
+        public IList<string>? Languages { get; set; }
+        public IList<int>? InstitutionIds { get; set; }
+        public IList<int>? AuthorIds { get; set; }
+        public IList<int>? AdvisorIds { get; set; }
+        public IList<int>? KeywordIds { get; set; }
+        public IList<int>? KnowledgeAreaIds { get; set; }
         public int Page { get; set; }
         public int PageSize { get; set; }
     }

@@ -16,31 +16,48 @@ namespace Infrastructure.Repositories.Domain.EFCore
             _dbContext = dbContext;
         }
 
-        public PaginationModel<ResearchFullTextModel> GetPagedAdvanced(
-            string? query,
-            IList<int>? institutions,
-            IList<int>? authors,
-            IList<int>? advisors,
-            IList<int>? keywords,
-            IList<int>? knowledgeAreas,
-            int page,
-            int pageSize
-        )
+        public PaginationModel<ResearchFullTextModel> GetPagedAdvanced(ResearchFullTextQueryModel model)
         {
-            if (pageSize > 100)
+            if (model.PageSize > 100)
                 throw new Exception("O tamanho máximo de uma página é 100 registros");
 
-            if (pageSize <= 0)
-                pageSize = 10;
+            if (model.PageSize <= 0)
+                model.PageSize = 10;
 
-            var offset = page * pageSize;
+            var offset = model.Page * model.PageSize;
 
             var totalRecords = _dbContext.GenericIntModel!
-                .FromSqlInterpolated($"SELECT COUNT(id) AS \"Value\" FROM query_research({query}, {institutions}, {authors}, {advisors}, {keywords}, {knowledgeAreas}, NULL, NULL)")
+                .FromSqlInterpolated(@$"SELECT COUNT(id) AS ""Value"" FROM query_research(
+                    {model.Query},
+                    {model.StartYear},
+                    {model.FinalYear},
+                    {model.Types},
+                    {model.Languages},
+                    {model.InstitutionIds},
+                    {model.AuthorIds},
+                    {model.AdvisorIds},
+                    {model.KeywordIds},
+                    {model.KnowledgeAreaIds},
+                    NULL,
+                    NULL
+                )")
                 .FirstOrDefault();
 
             var records = _dbContext.ResearchFullTextModel!
-                .FromSqlInterpolated($"SELECT * FROM query_research({query}, {institutions}, {authors}, {advisors}, {keywords}, {knowledgeAreas}, {pageSize}, {offset})")
+                .FromSqlInterpolated(@$"SELECT * FROM query_research(
+                    {model.Query},
+                    {model.StartYear},
+                    {model.FinalYear},
+                    {model.Types},
+                    {model.Languages},
+                    {model.InstitutionIds},
+                    {model.AuthorIds},
+                    {model.AdvisorIds},
+                    {model.KeywordIds},
+                    {model.KnowledgeAreaIds},
+                    {model.PageSize},
+                    {offset}
+                )")
                 .ToList();
 
             foreach (var record in records)
@@ -51,6 +68,7 @@ namespace Infrastructure.Repositories.Domain.EFCore
 
                 record.Authors = _dbContext.ResearchAuthor!
                     .Where(x => x.ResearchId == record.Id)
+                    .OrderBy(x => x.User!.Name)
                     .Select(x => new AuthorViewModel
                     {
                         Id = x.UserId,
@@ -61,6 +79,7 @@ namespace Infrastructure.Repositories.Domain.EFCore
 
                 record.Advisors = _dbContext.ResearchAdvisor!
                     .Where(x => x.ResearchId == record.Id)
+                    .OrderBy(x => x.User!.Name)
                     .Select(x => new AdvisorViewModel
                     {
                         Id = x.UserId,
@@ -71,6 +90,7 @@ namespace Infrastructure.Repositories.Domain.EFCore
 
                 record.Keywords = _dbContext.ResearchKeyWord!
                     .Where(x => x.ResearchId == record.Id)
+                    .OrderBy(x => x.KeyWord!.Description)
                     .Select(x => new KeyWordViewModel
                     {
                         Id = x.KeyWordId,
@@ -80,6 +100,7 @@ namespace Infrastructure.Repositories.Domain.EFCore
 
                 record.KnowledgeAreas = _dbContext.ResearchKnowledgeArea!
                     .Where(x => x.ResearchId == record.Id)
+                    .OrderBy(x => x.KnowledgeArea!.Description)
                     .Select(x => new KnowledgeAreaViewModel
                     {
                         Id = x.KnowledgeAreaId,
@@ -90,8 +111,8 @@ namespace Infrastructure.Repositories.Domain.EFCore
 
             return new PaginationModel<ResearchFullTextModel>
             {
-                Page = page,
-                PageSize = pageSize,
+                Page = model.Page,
+                PageSize = model.PageSize,
                 TotalRecords = totalRecords?.Value ?? 0,
                 Records = records
             };

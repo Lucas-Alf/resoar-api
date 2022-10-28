@@ -28,16 +28,7 @@ namespace WebApplication.Controllers
         [HttpGet("advanced")]
         public PaginationModel<ResearchFullTextModel> GetPagedAdvanced([FromQuery] ResearchFullTextQueryModel model)
         {
-            return _researchService.GetPagedAdvanced(
-                query: model.Query,
-                institutions: model.Institutions,
-                authors: model.Authors,
-                advisors: model.Advisors,
-                keywords: model.Keywords,
-                knowledgeAreas: model.KnowledgeAreas,
-                page: model.Page,
-                pageSize: model.PageSize
-            );
+            return _researchService.GetPagedAdvanced(model);
         }
 
         [HttpPost]

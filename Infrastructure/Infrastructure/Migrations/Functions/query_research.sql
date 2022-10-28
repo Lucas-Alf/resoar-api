@@ -2,6 +2,10 @@ DROP FUNCTION IF EXISTS query_research;
 
 CREATE OR REPLACE FUNCTION query_research(
     p_query varchar,
+    p_start_year int,
+    p_final_year int,
+    p_type int[],
+    p_language varchar[],
     p_institution int[],
     p_authors int[],
     p_advisors int[],
@@ -46,6 +50,10 @@ RETURN QUERY
         ) AS "Rank"
     FROM "Research" AS res
         WHERE res."Visibility" = 1
+        AND (CASE WHEN p_start_year IS NOT NULL THEN "Year" >= p_start_year ELSE TRUE END)
+        AND (CASE WHEN p_final_year IS NOT NULL THEN "Year" <= p_final_year ELSE TRUE END)
+        AND (CASE WHEN p_type IS NOT NULL THEN "Type" = ANY(p_type) ELSE TRUE END)
+        AND (CASE WHEN p_language IS NOT NULL THEN "Language" = ANY(p_language) ELSE TRUE END)
         AND (CASE WHEN p_institution IS NOT NULL THEN "InstitutionId" = ANY(p_institution) ELSE TRUE END)
         AND (
             CASE WHEN p_query IS NOT NULL
