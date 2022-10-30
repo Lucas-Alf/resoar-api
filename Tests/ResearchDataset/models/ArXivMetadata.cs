@@ -31,7 +31,7 @@ namespace ResearchDataset.Models
 
     public class ArXivMetadataVersion
     {
-        public string Version { get; set; }
-        public string Created { get; set; }
+        public string? Version { get; set; }
+        public string? Created { get; set; }
     }
 }

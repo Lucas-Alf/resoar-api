@@ -18,16 +18,15 @@ namespace ResearchDataset
 
             var serviceProvider = serviceCollection.BuildServiceProvider();
 
-            Console.WriteLine("Running...");
-            var stopWatch = new Stopwatch();
-            stopWatch.Start();
+            var stopWatch = Stopwatch.StartNew();
 
             var mockDatabase = new MockDatabase(
                 provider: serviceProvider,
-                datasetPath: "/media/lucas/data/projects/research_files/1902",
+                datasetPath: "/media/lucas/data/projects/research_files/0704",
                 metadataFile: "/media/lucas/data/projects/research_files/metadata/arxiv-metadata-oai-snapshot.json",
                 userId: 1,
-                limit: 10
+                institutionId: 1,
+                limit: 3500
             );
 
             var task = mockDatabase.Start();
@@ -39,7 +38,8 @@ namespace ResearchDataset
             Console.WriteLine($"Total: {task.Result.Total}");
             Console.WriteLine($"Success: {task.Result.Success}");
             Console.WriteLine($"Errors: {task.Result.Errors}");
-            Console.WriteLine($"Time elapsed: {stopWatch.ElapsedMilliseconds}ms");
+            Console.WriteLine($"Time elapsed: {stopWatch.ElapsedMilliseconds / 1000}s");
+            Console.WriteLine($"Avg time per file: {(stopWatch.ElapsedMilliseconds / 1000) / task.Result.Total}s");
 
             if (task.Result.ErrorMessages.Any())
             {

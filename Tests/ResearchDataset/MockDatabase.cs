@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using ResearchDataset.Models;
+using ShellProgressBar;
 
 namespace ResearchDataset
 {
@@ -24,12 +25,14 @@ namespace ResearchDataset
         private string _metadataFile { get; set; }
         private int _limit { get; set; }
         private int _userId { get; set; }
+        private int _institutionId { get; set; }
 
         public MockDatabase(
             IServiceProvider provider,
             string datasetPath,
             string metadataFile,
             int userId,
+            int institutionId,
             int limit
         )
         {
@@ -42,17 +45,25 @@ namespace ResearchDataset
             _datasetPath = datasetPath;
             _metadataFile = metadataFile;
             _userId = userId;
+            _institutionId = institutionId;
             _limit = limit;
         }
 
         public async Task<MockResult> Start()
         {
             var result = new MockResult();
+            var progressOptions = new ProgressBarOptions
+            {
+                ProgressCharacter = '─',
+                ProgressBarOnBottom = true
+            };
 
             using (var fs = new FileStream(_metadataFile, FileMode.Open, FileAccess.Read))
             using (var streamReader = new StreamReader(fs))
             using (var reader = new JsonTextReader(streamReader))
+            using (var progressBar = new ProgressBar(10000, "Running... ", progressOptions))
             {
+                var progress = progressBar.AsProgress<float>();
                 var serializer = new JsonSerializer();
                 reader.SupportMultipleContent = true;
                 while (reader.Read())
@@ -69,7 +80,7 @@ namespace ResearchDataset
                                 var fileInfo = new FileInfo(researchPath);
                                 if (!fileInfo.Exists)
                                 {
-                                    // Console.WriteLine($"File not found {metadata.Id}{revision.Version}.pdf");
+                                    Console.WriteLine($"File not found {metadata.Id}{revision.Version}.pdf");
                                     continue;
                                 }
 
@@ -78,9 +89,14 @@ namespace ResearchDataset
                                     result.ErrorMessages.Add(message);
                                 else
                                     result.Success++;
+
+                                if (result.Total == _limit)
+                                    break;
                             }
                         }
                     }
+
+                    progress.Report(((float)result.Total) / ((float)_limit));
 
                     if (result.Total == _limit)
                         break;
@@ -94,13 +110,13 @@ namespace ResearchDataset
         {
             var domain = new ResearchCreateModel
             {
-                Title = metadata.Title?.Replace("\n", "").Trim(),
-                Abstract = metadata.Abstract?.Replace("\n", "").Trim(),
+                Title = Limit(metadata.Title?.Replace("\n", "").Trim(), 350),
+                Abstract = Limit(metadata.Abstract?.Replace("\n", "").Trim(), 2500),
                 Year = DateTime.Now.Year,
                 Type = ResearchType.Article,
                 Visibility = ResearchVisibility.Public,
                 Language = ResearchLanguage.English,
-                InstitutionId = 1,
+                InstitutionId = _institutionId,
                 KnowledgeAreaIds = new List<int>(),
                 KeyWordIds = new List<int>(),
                 AuthorIds = new List<int>() { _userId },
@@ -113,10 +129,10 @@ namespace ResearchDataset
 
             if (!String.IsNullOrEmpty(metadata.Categories))
             {
-                var knowledgeAreaId = HandleKnowledgeArea(metadata.Categories.Trim());
+                var knowledgeAreaId = HandleKnowledgeArea(Limit(metadata.Categories.Trim(), 255)!);
                 domain.KnowledgeAreaIds.Add(knowledgeAreaId);
 
-                var keyWordId = HandleKeyWord(metadata.Categories.Trim());
+                var keyWordId = HandleKeyWord(Limit(metadata.Categories.Trim(), 255)!);
                 domain.KeyWordIds.Add(keyWordId);
             }
 
@@ -139,7 +155,7 @@ namespace ResearchDataset
 
             using (var stream = File.OpenRead(metadata.FilePath!))
             {
-                domain.File = new FormFile(stream, 0, stream.Length, null, Path.GetFileName(stream.Name))
+                domain.File = new FormFile(stream, 0, stream.Length, null!, Path.GetFileName(stream.Name))
                 {
                     Headers = new HeaderDictionary(),
                     ContentType = "application/pdf"
@@ -206,7 +222,7 @@ namespace ResearchDataset
                     .Replace("-", "")
                     .ToLower();
 
-                var email = $"{formattedName}@test.com";
+                var email = Limit($"{formattedName}@test.com", 255);
 
                 var exists = _userRepository
                     .Query(new FilterBy<User>(x => x.Email == email))
@@ -218,7 +234,7 @@ namespace ResearchDataset
 
                 var domain = new User
                 {
-                    Name = name,
+                    Name = Limit(name, 255),
                     Email = email,
                     Password = "$2a$11$l102IEO02Osx39lnBptYYOdXiJRa9ax2uj7dWSakBPVtilMYo8142",
                     FailLoginCount = 0
@@ -229,8 +245,20 @@ namespace ResearchDataset
             }
             catch (Exception ex)
             {
-                throw new BusinessException($"Error on add User: {ex.Message}");
+                Console.WriteLine($"Error on add User: {ex.Message}");
+                throw;
             }
+        }
+
+        private static string? Limit(string? value, int length)
+        {
+            if (String.IsNullOrEmpty(value))
+                return value;
+
+            if (value.Length > length)
+                return value.Substring(0, length);
+
+            return value;
         }
     }
 }

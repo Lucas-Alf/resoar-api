@@ -12,4 +12,8 @@
 	<ProjectReference Include="..\..\Core\Application.IoC\Application.IoC.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="ShellProgressBar" Version="5.2.0" />
+  </ItemGroup>
+
 </Project>

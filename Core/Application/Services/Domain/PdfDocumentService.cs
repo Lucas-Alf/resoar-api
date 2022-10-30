@@ -29,7 +29,11 @@ namespace Application.Services.Domain
 
                 // Replaces the broken words
                 // Ex: "exem- ple" to "exemple"
-                return documentText.Replace("- ", "").Trim();
+                // Replaces invalid UTF character \0x00
+                return documentText
+                    .Replace("- ", "")
+                    .Replace("\u0000", "")
+                    .Trim();
             }
         }
 
