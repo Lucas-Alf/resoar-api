@@ -25,7 +25,7 @@ namespace UnitTest.Integration.Repositories.Repositories.EntityFramework
         }
 
         [SetUp]
-        public void Inicializa()
+        public void SetUp()
         {
             userEntityFramework = new UserRepository(dbContext!);
             builder = new UserBuilder();
@@ -33,7 +33,7 @@ namespace UnitTest.Integration.Repositories.Repositories.EntityFramework
         }
 
         [TearDown]
-        public void ExecutadoAposExecucaoDeCadaTeste()
+        public void TearDown()
         {
             transaction?.Rollback();
         }

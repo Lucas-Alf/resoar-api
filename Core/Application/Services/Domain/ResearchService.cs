@@ -184,6 +184,9 @@ namespace Application.Services.Domain
                     // Extracts the PDF text
                     domain.RawContent = _pdfDocumentService.ExtractText(fileBytes);
 
+                    if (String.IsNullOrEmpty(domain.RawContent))
+                        throw new BusinessException("Não foi possível extrair nenhum texto legível do arquivo PDF");
+
                     // Save the PDF file
                     fileKey = await SaveFile(
                         stream: fileStream,
