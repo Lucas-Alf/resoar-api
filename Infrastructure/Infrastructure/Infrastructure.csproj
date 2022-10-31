@@ -33,6 +33,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Migrations\Functions\*.*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Migrations\Index\*.*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Migrations\Triggers\*.*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>  
+  </ItemGroup>
+
+  <ItemGroup>
     <SonarQubeSetting Include="sonar.cpd.exclusions">
       <Value>Migrations/**</Value>
     </SonarQubeSetting>

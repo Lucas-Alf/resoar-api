@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using System.Reflection;
+using Domain.Entities;
 using Domain.Models;
 using Domain.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -23,21 +24,22 @@ namespace Infrastructure.DBConfiguration.EFCore
 
         public void RunDatabaseScripts()
         {
+            var path = AppDomain.CurrentDomain.BaseDirectory;
             using (var transaction = this.Database.BeginTransaction())
             {
-                var indexes = Directory.GetFiles("../../Infrastructure/Infrastructure/Migrations/Index");
+                var indexes = Directory.GetFiles(Path.Combine(path, "Migrations/Index"));
                 foreach (var index in indexes)
                 {
                     this.Database.ExecuteSqlRaw(File.ReadAllText(index));
                 }
 
-                var triggers = Directory.GetFiles("../../Infrastructure/Infrastructure/Migrations/Triggers");
+                var triggers = Directory.GetFiles(Path.Combine(path, "Migrations/Triggers"));
                 foreach (var trigger in triggers)
                 {
                     this.Database.ExecuteSqlRaw(File.ReadAllText(trigger));
                 }
 
-                var functions = Directory.GetFiles("../../Infrastructure/Infrastructure/Migrations/Functions");
+                var functions = Directory.GetFiles(Path.Combine(path, "Migrations/Functions"));
                 foreach (var function in functions)
                 {
                     this.Database.ExecuteSqlRaw(File.ReadAllText(function));
