@@ -4,7 +4,6 @@ using Docnet.Core;
 using Docnet.Core.Models;
 using SkiaSharp;
 using UglyToad.PdfPig;
-using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.DocumentLayoutAnalysis.WordExtractor;
 
 namespace Application.Services.Domain
@@ -22,7 +21,7 @@ namespace Application.Services.Domain
             {
                 string documentText = "";
                 var textExtractor = NearestNeighbourWordExtractor.Instance;
-                foreach (Page page in document.GetPages())
+                foreach (var page in document.GetPages())
                 {
                     documentText += (String.Join(" ", page.GetWords(textExtractor).Select(x => x.Text)) + " ");
                 }
@@ -75,43 +74,47 @@ namespace Application.Services.Domain
         private static SKBitmap PixelArrayToBitmap(byte[] pixelArray, int width, int height)
         {
             // Prevent garbage collector to move the pixelArray
-            GCHandle gcHandle = GCHandle.Alloc(pixelArray, GCHandleType.Pinned);
+            var gcHandle = GCHandle.Alloc(pixelArray, GCHandleType.Pinned);
 
             // The desired image size
-            SKImageInfo info = new SKImageInfo(width, height, SKColorType.Bgra8888, SKAlphaType.Unpremul);
+            var info = new SKImageInfo(width, height, SKColorType.Bgra8888, SKAlphaType.Unpremul);
 
             // Create the surface
-            SKSurface surface = SKSurface.Create(info);
-
-            // Get the canvas for drawing
-            SKCanvas canvas = surface.Canvas;
-
-            // Draw the white background
-            canvas.Clear(SKColors.White);
-
-            // Create a paint object so that drawing can happen at a higher resolution
-            SKPaint paint = new SKPaint
+            using (var surface = SKSurface.Create(info))
             {
-                IsAntialias = true,
-                FilterQuality = SKFilterQuality.High
-            };
+                // Get the canvas for drawing
+                using (var canvas = surface.Canvas)
+                {
+                    // Draw the white background
+                    canvas.Clear(SKColors.White);
 
-            // The result bitmap
-            SKBitmap bitmap = new SKBitmap();
-            IntPtr ptr = gcHandle.AddrOfPinnedObject();
-            int rowBytes = info.RowBytes;
+                    // Create a paint object so that drawing can happen at a higher resolution
+                    using (var paint = new SKPaint { IsAntialias = true, FilterQuality = SKFilterQuality.High })
+                    {
+                        // The result bitmap
+                        using (var bitmap = new SKBitmap())
+                        {
+                            var ptr = gcHandle.AddrOfPinnedObject();
+                            var rowBytes = info.RowBytes;
 
-            // Set pixels on the bitmap
-            bitmap.InstallPixels(info, ptr, rowBytes, delegate { gcHandle.Free(); });
+                            // Set pixels on the bitmap
+                            bitmap.InstallPixels(info, ptr, rowBytes, delegate { gcHandle.Free(); });
 
-            // draw the source bitmap over the white background
-            canvas.DrawBitmap(bitmap, info.Rect, paint);
+                            // Draw the source bitmap over the white background
+                            canvas.DrawBitmap(bitmap, info.Rect, paint);
 
-            // create an image for saving/drawing
-            canvas.Flush();
-            SKImage finalImage = surface.Snapshot();
+                            // Create an image for saving/drawing
+                            canvas.Flush();
 
-            return SKBitmap.FromImage(finalImage);
+                            // Gets the final image
+                            using (var finalImage = surface.Snapshot())
+                            {
+                                return SKBitmap.FromImage(finalImage);
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
