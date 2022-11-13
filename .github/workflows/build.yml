@@ -41,7 +41,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          DOTNET_ROLL_FORWARD: Major # Until .NET 7 is not supported
         shell: powershell
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"Lucas-Alf_resoar-api" /o:"lucas-alf" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
