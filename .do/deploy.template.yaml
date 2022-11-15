@@ -1,0 +1,9 @@
+spec:
+ name: resoar-api
+ services:
+ - name: web
+   dockerfile_path: Dockerfile
+   http_port: 80
+   git:
+     branch: main
+     repo_clone_url: https://github.com/Lucas-Alf/resoar-api.git
