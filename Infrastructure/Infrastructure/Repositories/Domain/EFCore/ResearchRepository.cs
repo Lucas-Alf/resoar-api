@@ -16,7 +16,7 @@ namespace Infrastructure.Repositories.Domain.EFCore
             _dbContext = dbContext;
         }
 
-        public PaginationModel<ResearchFullTextModel> GetPagedAdvanced(ResearchFullTextQueryModel model)
+        public PaginationModel<ResearchFullTextViewModel> GetPagedAdvanced(ResearchFullTextQueryModel model)
         {
             if (model.PageSize > 100)
                 throw new Exception("O tamanho máximo de uma página é 100 registros");
@@ -26,13 +26,18 @@ namespace Infrastructure.Repositories.Domain.EFCore
 
             var offset = model.Page * model.PageSize;
 
+            // Transform integer list to list of language names
+            var languages = model.Languages?
+                .Select(x => ((ResearchLanguage)x).ToString().ToLower())
+                .ToList();
+
             var totalRecords = _dbContext.GenericIntModel!
                 .FromSqlInterpolated(@$"SELECT COUNT(id) AS ""Value"" FROM query_research(
                     {model.Query},
                     {model.StartYear},
                     {model.FinalYear},
                     {model.Types},
-                    {model.Languages},
+                    {languages},
                     {model.InstitutionIds},
                     {model.AuthorIds},
                     {model.AdvisorIds},
@@ -49,7 +54,7 @@ namespace Infrastructure.Repositories.Domain.EFCore
                     {model.StartYear},
                     {model.FinalYear},
                     {model.Types},
-                    {model.Languages},
+                    {languages},
                     {model.InstitutionIds},
                     {model.AuthorIds},
                     {model.AdvisorIds},
@@ -109,7 +114,7 @@ namespace Infrastructure.Repositories.Domain.EFCore
                     .ToList();
             }
 
-            return new PaginationModel<ResearchFullTextModel>
+            return new PaginationModel<ResearchFullTextViewModel>
             {
                 Page = model.Page,
                 PageSize = model.PageSize,

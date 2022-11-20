@@ -11,10 +11,15 @@ namespace Application.Services.Domain
     public class KeyWordService : ServiceBase<KeyWord>, IKeyWordService
     {
         private readonly IKeyWordRepository _repository;
+        private readonly ICurrentUserService _currentUserService;
 
-        public KeyWordService(IKeyWordRepository repository) : base(repository)
+        public KeyWordService(
+            IKeyWordRepository repository,
+            ICurrentUserService currentUserService
+        ) : base(repository)
         {
             _repository = repository;
+            _currentUserService = currentUserService;
         }
 
         public PaginationModel<object> GetPaged(int page, int pageSize, string? description)
@@ -37,14 +42,14 @@ namespace Application.Services.Domain
             );
         }
 
-        public ResponseMessageModel Add(KeyWordNewModel model, long userId)
+        public ResponseMessageModel Add(KeyWordNewModel model)
         {
             try
             {
                 var domain = new KeyWord
                 {
                     Description = model.Description,
-                    CreatedById = userId
+                    CreatedById = _currentUserService.GetId()
                 };
 
                 return base.Add(domain);
@@ -55,7 +60,7 @@ namespace Application.Services.Domain
             }
         }
 
-        public ResponseMessageModel Update(KeyWordUpdateModel model, long userId)
+        public ResponseMessageModel Update(KeyWordUpdateModel model)
         {
             try
             {
@@ -64,7 +69,7 @@ namespace Application.Services.Domain
                     {
                         Id = model.Id!.Value,
                         Description = model.Description,
-                        ModifiedById = userId
+                        ModifiedById = _currentUserService.GetId()
                     },
                     x => x.Description!,
                     x => x.ModifiedById!

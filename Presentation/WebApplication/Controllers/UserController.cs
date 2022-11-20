@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Application.Interfaces.Services.Domain;
 using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -33,15 +32,13 @@ namespace WebApplication.Controllers
         [HttpPut]
         public ResponseMessageModel Update(UserUpdateModel model)
         {
-            var userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            return _userService.Update(userId, model);
+            return _userService.Update(model);
         }
 
         [HttpDelete]
         public ResponseMessageModel Delete()
         {
-            var userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            return _userService.Remove(userId);
+            return _userService.Remove();
         }
     }
 }

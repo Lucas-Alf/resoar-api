@@ -11,10 +11,15 @@ namespace Application.Services.Domain
     public class UserService : IUserService
     {
         private readonly IUserRepository _repository;
+        private readonly ICurrentUserService _currentUserService;
 
-        public UserService(IUserRepository repository)
+        public UserService(
+            IUserRepository repository,
+            ICurrentUserService currentUserService
+        )
         {
             _repository = repository;
+            _currentUserService = currentUserService;
         }
 
         public IQueryable<User> Query(FilterBy<User> filter) => _repository.Query(filter);
@@ -68,7 +73,7 @@ namespace Application.Services.Domain
             }
         }
 
-        public ResponseMessageModel Update(int userId, UserUpdateModel model)
+        public ResponseMessageModel Update(UserUpdateModel model)
         {
             try
             {
@@ -78,13 +83,14 @@ namespace Application.Services.Domain
                 if (String.IsNullOrEmpty(model.Email))
                     throw new BusinessException("Email é obrigatório");
 
-                var domain = _repository.GetById(userId);
+                var currentUserId = _currentUserService.GetId();
+                var domain = _repository.GetById(currentUserId);
                 if (domain == null)
                     throw new BusinessException("Usuário não encontrado.");
 
                 if (model.Email != domain.Email)
                 {
-                    var emailExists = _repository.Query(new FilterBy<User>(x => x.Email == model.Email && x.Id != userId)).Any();
+                    var emailExists = _repository.Query(new FilterBy<User>(x => x.Email == model.Email && x.Id != currentUserId)).Any();
                     if (emailExists)
                         throw new BusinessException("Já existe um usuário cadastrado com este e-mail.");
                 }
@@ -93,7 +99,7 @@ namespace Application.Services.Domain
                 // if (model.ProfileImage != null)
                 // domain.ImagePath = 
 
-                domain.Id = userId;
+                domain.Id = currentUserId;
                 domain.Name = model.Name;
                 domain.Email = model.Email;
 
@@ -107,11 +113,12 @@ namespace Application.Services.Domain
             }
         }
 
-        public ResponseMessageModel Remove(int userId)
+        public ResponseMessageModel Remove()
         {
             try
             {
-                var domain = _repository.GetById(userId);
+                var currentUserId = _currentUserService.GetId();
+                var domain = _repository.GetById(currentUserId);
                 if (domain == null)
                     throw new BusinessException("Usuário não encontrado.");
 

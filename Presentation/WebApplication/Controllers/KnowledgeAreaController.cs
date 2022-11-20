@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Application.Interfaces.Services.Domain;
 using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -33,16 +32,14 @@ namespace WebApplication.Controllers
         [HttpPost]
         public ResponseMessageModel Add(KnowledgeAreaNewModel model)
         {
-            var userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            return _knowledgeAreaService.Add(model, userId);
+            return _knowledgeAreaService.Add(model);
         }
 
         [HttpPut]
         [Authorize(Roles = "Admin")]
         public ResponseMessageModel Update(KnowledgeAreaUpdateModel model)
         {
-            var userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            return _knowledgeAreaService.Update(model, userId);
+            return _knowledgeAreaService.Update(model);
         }
 
         [HttpDelete("{id}")]

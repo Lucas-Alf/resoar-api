@@ -11,10 +11,15 @@ namespace Application.Services.Domain
     public class KnowledgeAreaService : ServiceBase<KnowledgeArea>, IKnowledgeAreaService
     {
         private readonly IKnowledgeAreaRepository _repository;
+        private readonly ICurrentUserService _currentUserService;
 
-        public KnowledgeAreaService(IKnowledgeAreaRepository repository) : base(repository)
+        public KnowledgeAreaService(
+            IKnowledgeAreaRepository repository,
+            ICurrentUserService currentUserService
+        ) : base(repository)
         {
             _repository = repository;
+            _currentUserService = currentUserService;
         }
 
         public PaginationModel<object> GetPaged(int page, int pageSize, string? description)
@@ -37,14 +42,14 @@ namespace Application.Services.Domain
             );
         }
 
-        public ResponseMessageModel Add(KnowledgeAreaNewModel model, long userId)
+        public ResponseMessageModel Add(KnowledgeAreaNewModel model)
         {
             try
             {
                 var domain = new KnowledgeArea
                 {
                     Description = model.Description,
-                    CreatedById = userId
+                    CreatedById = _currentUserService.GetId()
                 };
 
                 return base.Add(domain);
@@ -55,7 +60,7 @@ namespace Application.Services.Domain
             }
         }
 
-        public ResponseMessageModel Update(KnowledgeAreaUpdateModel model, long userId)
+        public ResponseMessageModel Update(KnowledgeAreaUpdateModel model)
         {
             try
             {
@@ -64,7 +69,7 @@ namespace Application.Services.Domain
                     {
                         Id = model.Id!.Value,
                         Description = model.Description,
-                        ModifiedById = userId
+                        ModifiedById = _currentUserService.GetId()
                     },
                     x => x.Description!,
                     x => x.ModifiedById!

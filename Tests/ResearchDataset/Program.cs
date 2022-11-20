@@ -1,6 +1,9 @@
 ﻿using System.Diagnostics;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using Application.IoC;
 using Infrastructure.IoC;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
@@ -18,15 +21,31 @@ namespace ResearchDataset
 
             var serviceProvider = serviceCollection.BuildServiceProvider();
 
-            var stopWatch = Stopwatch.StartNew();
+            var httpContextAccessor = serviceProvider.GetService<IHttpContextAccessor>()!;
 
+            // Mock logged user in HttpContext
+            var userId = 1;
+            var authClaims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
+                new Claim(ClaimTypes.Name, "Mocked User"),
+                new Claim(ClaimTypes.Email, "test@test.com.br"),
+                new Claim("imagePath", ""),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            };
+
+            var identity = new ClaimsIdentity(authClaims);
+            httpContextAccessor.HttpContext = new DefaultHttpContext();
+            httpContextAccessor.HttpContext.User = new ClaimsPrincipal(identity);
+
+            var stopWatch = Stopwatch.StartNew();
             var mockDatabase = new MockDatabase(
                 provider: serviceProvider,
                 datasetPath: "/media/lucas/data/projects/research_files/0704",
                 metadataFile: "/media/lucas/data/projects/research_files/metadata/arxiv-metadata-oai-snapshot.json",
-                userId: 1,
+                userId: userId,
                 institutionId: 1,
-                limit: 3500
+                limit: 5
             );
 
             var task = mockDatabase.Start();

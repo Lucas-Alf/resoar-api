@@ -89,6 +89,7 @@ namespace Application.Services.Domain
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     new Claim(ClaimTypes.Name, user.Name ?? ""),
+                    new Claim(ClaimTypes.Email, model.Email ?? ""),
                     new Claim("imagePath", user.ImagePath ?? ""),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };

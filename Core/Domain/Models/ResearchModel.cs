@@ -42,20 +42,60 @@ namespace Domain.Models
         public IFormFile? File { get; set; }
     }
 
-    [Keyless]
-    public class ResearchFullTextModel
+    public class ResearchViewModel
     {
         public int Id { get; set; }
         public string? Title { get; set; }
-        public int Year { get; set; }
-        public ResearchType Type { get; set; }
+        public int? Year { get; set; }
+        public ResearchType? Type { get; set; }
+        public ResearchVisibility? Visibility { get; set; }
+        public ResearchLanguage? Language { get; set; }
         public string? LanguageName { get; set; }
-        public Guid FileKey { get; set; }
-        public Guid ThumbnailKey { get; set; }
-        public int InstitutionId { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public Guid? FileKey { get; set; }
+        public Guid? ThumbnailKey { get; set; }
+        public int? InstitutionId { get; set; }
+        public DateTime? CreatedAt { get; set; }
         public string? Abstract { get; set; }
-        public float Rank { get; set; }
+        public ResearchCreatedByViewModel? CreatedBy { get; set; }
+        public ResearchCreatedByViewModel? Institution { get; set; }
+
+        public IList<AuthorViewModel> Authors { get; set; } = new List<AuthorViewModel>();
+
+        public IList<AdvisorViewModel> Advisors { get; set; } = new List<AdvisorViewModel>();
+
+        public IList<KeyWordViewModel> Keywords { get; set; } = new List<KeyWordViewModel>();
+
+        public IList<KnowledgeAreaViewModel> KnowledgeAreas { get; set; } = new List<KnowledgeAreaViewModel>();
+    }
+
+    public class ResearchCreatedByViewModel
+    {
+        public int? Id { get; set; }
+        public string? Name { get; set; }
+        public string? ImagePath { get; set; }
+    }
+
+    public class ResearchInstitutionViewModel
+    {
+        public int? Id { get; set; }
+        public string? Name { get; set; }
+        public string? ImagePath { get; set; }
+    }
+
+    [Keyless]
+    public class ResearchFullTextViewModel
+    {
+        public int Id { get; set; }
+        public string? Title { get; set; }
+        public int? Year { get; set; }
+        public ResearchType? Type { get; set; }
+        public string? LanguageName { get; set; }
+        public Guid? FileKey { get; set; }
+        public Guid? ThumbnailKey { get; set; }
+        public int? InstitutionId { get; set; }
+        public DateTime? CreatedAt { get; set; }
+        public string? Abstract { get; set; }
+        public float? Rank { get; set; }
 
         [NotMapped]
         public ResearchLanguage? Language { get; set; }
@@ -79,7 +119,7 @@ namespace Domain.Models
         public int? StartYear { get; set; }
         public int? FinalYear { get; set; }
         public IList<ResearchType>? Types { get; set; }
-        public IList<string>? Languages { get; set; }
+        public IList<int>? Languages { get; set; }
         public IList<int>? InstitutionIds { get; set; }
         public IList<int>? AuthorIds { get; set; }
         public IList<int>? AdvisorIds { get; set; }

@@ -9,7 +9,7 @@ namespace Application.Interfaces.Services.Domain
         IQueryable<User> Query(FilterBy<User> filter);
         PaginationModel<UserViewModel> GetPaged(int page, int pageSize, string? name);
         ResponseMessageModel GetById(int id);
-        ResponseMessageModel Remove(int userId);
-        ResponseMessageModel Update(int userId, UserUpdateModel model);
+        ResponseMessageModel Remove();
+        ResponseMessageModel Update(UserUpdateModel model);
     }
 }

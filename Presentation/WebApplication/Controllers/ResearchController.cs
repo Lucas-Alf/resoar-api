@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Application.Interfaces.Services.Domain;
 using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -19,30 +18,33 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet]
-        public PaginationModel<object> GetPaged(string? title, int page, int pageSize, int? userId)
+        public PaginationModel<ResearchViewModel> GetPaged(string? title, int page, int pageSize, int? userId)
         {
-            var currentUserId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            return _researchService.GetPagedSimple(page, pageSize, currentUserId, title, userId);
+            return _researchService.GetPagedSimple(page, pageSize, title, userId);
         }
 
         [HttpGet("advanced")]
-        public PaginationModel<ResearchFullTextModel> GetPagedAdvanced([FromQuery] ResearchFullTextQueryModel model)
+        public PaginationModel<ResearchFullTextViewModel> GetPagedAdvanced([FromQuery] ResearchFullTextQueryModel model)
         {
             return _researchService.GetPagedAdvanced(model);
+        }
+
+        [HttpGet("{id}")]
+        public ResponseMessageModel GetById(int id)
+        {
+            return _researchService.GetById(id);
         }
 
         [HttpPost]
         public async Task<ResponseMessageModel> Add([FromForm] ResearchCreateModel model)
         {
-            var userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            return await _researchService.Add(model, userId);
+            return await _researchService.Add(model);
         }
 
         [HttpDelete("{id}")]
         public async Task<ResponseMessageModel> Delete(int id)
         {
-            var userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            return await _researchService.Delete(id, userId);
+            return await _researchService.Delete(id);
         }
     }
 }

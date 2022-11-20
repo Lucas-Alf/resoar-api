@@ -4,9 +4,10 @@ namespace Application.Interfaces.Services.Domain
 {
     public interface IResearchService
     {
-        Task<ResponseMessageModel> Add(ResearchCreateModel model, int userId);
-        Task<ResponseMessageModel> Delete(int id, int userId);
-        PaginationModel<object> GetPagedSimple(int page, int pageSize, int currentUserId, string? title, int? userId = null);
-        PaginationModel<ResearchFullTextModel> GetPagedAdvanced(ResearchFullTextQueryModel model);
+        PaginationModel<ResearchViewModel> GetPagedSimple(int page, int pageSize, string? title, int? userId = null);
+        PaginationModel<ResearchFullTextViewModel> GetPagedAdvanced(ResearchFullTextQueryModel model);
+        ResponseMessageModel GetById(int id);
+        Task<ResponseMessageModel> Add(ResearchCreateModel model);
+        Task<ResponseMessageModel> Delete(int id);
     }
 }

@@ -7,7 +7,7 @@ namespace Application.Interfaces.Services.Domain
     public interface IKeyWordService : IServiceBase<KeyWord>
     {
         PaginationModel<object> GetPaged(int page, int pageSize, string? description);
-        ResponseMessageModel Add(KeyWordNewModel model, long userId);
-        ResponseMessageModel Update(KeyWordUpdateModel model, long userId);
+        ResponseMessageModel Add(KeyWordNewModel model);
+        ResponseMessageModel Update(KeyWordUpdateModel model);
     }
 }

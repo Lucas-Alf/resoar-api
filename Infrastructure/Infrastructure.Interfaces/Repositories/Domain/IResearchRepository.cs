@@ -6,6 +6,6 @@ namespace Infrastructure.Interfaces.Repositories.Domain
 {
     public interface IResearchRepository : IDomainRepository<Research>
     {
-        PaginationModel<ResearchFullTextModel> GetPagedAdvanced(ResearchFullTextQueryModel model);
+        PaginationModel<ResearchFullTextViewModel> GetPagedAdvanced(ResearchFullTextQueryModel model);
     }
 }

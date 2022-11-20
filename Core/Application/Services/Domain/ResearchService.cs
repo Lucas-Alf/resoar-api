@@ -19,6 +19,7 @@ namespace Application.Services.Domain
         private readonly IStorageService _storageService;
         private readonly IUserService _userService;
         private readonly IInstitutionService _institutionService;
+        private readonly ICurrentUserService _currentUserService;
         private readonly ILogger _logger;
 
         private string FILE_FOLDER { get; } = "research";
@@ -30,6 +31,7 @@ namespace Application.Services.Domain
             IStorageService storageService,
             IUserService userService,
             IInstitutionService institutionService,
+            ICurrentUserService currentUserService,
             ILogger<Research> logger
         )
         {
@@ -38,24 +40,28 @@ namespace Application.Services.Domain
             _storageService = storageService;
             _userService = userService;
             _institutionService = institutionService;
+            _currentUserService = currentUserService;
             _logger = logger;
         }
 
-        public PaginationModel<ResearchFullTextModel> GetPagedAdvanced(ResearchFullTextQueryModel model)
+        public PaginationModel<ResearchFullTextViewModel> GetPagedAdvanced(ResearchFullTextQueryModel model)
         {
             return _repository.GetPagedAdvanced(model);
         }
 
-        public PaginationModel<object> GetPagedSimple(int page, int pageSize, int currentUserId, string? title, int? userId = null)
+        public PaginationModel<ResearchViewModel> GetPagedSimple(int page, int pageSize, string? title, int? userId = null)
         {
             var filter = new FilterBy<Research>();
 
+            // Filter by title
             if (!String.IsNullOrEmpty(title))
                 filter.Add(x => EF.Functions.ILike(x.Title!, $"%{title.Trim()}%"));
 
+            // Filter public/private research
             if (userId.HasValue)
             {
                 filter.Add(x => x.Authors!.Any(y => y.UserId == userId));
+                var currentUserId = _currentUserService.GetId();
                 if (currentUserId == userId)
                     filter.Add(x =>
                         x.Visibility == ResearchVisibility.Public ||
@@ -67,36 +73,38 @@ namespace Application.Services.Domain
                 filter.Add(x => x.Visibility == ResearchVisibility.Public);
             }
 
-            var data = _repository.GetPagedAnonymous<object>(
+            var data = _repository.GetPagedAnonymous<ResearchViewModel>(
                 page: page,
                 pageSize: pageSize,
                 filter: filter,
                 orderBy: x => x.Id,
                 orderDirection: OrderDirection.Descending,
-                selector: x => new
+                selector: x => new ResearchViewModel
                 {
                     Id = x.Id,
                     Title = x.Title,
                     Year = x.Year,
                     Type = x.Type,
                     Visibility = x.Visibility,
-                    Language = x.Language,
+                    LanguageName = x.Language,
                     FileKey = x.FileKey,
                     ThumbnailKey = x.ThumbnailKey,
                     CreatedAt = x.CreatedAt,
                     Abstract = x.Abstract,
-                    CreatedBy = new
+                    CreatedBy = new ResearchCreatedByViewModel
                     {
                         Id = x.CreatedById,
-                        Name = x.CreatedBy!.Name
+                        Name = x.CreatedBy!.Name,
+                        ImagePath = x.CreatedBy!.ImagePath,
                     },
-                    Institution = new
+                    Institution = new ResearchCreatedByViewModel
                     {
                         Id = x.InstitutionId,
-                        Name = x.Institution!.Name
+                        Name = x.Institution!.Name,
+                        ImagePath = x.Institution!.ImagePath
                     },
                     Authors = x.Authors!
-                        .Select(y => new
+                        .Select(y => new AuthorViewModel
                         {
                             Id = y.UserId,
                             Name = y.User!.Name,
@@ -104,20 +112,129 @@ namespace Application.Services.Domain
                         })
                         .ToList(),
                     Advisors = x.Advisors!
-                        .Select(y => new
+                        .Select(y => new AdvisorViewModel
                         {
                             Id = y.UserId,
                             Name = y.User!.Name,
-                            ImagePath = y.User!.ImagePath
+                            ImagePath = y.User!.ImagePath,
+                            Approved = x.ResearchAdvisorApprovals!.Any(z => z.UserId == y.UserId && z.Approved)
                         })
-                        .ToList()
+                        .ToList(),
+                    Keywords = x.ResearchKeyWords!
+                        .Select(x => new KeyWordViewModel
+                        {
+                            Id = x.KeyWordId,
+                            Description = x.KeyWord!.Description
+                        })
+                        .ToList(),
+                    KnowledgeAreas = x.ResearchKnowledgeAreas!
+                        .Select(x => new KnowledgeAreaViewModel
+                        {
+                            Id = x.KnowledgeAreaId,
+                            Description = x.KnowledgeArea!.Description
+                        })
+                        .ToList(),
                 }
             );
+
+            // Populates the Language field, in database is a string with the name of language
+            // but sometimes we need the Enum
+            foreach (var record in data.Records)
+            {
+                var validLanguage = Enum.TryParse(typeof(ResearchLanguage), record.LanguageName, true, out var language);
+                if (validLanguage)
+                    record.Language = (ResearchLanguage)language!;
+            }
 
             return data;
         }
 
-        public async Task<ResponseMessageModel> Delete(int id, int userId)
+        public ResponseMessageModel GetById(int id)
+        {
+            try
+            {
+                var domain = _repository
+                    .Query(new FilterBy<Research>(x => x.Id == id))
+                    .Select(x => new ResearchViewModel
+                    {
+                        Id = x.Id,
+                        Title = x.Title,
+                        Year = x.Year,
+                        Type = x.Type,
+                        Visibility = x.Visibility,
+                        LanguageName = x.Language,
+                        FileKey = x.FileKey,
+                        ThumbnailKey = x.ThumbnailKey,
+                        CreatedAt = x.CreatedAt,
+                        Abstract = x.Abstract,
+                        InstitutionId = x.InstitutionId,
+                        CreatedBy = new ResearchCreatedByViewModel
+                        {
+                            Id = x.CreatedById,
+                            Name = x.CreatedBy!.Name,
+                            ImagePath = x.CreatedBy!.ImagePath
+                        },
+                        Institution = new ResearchCreatedByViewModel
+                        {
+                            Id = x.InstitutionId,
+                            Name = x.Institution!.Name,
+                            ImagePath = x.Institution!.ImagePath
+                        },
+                        Authors = x.Authors!
+                            .Select(y => new AuthorViewModel
+                            {
+                                Id = y.UserId,
+                                Name = y.User!.Name,
+                                ImagePath = y.User!.ImagePath
+                            })
+                            .ToList(),
+                        Advisors = x.Advisors!
+                            .Select(y => new AdvisorViewModel
+                            {
+                                Id = y.UserId,
+                                Name = y.User!.Name,
+                                ImagePath = y.User!.ImagePath,
+                                Approved = x.ResearchAdvisorApprovals!.Any(z => z.UserId == y.UserId && z.Approved)
+                            })
+                            .ToList(),
+                        Keywords = x.ResearchKeyWords!
+                            .Select(x => new KeyWordViewModel
+                            {
+                                Id = x.KeyWordId,
+                                Description = x.KeyWord!.Description
+                            })
+                            .ToList(),
+                        KnowledgeAreas = x.ResearchKnowledgeAreas!
+                            .Select(x => new KnowledgeAreaViewModel
+                            {
+                                Id = x.KnowledgeAreaId,
+                                Description = x.KnowledgeArea!.Description
+                            })
+                            .ToList(),
+                    })
+                    .FirstOrDefault();
+
+                if (domain == null)
+                    throw new NotFoundException();
+
+                var currentUserId = _currentUserService.GetId();
+                if (!domain.Authors.Any(x => x.Id == currentUserId) && !domain.Advisors.Any(x => x.Id == currentUserId) && domain.Visibility != ResearchVisibility.Public)
+                    throw new BusinessException("Usuário não possui acesso a esta publicação");
+
+                // Populates the Language field with the Enum value
+                var validLanguage = Enum.TryParse(typeof(ResearchLanguage), domain.LanguageName, true, out var language);
+                if (validLanguage)
+                    domain.Language = (ResearchLanguage)language!;
+
+                return new ResponseMessageModel(domain);
+            }
+            catch (Exception ex)
+            {
+                return new ErrorMessageModel(ex);
+            }
+        }
+
+        public async Task<ResponseMessageModel> Delete(int id)
         {
             try
             {
@@ -134,7 +251,7 @@ namespace Application.Services.Domain
                 if (domain == null)
                     throw new NotFoundException();
 
-                if (domain.CreatedById != userId)
+                if (domain.CreatedById != _currentUserService.GetId())
                     throw new BusinessException("Somente o usuário criador da publicação pode realizar a exclusão");
 
                 if (domain.FileKey.HasValue)
@@ -153,7 +270,7 @@ namespace Application.Services.Domain
             }
         }
 
-        public async Task<ResponseMessageModel> Add(ResearchCreateModel model, int userId)
+        public async Task<ResponseMessageModel> Add(ResearchCreateModel model)
         {
             Guid? fileKey = null;
             Guid? thumbnailKey = null;
@@ -161,7 +278,8 @@ namespace Application.Services.Domain
             try
             {
                 // Populates the domain
-                var domain = PopulateDomain(model, userId);
+                var currentUserId = _currentUserService.GetId();
+                var domain = PopulateDomain(model, currentUserId);
 
                 // Gets the authors names for document metadata
                 var authorsNames = _userService

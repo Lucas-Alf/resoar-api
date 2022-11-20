@@ -10,7 +10,9 @@ namespace Application.IoC
     {
         public static void AddServices(this IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
             services.AddScoped(typeof(IServiceBase<>), typeof(ServiceBase<>));
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IInstitutionService, InstitutionService>();
             services.AddScoped<IKeyWordService, KeyWordService>();

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using ResearchDataset.Models;
+using ResearchDataset.Utils;
 using ShellProgressBar;
 
 namespace ResearchDataset
@@ -129,11 +130,22 @@ namespace ResearchDataset
 
             if (!String.IsNullOrEmpty(metadata.Categories))
             {
-                var knowledgeAreaId = HandleKnowledgeArea(Limit(metadata.Categories.Trim(), 255)!);
-                domain.KnowledgeAreaIds.Add(knowledgeAreaId);
+                foreach (var category in metadata.Categories.Split(" "))
+                {
+                    var description = ArXivCategoryTaxonomy.CategoriesList
+                        .Where(x => x.Code!.ToLower() == category.Trim().ToLower())
+                        .Select(x => x.Description)
+                        .FirstOrDefault();
 
-                var keyWordId = HandleKeyWord(Limit(metadata.Categories.Trim(), 255)!);
-                domain.KeyWordIds.Add(keyWordId);
+                    if (!String.IsNullOrEmpty(description))
+                    {
+                        var knowledgeAreaId = HandleKnowledgeArea(Limit(description, 255)!);
+                        domain.KnowledgeAreaIds.Add(knowledgeAreaId);
+
+                        var keyWordId = HandleKeyWord(Limit(description, 255)!);
+                        domain.KeyWordIds.Add(keyWordId);
+                    }
+                }
             }
 
             if (metadata.AuthorsParsed != null)
@@ -161,7 +173,7 @@ namespace ResearchDataset
                     ContentType = "application/pdf"
                 };
 
-                return await _researchService.Add(domain, _userId);
+                return await _researchService.Add(domain);
             }
         }
 

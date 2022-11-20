@@ -7,14 +7,14 @@ namespace Domain.Models
         public object? Data { get; set; }
 
         public ResponseMessageModel() { }
-        public ResponseMessageModel(string message, object? data = null)
+        public ResponseMessageModel(string? message, object? data = null)
         {
             Success = true;
             Message = message;
             Data = data;
         }
 
-        public ResponseMessageModel(object data)
+        public ResponseMessageModel(object? data)
         {
             Success = true;
             Data = data;
