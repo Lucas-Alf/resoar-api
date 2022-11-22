@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Domain.Models;
 using Domain.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -60,6 +59,7 @@ namespace Infrastructure.DBConfiguration.EFCore
         public DbSet<ResearchKeyWord>? ResearchKeyWord { get; set; }
         public DbSet<ResearchKnowledgeArea>? ResearchKnowledgeArea { get; set; }
         public DbSet<ResearchFullTextViewModel>? ResearchFullTextModel { get; set; }
+        public DbSet<UserSavedResearch>? UserSavedResearch { get; set; }
         public DbSet<GenericValueModel<int>>? GenericIntModel { get; set; }
     }
 }

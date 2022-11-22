@@ -45,7 +45,7 @@ namespace ResearchDataset
                 metadataFile: "/media/lucas/data/projects/research_files/metadata/arxiv-metadata-oai-snapshot.json",
                 userId: userId,
                 institutionId: 1,
-                limit: 5
+                limit: 3500
             );
 
             var task = mockDatabase.Start();

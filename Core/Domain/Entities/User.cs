@@ -31,6 +31,7 @@ namespace Domain.Entities
 
         #region collections
         public virtual ICollection<ResearchAuthor>? ResearchAuthors { get; set; }
+        public virtual ICollection<UserSavedResearch>? UserSavedResearch { get; set; }
 
         #endregion collections
     }

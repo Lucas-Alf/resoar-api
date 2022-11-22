@@ -74,26 +74,24 @@ namespace ResearchDataset
                         var metadata = serializer.Deserialize<ArXivMetadata>(reader);
                         if (metadata != null && metadata.Versions != null)
                         {
-                            foreach (var revision in metadata.Versions)
+                            var revision = metadata.Versions.Last();
+                            var researchPath = $"{_datasetPath}/{metadata.Id}{revision.Version}.pdf";
+                            metadata.FilePath = researchPath;
+                            var fileInfo = new FileInfo(researchPath);
+                            if (!fileInfo.Exists)
                             {
-                                var researchPath = $"{_datasetPath}/{metadata.Id}{revision.Version}.pdf";
-                                metadata.FilePath = researchPath;
-                                var fileInfo = new FileInfo(researchPath);
-                                if (!fileInfo.Exists)
-                                {
-                                    Console.WriteLine($"File not found {metadata.Id}{revision.Version}.pdf");
-                                    continue;
-                                }
-
-                                var message = await HandleResearch(metadata);
-                                if (!message.Success)
-                                    result.ErrorMessages.Add(message);
-                                else
-                                    result.Success++;
-
-                                if (result.Total == _limit)
-                                    break;
+                                Console.WriteLine($"File not found {metadata.Id}{revision.Version}.pdf");
+                                continue;
                             }
+
+                            var message = await HandleResearch(metadata);
+                            if (!message.Success)
+                                result.ErrorMessages.Add(message);
+                            else
+                                result.Success++;
+
+                            if (result.Total == _limit)
+                                break;
                         }
                     }
 

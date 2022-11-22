@@ -21,6 +21,7 @@ namespace Infrastructure.IoC
             services.AddScoped<IResearchKnowledgeAreaRepository, ResearchKnowledgeAreaRepository>();
             services.AddScoped<IResearchRepository, ResearchRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserSavedResearchRepository, UserSavedResearchRepository>();
         }
     }
 }

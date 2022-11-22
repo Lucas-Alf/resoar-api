@@ -83,6 +83,7 @@ namespace Domain.Models
     }
 
     [Keyless]
+    // [NotMapped]
     public class ResearchFullTextViewModel
     {
         public int Id { get; set; }

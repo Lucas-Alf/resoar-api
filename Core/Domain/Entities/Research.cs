@@ -64,6 +64,7 @@ namespace Domain.Entities
         public virtual ICollection<ResearchAdvisorApproval>? ResearchAdvisorApprovals { get; set; }
         public virtual ICollection<ResearchKnowledgeArea>? ResearchKnowledgeAreas { get; set; }
         public virtual ICollection<ResearchKeyWord>? ResearchKeyWords { get; set; }
+        public virtual ICollection<UserSavedResearch>? UserSavedResearch { get; set; }
 
         #endregion collections
     }
