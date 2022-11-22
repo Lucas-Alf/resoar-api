@@ -14,14 +14,17 @@ namespace Application.Services.Domain
     public class UserSavedResearchService : ServiceBase<UserSavedResearch>, IUserSavedResearchService
     {
         private readonly IUserSavedResearchRepository _repository;
+        private readonly IResearchRepository _researchRepository;
         private readonly ICurrentUserService _currentUserService;
 
         public UserSavedResearchService(
             IUserSavedResearchRepository repository,
+            IResearchRepository researchRepository,
             ICurrentUserService currentUserService
         ) : base(repository)
         {
             _repository = repository;
+            _researchRepository = researchRepository;
             _currentUserService = currentUserService;
         }
 
@@ -139,6 +142,24 @@ namespace Application.Services.Domain
 
                 if (exists)
                     throw new BusinessException("Esta publicação já consta como salva");
+
+                // Verify if research is public, or the user is a author or advisor.
+                var hasPermission = _researchRepository
+                    .Query(new FilterBy<Research>(x =>
+                        x.Id == researchId &&
+                        x.Visibility == ResearchVisibility.Public ||
+                        (
+                            x.Visibility == ResearchVisibility.Private &&
+                            (
+                                x.Authors!.Any(y => y.Id == currentUserId) ||
+                                x.Advisors!.Any(y => y.UserId == currentUserId)
+                            )
+                        )
+                    ))
+                    .Any();
+
+                if (!hasPermission)
+                    throw new BusinessException("Usuário não possui acesso a esta publicação");
 
                 var domain = new UserSavedResearch
                 {
