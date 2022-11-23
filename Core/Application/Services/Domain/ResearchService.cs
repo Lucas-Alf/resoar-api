@@ -87,7 +87,6 @@ namespace Application.Services.Domain
                     Type = x.Type,
                     Visibility = x.Visibility,
                     LanguageName = x.Language,
-                    FileKey = x.FileKey,
                     ThumbnailKey = x.ThumbnailKey,
                     CreatedAt = x.CreatedAt,
                     Abstract = x.Abstract,
@@ -163,7 +162,6 @@ namespace Application.Services.Domain
                         Type = x.Type,
                         Visibility = x.Visibility,
                         LanguageName = x.Language,
-                        FileKey = x.FileKey,
                         ThumbnailKey = x.ThumbnailKey,
                         CreatedAt = x.CreatedAt,
                         Abstract = x.Abstract,
@@ -409,6 +407,48 @@ namespace Application.Services.Domain
                 .ToList();
 
             return domain;
+        }
+
+        public async Task<FileResultModel> GetFile(int researchId)
+        {
+            var research = _repository
+                .Query(new FilterBy<Research>(x => x.Id == researchId))
+                .Select(x => new
+                {
+                    x.Title,
+                    x.FileKey,
+                    x.Visibility,
+                    AuthorIds = x.Authors!
+                        .Select(x => x.UserId)
+                        .ToList(),
+                    AdvisorIds = x.Advisors!
+                        .Select(x => x.UserId)
+                        .ToList()
+                })
+                .FirstOrDefault();
+
+            if (research == null)
+                throw new NotFoundException();
+
+            if (!research.FileKey.HasValue)
+                throw new BusinessException("Publicação não possui um arquivo vinculado");
+
+            var currentUserId = _currentUserService.GetId();
+            if (!research.AuthorIds.Contains(currentUserId) && !research.AdvisorIds.Contains(currentUserId) && research.Visibility != ResearchVisibility.Public)
+                throw new BusinessException("Usuário não possui acesso a esta publicação");
+
+            using (var file = await _storageService.GetObject(research.FileKey.Value.ToString(), FILE_FOLDER))
+            using (var responseStream = file.ResponseStream)
+            using (var ms = new MemoryStream())
+            {
+                responseStream.CopyTo(ms);
+                return new FileResultModel
+                {
+                    ContentType = "application/pdf",
+                    FileName = $"{research.Title?.Replace(" ", "_")}.pdf",
+                    FileContents = ms.ToArray()
+                };
+            }
         }
 
         private async Task<Guid> SaveFile(MemoryStream stream, string folder, string contentType, S3CannedACL permission, Dictionary<string, string>? metadata = null)

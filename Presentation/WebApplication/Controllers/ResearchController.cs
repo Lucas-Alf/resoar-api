@@ -35,6 +35,20 @@ namespace WebApplication.Controllers
             return _researchService.GetById(id);
         }
 
+        [HttpGet("download/{id}")]
+        public async Task<IActionResult> DownloadFile(int id)
+        {
+            try
+            {
+                var file = await _researchService.GetFile(id);
+                return File(file.FileContents!, file.ContentType!, file.FileName);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorMessageModel(ex));
+            }
+        }
+
         [HttpPost]
         public async Task<ResponseMessageModel> Add([FromForm] ResearchCreateModel model)
         {

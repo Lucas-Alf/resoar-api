@@ -51,7 +51,6 @@ namespace Domain.Models
         public ResearchVisibility? Visibility { get; set; }
         public ResearchLanguage? Language { get; set; }
         public string? LanguageName { get; set; }
-        public Guid? FileKey { get; set; }
         public Guid? ThumbnailKey { get; set; }
         public int? InstitutionId { get; set; }
         public DateTime? CreatedAt { get; set; }

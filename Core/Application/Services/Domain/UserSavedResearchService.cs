@@ -48,7 +48,6 @@ namespace Application.Services.Domain
                     Type = x.Research!.Type,
                     Visibility = x.Research!.Visibility,
                     LanguageName = x.Research!.Language,
-                    FileKey = x.Research!.FileKey,
                     ThumbnailKey = x.Research!.ThumbnailKey,
                     CreatedAt = x.Research!.CreatedAt,
                     Abstract = x.Research!.Abstract,

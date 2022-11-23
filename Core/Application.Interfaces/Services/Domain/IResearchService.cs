@@ -9,5 +9,6 @@ namespace Application.Interfaces.Services.Domain
         ResponseMessageModel GetById(int id);
         Task<ResponseMessageModel> Add(ResearchCreateModel model);
         Task<ResponseMessageModel> Delete(int id);
+        Task<FileResultModel> GetFile(int researchId);
     }
 }
