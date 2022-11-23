@@ -1,4 +1,5 @@
-﻿using Amazon.S3;
+﻿using System.Text.RegularExpressions;
+using Amazon.S3;
 using Application.Exceptions;
 using Application.Interfaces.Services.Domain;
 using Domain.Entities;
@@ -437,6 +438,12 @@ namespace Application.Services.Domain
             if (!research.AuthorIds.Contains(currentUserId) && !research.AdvisorIds.Contains(currentUserId) && research.Visibility != ResearchVisibility.Public)
                 throw new BusinessException("Usuário não possui acesso a esta publicação");
 
+            // Url-safe filename 
+            var pattern = @"[^a-z0-9]";
+            var substitution = @"_";
+            var regex = new Regex(pattern, RegexOptions.Multiline | RegexOptions.IgnoreCase);
+            string fileName = regex.Replace(research.Title!, substitution);
+
             using (var file = await _storageService.GetObject(research.FileKey.Value.ToString(), FILE_FOLDER))
             using (var responseStream = file.ResponseStream)
             using (var ms = new MemoryStream())
@@ -445,7 +452,7 @@ namespace Application.Services.Domain
                 return new FileResultModel
                 {
                     ContentType = "application/pdf",
-                    FileName = $"{research.Title?.Replace(" ", "_")}.pdf",
+                    FileName = $"{fileName}.pdf",
                     FileContents = ms.ToArray()
                 };
             }
