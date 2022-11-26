@@ -110,7 +110,7 @@ namespace ResearchDataset
             var domain = new ResearchCreateModel
             {
                 Title = Limit(metadata.Title?.Replace("\n", "").Trim(), 350),
-                Abstract = Limit(metadata.Abstract?.Replace("\n", "").Trim(), 2500),
+                Abstract = Limit(metadata.Abstract?.Replace("\n", "").Trim(), 5000),
                 Year = DateTime.Now.Year,
                 Type = ResearchType.Article,
                 Visibility = ResearchVisibility.Public,

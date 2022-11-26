@@ -12,7 +12,7 @@ namespace Domain.Models
         [Required(ErrorMessage = "O Campo Titulo é obrigatório")]
         public string? Title { get; set; }
 
-        [MaxLength(2500, ErrorMessage = "O Campo Resumo deve ter no máximo 1000 caracteres")]
+        [MaxLength(5000, ErrorMessage = "O Campo Resumo deve ter no máximo 1000 caracteres")]
         public string? Abstract { get; set; }
 
         [Required(ErrorMessage = "O Campo Ano é obrigatório")]

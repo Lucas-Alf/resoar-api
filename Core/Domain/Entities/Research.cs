@@ -38,7 +38,7 @@ namespace Domain.Entities
 
         public string? RawContent { get; set; }
 
-        [MaxLength(2500, ErrorMessage = "O Campo Resumo deve ter no máximo 2500 caracteres")]
+        [MaxLength(5000, ErrorMessage = "O Campo Resumo deve ter no máximo 5000 caracteres")]
         public string? Abstract { get; set; }
 
         [Required(ErrorMessage = "O Campo Instituição é obrigatório")]

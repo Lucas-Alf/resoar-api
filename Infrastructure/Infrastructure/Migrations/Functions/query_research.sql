@@ -24,7 +24,7 @@ RETURNS TABLE (
     "thumbnailKey" uuid,
     "institutionId" int,
     "createdAt" timestamp,
-    "abstract" varchar(2500),
+    "abstract" varchar(5000),
     "rank" float4
 )
 AS
