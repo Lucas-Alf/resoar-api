@@ -18,9 +18,9 @@ namespace WebApplication.Controllers
         }
 
         [HttpGet]
-        public PaginationModel<ResearchViewModel> GetPaged(string? title, int page, int pageSize, int? userId)
+        public PaginationModel<ResearchViewModel> GetPaged(string? title, int page, int pageSize, int? userId, int? advisorId)
         {
-            return _researchService.GetPagedSimple(page, pageSize, title, userId);
+            return _researchService.GetPagedSimple(page, pageSize, title, userId, advisorId);
         }
 
         [HttpGet("advanced")]

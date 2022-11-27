@@ -50,29 +50,42 @@ namespace Application.Services.Domain
             return _repository.GetPagedAdvanced(model);
         }
 
-        public PaginationModel<ResearchViewModel> GetPagedSimple(int page, int pageSize, string? title, int? userId = null)
+        public PaginationModel<ResearchViewModel> GetPagedSimple(int page, int pageSize, string? title, int? userId = null, int? advisorId = null)
         {
+            var currentUserId = _currentUserService.GetId();
             var filter = new FilterBy<Research>();
 
             // Filter by title
             if (!String.IsNullOrEmpty(title))
                 filter.Add(x => EF.Functions.ILike(x.Title!, $"%{title.Trim()}%"));
 
-            // Filter public/private research
+            // Filter author
             if (userId.HasValue)
             {
-                filter.Add(x => x.Authors!.Any(y => y.UserId == userId));
-                var currentUserId = _currentUserService.GetId();
                 if (currentUserId == userId)
+                    filter.Add(x => x.Authors!.Any(y => y.UserId == userId));
+                else
                     filter.Add(x =>
-                        x.Visibility == ResearchVisibility.Public ||
-                        x.Visibility == ResearchVisibility.Private
+                        x.Authors!.Any(y => y.UserId == userId) &&
+                        x.Visibility == ResearchVisibility.Public
                     );
             }
-            else
+
+            // Filter by advisor
+            if (advisorId.HasValue)
             {
-                filter.Add(x => x.Visibility == ResearchVisibility.Public);
+                if (currentUserId == advisorId)
+                    filter.Add(x => x.Advisors!.Any(y => y.UserId == advisorId));
+                else
+                    filter.Add(x =>
+                        x.Advisors!.Any(y => y.UserId == advisorId) &&
+                        x.Visibility == ResearchVisibility.Public
+                    );
             }
+
+            // Only public publications
+            if (!userId.HasValue && !advisorId.HasValue)
+                filter.Add(x => x.Visibility == ResearchVisibility.Public);
 
             var data = _repository.GetPagedAnonymous<ResearchViewModel>(
                 page: page,

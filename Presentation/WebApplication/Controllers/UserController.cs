@@ -23,7 +23,7 @@ namespace WebApplication.Controllers
             return _userService.GetPaged(page, pageSize, name);
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         public ResponseMessageModel GetById(int id)
         {
             return _userService.GetById(id);
