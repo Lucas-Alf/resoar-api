@@ -5,7 +5,11 @@
 
 ## Research Open Access Repository
 
-RESOAR is a short for Research Open Access Repository. It is a repository for research data that is open to the public.
+RESOAR is a short for Research Open Access Repository.
+
+It consists in an academic repository for public open research.
+
+Frontend project: https://github.com/Lucas-Alf/resoar 
 
 This API follows the Repository Pattern with the following layers:
 
